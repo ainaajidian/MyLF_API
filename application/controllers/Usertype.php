@@ -174,8 +174,6 @@ class Usertype extends MY_Controller
 		</script>");
     }
 
-
-
     function revokeAccess($id)
     {
 		$this->Usertype_model->revokeAccess($id);
