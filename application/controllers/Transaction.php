@@ -82,11 +82,11 @@ class Transaction extends MY_Controller
         $OutletLocation        = $this->input->post("OutletLocation");
         $Total     = $this->input->post("Total");
 
-        $data = array("UserId"       => $UserId,
-                    "TransactionId"         => $TransactionId,
-                    "TransactionDate"      => $TransactionDate,
-                    "OutletLocation"       => $OutletLocation,
-                    "Total"    => $Total,
+        $data = array("UserId"          => $UserId,
+                    "TransactionId"     => $TransactionId,
+                    "TransactionDate"   => $TransactionDate,
+                    "OutletLocation"    => $OutletLocation,
+                    "Total"             => $Total,
                     "storeLatitude"     => $storeLatitude);
 
         $kondisi    = array("storeId"   => $storeId );
