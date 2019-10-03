@@ -40,9 +40,11 @@ class User extends MY_Controller {
 		$useremail	 	= $this->input->post("useremail");
 		$usertype 		= $this->input->post("usertype");
 		$cekusername 	= $this->User_model->check_user_exist(array("username" => $username));
-		if($cekusername){
+		if($cekusername)
+		{
 			$cekemail 	= $this->User_model->check_user_exist(array("email" => $useremail));
-				if($cekemail){
+				if($cekemail)
+				{
 					$datasave = array(
 								"username" 	=> $username,
 								"password" 	=> md5($userpassword),
@@ -56,13 +58,18 @@ class User extends MY_Controller {
 					alert('Saving user success');
 					window.location.href='".base_url()."User';
 					</script>");
-				}else{
+				}
+				else
+				{
 					die("<script>
 					alert('Email already in use');
 					window.location.href='".base_url()."User';
 					</script>");
 				}
-		}else{
+		}
+
+		else
+		{
 			die("<script>
 				alert('Username already in use');
 				window.location.href='".base_url()."User';
@@ -70,7 +77,8 @@ class User extends MY_Controller {
 		}
 	}
 
-	function updateUser(){
+	function updateUser()
+	{
 		$userid = $this->input->post("userid");
 		$username = $this->input->post("username");
 		$useremail = $this->input->post("useremail");
@@ -86,20 +94,21 @@ class User extends MY_Controller {
 				</script>");
 	}
 
-	function deactivate($userid){
+	function deactivate($userid)
+	{
 		$data = array("user_flag" => 0);
 		$kondisi = array("userid" => $userid);
 		$this->User_model->updateUser($data,$kondisi);
 	}
 
-	function restore($userid){
+	function restore($userid)
+	{
 		$data = array("user_flag" => 1);
 		$kondisi = array("userid" => $userid);
 		$this->User_model->updateUser($data,$kondisi);
 	}
 
-	function delete($userid){
-		$this->User_model->deleteuser($userid);
-	}
+	function delete($userid)
+	{ $this->User_model->deleteuser($userid); }
 
 }

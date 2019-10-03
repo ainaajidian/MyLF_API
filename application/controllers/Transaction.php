@@ -76,20 +76,20 @@ class Transaction extends MY_Controller
     //Update Data
     function updateStore()
     {
-        $UserId          = $this->input->post("UserId");
+        $UserId                 = $this->input->post("UserId");
         $TransactionId          = $this->input->post("TransactionId");
-        $TransactionDate       = $this->input->post("TransactionDate");
-        $OutletLocation        = $this->input->post("OutletLocation");
-        $Total     = $this->input->post("Total");
+        $TransactionDate        = $this->input->post("TransactionDate");
+        $OutletLocation         = $this->input->post("OutletLocation");
+        $Total                  = $this->input->post("Total");
 
-        $data = array("UserId"          => $UserId,
-                    "TransactionId"     => $TransactionId,
-                    "TransactionDate"   => $TransactionDate,
-                    "OutletLocation"    => $OutletLocation,
-                    "Total"             => $Total,
-                    "storeLatitude"     => $storeLatitude);
+        $data = array(  "UserId"            => $UserId,
+                        "TransactionId"     => $TransactionId,
+                        "TransactionDate"   => $TransactionDate,
+                        "OutletLocation"    => $OutletLocation,
+                        "Total"             => $Total,
+                        "storeLatitude"     => $storeLatitude);
 
-        $kondisi    = array("storeId"   => $storeId );
+        $kondisi = array("storeId"          => $storeId );
         
         $this->Store_model->updateStore($data,$kondisi);
 

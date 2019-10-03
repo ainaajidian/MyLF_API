@@ -56,8 +56,7 @@ class Usertype extends MY_Controller
 		{
 			$datasave = array("type_description" 	=> $usertype_desc,
 							  "type_id" => $id,
-							  "flag" => 1
-							 );
+							  "flag" => 1 );
 
 			$this->Usertype_model->saveusertype($datasave);
 

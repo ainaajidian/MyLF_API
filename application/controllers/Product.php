@@ -67,22 +67,23 @@ class Product extends MY_Controller {
 		$productFlag 		= $this->input->post("productFlag");
 		$childproductCategory = $this->input->post("childproductCategory");
 
-		if($productFlag == "1"){
-			$this->db->query("INSERT into products 
+		if($productFlag == "1")
+		{
+			$this->db->query("INSERT INTO products 
 				(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId)
-				values
+				VALUES
 				('".$productId."','".$productName."',0,1,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."')
 				 ");
 		}else if($productFlag == "2"){
-				$this->db->query("INSERT into products 
+				$this->db->query("INSERT INTO products 
 						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId)
-						values
+						VALUES
 						('".$productId."','".$productName."',1,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."')
 						 ");
 		}else{
-				$this->db->query("INSERT into products 
+				$this->db->query("INSERT INTO products 
 						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId)
-						values
+						VALUES
 						('".$productId."','".$productName."',0,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."')
 						 ");
 		}
@@ -107,16 +108,18 @@ class Product extends MY_Controller {
 						  ';
 		$data['view'] 					= "product/detail";
 		$data['customjs'] 				= "product/customjs";
-		$data['colors']					= $this->db->query("SELECT * FROM combination_color order by ccName asc")->result();
-		$data['product']				= $this->db->query("SELECT a.*, b.categoryName FROM products a inner join product_categories b on a.categoryId = b.categoryId where productId = '".$productId."'")->row();
-		$data['product_colors']			= $this->db->query("SELECT a.*,b.ccName FROM product_colors a inner join combination_color b on a.combination_color = b.ccId where productId = '".$productId."'")->result();
+		$data['colors']					= $this->db->query("SELECT * FROM combination_color ORDER BY ccName ASC")->result();
+		$data['product']				= $this->db->query("SELECT a.*, b.categoryName FROM products a
+															INNER JOIN product_categories b ON a.categoryId = b.categoryId 
+															WHERE productId = '".$productId."'")->row();
+		$data['product_colors']			= $this->db->query("SELECT a.*,b.ccName FROM product_colors a 
+															INNER JOIN combination_color b on a.combination_color = b.ccId
+															WHERE productId = '".$productId."'")->result();
 
 		$this->go_to($data);  
 	}
 
-
-
-	 function getMaxId()
+	function getMaxId()
     {
         $data = $this->db->query("SELECT MAX(productId) productId FROM products")->row();
         return ++$data->productId;
@@ -136,7 +139,7 @@ class Product extends MY_Controller {
 									  		';
 		$data['view'] 					= "product/addcolor";
 		$data['customjs'] 				= "product/customjs";
-		$data['colors']					= $this->db->query("SELECT * FROM combination_color order by ccName asc")->result();
+		$data['colors']					= $this->db->query("SELECT * FROM combination_color ORDER BY ccName ASC")->result();
 		$data['productId']				= $productId;
 		$this->go_to($data);  
     }
@@ -174,7 +177,8 @@ class Product extends MY_Controller {
 			$fileName3 	= $this->upload->data('file_name');
 		}
   
-  		if($totalgambar == 0){
+  		if($totalgambar == 0)
+  		{
   			die("<script>
 				alert('Setidaknya pilih satu gambar !!!');
 				window.location.href='".base_url()."Product/addcolor/".$productId."';
@@ -182,7 +186,7 @@ class Product extends MY_Controller {
   		}
 
   		$this->db->query("INSERT INTO product_colors (productColorId,productId,combination_color,image1,image2,image3) 
-  			values ('".$this->getProductColorId()."','".$productId."','".$color."','".$fileName1."','".$fileName2."','".$fileName3."') ");
+  						  VALUES ('".$this->getProductColorId()."','".$productId."','".$color."','".$fileName1."','".$fileName2."','".$fileName3."') ");
   		die("<script>
 				alert('Proses Simpan Berhasil');
 				window.location.href='".base_url()."Product/detail/".$productId."';
@@ -193,11 +197,10 @@ class Product extends MY_Controller {
     function getProductColorId()
     {
         $data = $this->db->query("SELECT MAX(productColorId) productColorId FROM product_colors")->row();
-        if($data->productColorId == ""){
-        	return "PC00000000001";
-        }else{
-        	 return ++$data->productColorId;
-    	}
+        if($data->productColorId == "")
+        { return "PC00000000001"; }
+        else
+        { return ++$data->productColorId; }
 	}
        
 }

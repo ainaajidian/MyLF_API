@@ -148,9 +148,9 @@ class ProductCategory extends MY_Controller
         
         $config['upload_path']   = './assets/app_assets/'; //path folder
         $config['allowed_types'] = 'jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
-        $config['max_size'] = '2048000000'; //maksimum besar file 2M
-        $config['max_width']  = ''; //lebar maksimum 1288 px
-        $config['max_height']  = ''; //tinggi maksimu 1000 px
+        $config['max_size']      = '2048000000'; //maksimum besar file 2M
+        $config['max_width']     = ''; //lebar maksimum 1288 px
+        $config['max_height']    = ''; //tinggi maksimu 1000 px
         
         $this->upload->initialize($config);
         $this->load->library('upload',$config);

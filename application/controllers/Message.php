@@ -48,15 +48,15 @@ class Message extends MY_Controller
         $userId             = $this->input->post("userId");
 		$messageContent 	= $this->input->post("messageContent");
         $messageId          = $this->input->post("messageId");
-        $messageTitle          = $this->input->post("messageTitle");
+        $messageTitle       = $this->input->post("messageTitle");
 		
 		$nmfile = "Message-".date('Y-m-d')."-"; //nama file saya beri nama langsung dan diikuti fungsi time
         $config['upload_path']   = './assets/app_assets/message/'; //path folder
         $config['allowed_types'] = 'jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
-        $config['max_size'] = '2048000000'; //maksimum besar file 2M
-        $config['max_width']  = '1288'; //lebar maksimum 1288 px
-        $config['max_height']  = '1000'; //tinggi maksimu 1000 px
-        $config['file_name'] = $nmfile; //nama yang terupload nantinya
+        $config['max_size']      = '2048000000'; //maksimum besar file 2M
+        $config['max_width']     = '1288'; //lebar maksimum 1288 px
+        $config['max_height']    = '1000'; //tinggi maksimu 1000 px
+        $config['file_name']     = $nmfile; //nama yang terupload nantinya
 
         $userId     = explode(";",$userId);
       

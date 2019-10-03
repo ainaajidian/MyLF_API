@@ -102,7 +102,7 @@ class CombinationColor extends MY_Controller {
 					"ccSecName"	=> $ccSecName,
 					"ccSecHex"	=> $ccSecHex);
 
-		$kondisi	= array("ccId"		=> $ccId );
+		$kondisi	= array("ccId"	=> $ccId );
         
         $this->CombinationColor_model->updateCC($data,$kondisi);
 

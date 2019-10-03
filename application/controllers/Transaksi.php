@@ -13,8 +13,7 @@ class Transaksi extends MY_Controller {
     $this->output->set_header("Pragma: no-cache");
     }
 
-    function index(){
-    	
-    }
+    function index()
+    { }
 
 }
