@@ -15,7 +15,6 @@ class Loginform extends Ci_Controller {
 
 
   	function __construct()
-
     {
         parent::__construct();
         $this->load->model('Usersession');
@@ -30,65 +29,48 @@ class Loginform extends Ci_Controller {
 	public function index()
 	{	
 
-        if($this->Usersession->getUsername()){
+        if($this->Usersession->getUsername())
+        	{ redirect("Loginform/goToportal","refresh"); }
 
-            redirect("Loginform/goToportal","refresh");
-
-        }
-
-		$data['csrf'] = array(
-
-	        'name' => $this->security->get_csrf_token_name(),
-
-	        'hash' => $this->security->get_csrf_hash()
-
-			);
+		$data['csrf'] = array
+							( 'name' => $this->security->get_csrf_token_name(),
+							  'hash' => $this->security->get_csrf_hash() );
 
         $data['sitesetting'] = $this->db->query("SELECT * FROM sitesetting where sitesettingid = 'SET001' ")->row();
 
-
-
 		$this->load->view('loginform',$data);
-
 	}
 
-
-
-	function proses(){
-
+	function proses()
+	{
 		$username = $this->security->xss_clean($this->input->post("username"));
-
 		$password = $this->security->xss_clean($this->input->post("password"));
 
 		$checkresult = $this->Login_model->checkAccount($username,$password);
 
-		if(!$checkresult){
-
+		if(!$checkresult)
+		{
 			$this->session->set_flashdata('message', 'Username or Password is incorrect');
-
 			redirect("Loginform/index","refresh");
-
-		}else{
+		}
+		else
+		{
 			$this->_username = $username;
 			$this->_password = $password; 
 			$this->generateSession($checkresult);
 		}
-
 	}
 
-
-
-	function generateSession($logindata){
+	function generateSession($logindata)
+	{
 		$this->session->set_userdata(json_decode(json_encode($logindata), True));
         redirect("Loginform/goToportal","refresh");
-
 	}
 
-
-
-	function goToportal(){
-
-		if(!$this->Usersession->getUsername()){
+	function goToportal()
+	{
+		if(!$this->Usersession->getUsername())
+		{
             $this->session->set_flashdata('message', 'You need to login first');
             redirect("Loginform","refresh");
         }
@@ -96,25 +78,16 @@ class Loginform extends Ci_Controller {
 		$this->session->unset_userdata('parent_module');
 		$data['module'] = $this->Login_model->populateModule();
 		$this->load->view("afterlogin",$data);
-
 	}
 
-
-
-	function mainpage($module_id){
+	function mainpage($module_id)
+	{
 		$this->session->set_userdata('parent_module', "");
 		$this->session->set_userdata('parent_module', $module_id);
         redirect("welcome","refresh");
 	}
 
-
-
-	function unsetmenu(){
-		unset($_SESSION['menu']);
-
-	}
-
-
-
+	function unsetmenu()
+	{ unset($_SESSION['menu']); }
 }
 
