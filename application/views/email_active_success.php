@@ -1,0 +1,1 @@
+<?php echo "Your account is now active "; ?>
