@@ -24,17 +24,14 @@ class Loginform extends Ci_Controller {
     	$this->output->set_header("Pragma: no-cache");
     }
 
-
-
 	public function index()
 	{	
-
         if($this->Usersession->getUsername())
-        	{ redirect("Loginform/goToportal","refresh"); }
+        { redirect("Loginform/goToportal","refresh"); }
 
 		$data['csrf'] = array
 							( 'name' => $this->security->get_csrf_token_name(),
-							  'hash' => $this->security->get_csrf_hash() );
+	        				  'hash' => $this->security->get_csrf_hash() );
 
         $data['sitesetting'] = $this->db->query("SELECT * FROM sitesetting where sitesettingid = 'SET001' ")->row();
 
@@ -53,6 +50,7 @@ class Loginform extends Ci_Controller {
 			$this->session->set_flashdata('message', 'Username or Password is incorrect');
 			redirect("Loginform/index","refresh");
 		}
+
 		else
 		{
 			$this->_username = $username;
@@ -89,5 +87,6 @@ class Loginform extends Ci_Controller {
 
 	function unsetmenu()
 	{ unset($_SESSION['menu']); }
+
 }
 
