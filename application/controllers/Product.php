@@ -37,6 +37,11 @@ class Product extends MY_Controller {
 
 	}
 
+	function getChildCategory($parentCategoryID){
+			$data	= $this->db->query("SELECT * FROM product_categories where parentCategoryID ='".$parentCategoryID."' order by categoryName asc")->result();
+			echo json_encode($data);
+	}
+
 
 	function add()
 	{
@@ -66,25 +71,29 @@ class Product extends MY_Controller {
 		$productCategory 	= $this->input->post("productCategory");
 		$productFlag 		= $this->input->post("productFlag");
 		$childproductCategory = $this->input->post("childproductCategory");
+		$productErpCode = $this->input->post("productErpCode");
+		$uomCode = $this->input->post("uomCode");
+
 
 		if($productFlag == "1")
 		{
 			$this->db->query("INSERT INTO products 
-				(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId)
+				(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId,productErpCode,UOMCode)
 				VALUES
-				('".$productId."','".$productName."',0,1,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."')
+				('".$productId."','".$productName."',0,1,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."','".$productErpCode."','".$uomCode."')
 				 ");
 		}else if($productFlag == "2"){
 				$this->db->query("INSERT INTO products 
-						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId)
+						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId,productErpCode,UOMCode)
 						VALUES
-						('".$productId."','".$productName."',1,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."')
+						('".$productId."','".$productName."',1,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."','".$productErpCode."','".$uomCode."')
 						 ");
 		}else{
 				$this->db->query("INSERT INTO products 
-						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId)
+						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId,productErpCode,UOMCode)
+
 						VALUES
-						('".$productId."','".$productName."',0,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."')
+						('".$productId."','".$productName."',0,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."','".$productErpCode."','".$uomCode."')
 						 ");
 		}
 		die("<script>
@@ -203,4 +212,77 @@ class Product extends MY_Controller {
         { return ++$data->productColorId; }
 	}
        
+	function addstok($productId,$categoryId){
+		$data['infoProduct'] 	= $this->db->query("SELECT * from products where productId = '".$productId."'")->row();
+		$data['infoCategory'] 	= $this->db->query("SELECT * from product_categories where categoryId = '".$categoryId."'")->row();
+		$data['infoColor'] 		= $this->db->query("SELECT * from product_colors a inner join combination_color cc on a.combination_color = cc.ccId where productId = '".$productId."'")->result();
+		$data['sizes']			= $this->db->query("SELECT * FROM size where TipeProduct = '".$categoryId."'")->result();
+
+
+
+		$data['view'] 					= "product/addstok";
+		$data['customjs'] 				= "product/customjs";
+		$data['productId']				= $productId;
+		$this->go_to($data);  
+
+	}
+
+	function savestok($productId,$categoryId){
+		$storeId 		= $this->input->post("storeId");
+		$productColorId = $this->input->post("productColorId");
+		$sizes 			= $this->input->post("sizes");
+		$maxId 			= "";
+		$stok 			= $this->input->post("stok");
+
+		if($storeId == ""){
+			echo "Harap ulang Proses";
+			die();
+		}
+
+		if($this->getStokId() == "1"){
+			$maxId = "STOK00000000000001";
+		}else{
+			$maxId = $this->getStokId();
+		}
+
+		$this->db->query("INSERT INTO TransactionItemSalesStock 
+			(SalesStockId,storeID,productID,CategoryID,productColorId,StockQTY,SizeID,CreatedBy,CreatedDate) values 
+			('".$maxId."','".$storeId."','".$productId."','".$categoryId."','".$productColorId."','".$stok."','".$sizes."','".$this->Usersession->getUsername()."',NOW())");
+
+	}
+
+	function getStokId()
+    {
+        $data = $this->db->query("SELECT MAX(SalesStockId) SalesStockId FROM TransactionItemSalesStock")->row();
+        return ++$data->SalesStockId;
+    }
+
+    function getImage($productColorId){
+    	$data = $this->db->query("SELECT * FROM product_colors where productColorId = '".$productColorId."'")->row();
+    	echo json_encode($data);
+    }
+
+    function insertDummystock(){
+    	$dataoutlet = $this->db->query("SELECT * FROM store");
+    	$totaldataoutlet = $dataoutlet->num_rows();
+
+    
+    foreach ($dataoutlet->result() as $key) {
+  		if($this->getStokId() == "1"){
+				$maxId = "STOK00000000000001";
+			}else{
+				$maxId = $this->getStokId();
+			}
+			$this->db->query( "INSERT INTO TransactionItemSalesStock 
+			(SalesStockId,storeID,productID,CategoryID,productColorId,StockQTY,SizeID,CreatedBy,CreatedDate) values 
+			('".$maxId."','".$key->storeName."','p_00025','C_00001','PC00000000027','".rand(1,5)."','SZ0000003','".$this->Usersession->getUsername()."',NOW())");
+    	}
+    }
+
+    function getItemInfo(){
+    	$productId = "p_00018";
+    	$data = $this->db->query("select productID,SizeID from TransactionItemSalesStock where productID = '".$productId."' group by productID");
+    	echo json_encode($data);
+    }
+
 }

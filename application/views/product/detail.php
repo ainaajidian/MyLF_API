@@ -30,10 +30,17 @@
 		              				<td>Product Description</td><td width="50%"><?=$product->productDescription;?></td>
 		              			</tr>
 		              			<tr>
+		              				<td>Product Erp Code</td><td width="50%"><?=$product->productErpCode;?></td>
+		              			</tr>
+		              			<tr>
+		              				<td>Product UOM</td><td width="50%"><?=$product->UOMCode;?></td>
+		              			</tr>
+		              			<tr>
 		              				<td>Product Flag</td>
 		              				<td>
-		              					<?php if($product->isHot == "1"){ echo "Hot Products";} ?>
-										<?php if($product->isHot == "2"){ echo "New Products";} ?>
+		              					<?php if($product->isHot == "1"){ echo "Hot Products";}
+		              					else if($product->isHot == "2"){ echo "New Products";}
+		              					 else { echo "-";} ?>
 		              				</td>
 		              			</tr>
 		              		
@@ -45,12 +52,12 @@
 	            	</div>
 	        	</div>
 
-	        
-
-
-
 	        	<div class="row">
 	        		<div class="card-body col-md">
+	        			<a href="<?=base_url();?>Product/addstok/<?=$product->productId;?>/<?=$product->categoryId;?>"> 
+	        				<button type="button" class="btn btn-warning">Ubah Stok</button> 
+	        			</a>
+
 	        			<div class="card-header"> Product Color List </div>
 	        			<br>
 	        			<a href="<?=base_url();?>Product/addcolor/<?=$product->productId;?>"><button href="#coloraddForm" class="btn btn-info" style="margin-bottom: 10px;margin-left: 10px">  Add New Color </button></a>
@@ -89,7 +96,7 @@
 	              					 	<?php } ?>
 	              					 	 </td> 
 
-	              					 <td> Delete </td> 
+	              					 <td>  </td> 
 
 	              					</tr>
 
@@ -108,4 +115,5 @@
          </div>
       </div>
    </div>
+</div>
 </div>

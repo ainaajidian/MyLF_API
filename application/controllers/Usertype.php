@@ -152,35 +152,28 @@ class Usertype extends MY_Controller
 				window.location.href='".base_url()."Usertype';
 				</script>");
 		}
-
     }
-
-
 
     function saveAccess()
     {
     	$type_id 		= $this->input->post("type_id");
     	$module_id 		= $this->input->post("module_id");
-
     	$datasave = array("access_id" 	=> $this->Usertype_model->getMaxAccessId(),
     					  "module_id" => $module_id,
     					  "usertype" =>$type_id);
-
     	$this->Usertype_model->saveAccess($datasave);
-
 		die("<script>
 		alert('Adding Access Success');
-		window.location.href='".base_url()."Usertype';
+		window.location.href='".$_SERVER["HTTP_REFERER"]."';
 		</script>");
     }
 
     function revokeAccess($id)
     {
 		$this->Usertype_model->revokeAccess($id);
-
 		die("<script>
 			alert('Revoke Access Success');
-			window.location.href='".base_url()."Usertype';
+		window.location.href='".$_SERVER["HTTP_REFERER"]."';
 			</script>");
     }
 }

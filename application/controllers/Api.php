@@ -265,7 +265,7 @@ class Api extends CI_Controller
                                         where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'
                                         ORDER BY a.productId desc LIMIT $limit , $offset ");
         } else {
-            $data = $this->db->query("SELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
+            $data = $this->db->query("sSELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
                                         productDescription,IF(b.UserId IS NULL, 0,1) as isLiked,pc.*,childCategoryId from products a
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
@@ -536,9 +536,7 @@ class Api extends CI_Controller
     {
         $notificationId = $this->input->post("notificationId");
         $userId         = $this->input->post("userId");
-
         $data = $this->db->query("SELECT * FROM notification_delete where  notificationId = '" . $notificationId . "' and userId = '".$userId."'");
-
         if($data->num_rows() < 1){
             $this->db->query("INSERT INTO notification_delete (notificationId,userId,deleteDate) values ('".$notificationId."','".$userId."',NOW()) ");         
         }
@@ -723,7 +721,6 @@ function message(){
 
     function getMessage($limit = 0, $offset = 0)
     {
-        //$userId = "M-00710";
         $userId = $this->input->post("userId");
         $data   = $this->db->query(" SELECT *
         FROM message where userId = '".$userId."' and deleteFlag <> 1 order by messageId desc limit $limit,$offset ")->result();
@@ -742,4 +739,15 @@ function message(){
         $this->db->query("UPDATE message set readFlag = 1 where userId = '".$userId."' and messageId = '".$messageId."' ");
     }
 
+    function phpversion(){
+        echo 'Current PHP version: ' . phpversion();
+    }
+   function getItemInfo(){
+        $myJson= array();
+        $productId = "p_00019";
+        $data = $this->db->query("select productID,a.SizeID,SizeDescription from TransactionItemSalesStock a inner join size b on a.SizeID = b.SizeID where productID = '".$productId."' group by productID,a.SizeID")->result();
+        foreach ($data as $key) {
+        //   $myJson['productId'][] ;  
+        }
+    }
 }

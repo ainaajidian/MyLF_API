@@ -1,5 +1,5 @@
 <div class="form-actions no-margin-bottom" style="padding-left: 15px">
-  <a href="http://memberlf.rpgroup.co.id/Product"><button class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali ke List</button></a>
+  <a href="<?=base_url();?>Product"><button class="btn btn-default"><i class="fa fa-arrow-left"></i> Kembali ke List</button></a>
 </div>
 
 <br>
