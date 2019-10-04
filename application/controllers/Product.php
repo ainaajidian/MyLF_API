@@ -279,10 +279,6 @@ class Product extends MY_Controller {
     	}
     }
 
-    function getItemInfo(){
-    	$productId = "p_00018";
-    	$data = $this->db->query("select productID,SizeID from TransactionItemSalesStock where productID = '".$productId."' group by productID");
-    	echo json_encode($data);
-    }
+ 
 
 }
