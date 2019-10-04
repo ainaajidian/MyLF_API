@@ -39,8 +39,22 @@ class Size extends MY_Controller
 
 	public function getSize()
 	{
-		$data['data'] = $this->Size_model->generateAll();
-		echo json_encode($data);
+		$queryresult = $this->Size_model->generateAll();
+        foreach ($queryresult as $key) {
+
+           $info = explode(";", $key->SizeDescription);
+           if($key->TipeProduct == "C_00001"){
+                $data['data'][] = array ( 
+                    "SizeID" => $key->SizeID,  
+                    "SizeDescription" =>  " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3],
+                     "TipeProduct" => $key->TipeProduct);
+             
+           }else{
+
+           }
+           //print_r($info);
+        }
+            echo json_encode($data);
 	}
 
 	//Deactive data
