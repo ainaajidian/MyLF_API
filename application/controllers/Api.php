@@ -743,11 +743,30 @@ function message(){
         echo 'Current PHP version: ' . phpversion();
     }
    function getItemInfo(){
-        $myJson= array();
-        $productId = "p_00019";
-        $data = $this->db->query("select productID,a.SizeID,SizeDescription from TransactionItemSalesStock a inner join size b on a.SizeID = b.SizeID where productID = '".$productId."' group by productID,a.SizeID")->result();
-        foreach ($data as $key) {
-        //   $myJson['productId'][] ;  
+        $productId = $this->input->post("productId");
+        $queryresult = $this->db->query("select productID,a.SizeID,SizeDescription,TipeProduct from TransactionItemSalesStock a inner join size b on a.SizeID = b.SizeID where productID = '".$productId."' group by productID,a.SizeID")->result();
+         foreach ($queryresult as $key) {
+           $info = explode(";", $key->SizeDescription);
+           if($key->TipeProduct == "C_00001"){
+                $data[] = array ( 
+                    "SizeID" => $key->SizeID,  
+                    "SizeDescription" => " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3],
+                     "TipeProduct" => $key->TipeProduct);
+           }else if($key->TipeProduct == "C_00007"){
+                $data[] = array ( 
+                    "SizeID" => $key->SizeID,  
+                    "SizeDescription" => " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3] . " Ukuran :" .$info[4],
+                    "TipeProduct" => $key->TipeProduct
+                );
+           }else if($key->TipeProduct == "C_00003"){
+                $data[] = array ( 
+                    "SizeID" => $key->SizeID,  
+                    "SizeDescription" => " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3] . " Ukuran :" .$info[4],
+                    "TipeProduct" => $key->TipeProduct
+                );
+           }
+         
         }
+          echo json_encode($data);
     }
 }
