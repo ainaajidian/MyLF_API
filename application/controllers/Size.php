@@ -31,8 +31,9 @@ class Size extends MY_Controller
 							    <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
 							  ';
 		
-		$data['customjs'] 		     = "size/customjs";  
-		$data['view'] 			     = "size/index";
+		$data['customjs'] 		    = "size/customjs";  
+		$data['view'] 			    = "size/index";
+        $data['parent_module']       = $this->Size_model->generateParent();
         
 		$this->go_to($data);
 	}
@@ -43,13 +44,16 @@ class Size extends MY_Controller
         foreach ($queryresult as $key) {
 
            $info = explode(";", $key->SizeDescription);
-           if($key->TipeProduct == "C_00001"){
+           if($key->TipeProduct == "C_00001")
+           {
                 $data['data'][] = array ( 
                     "SizeID" => $key->SizeID,  
-                    "SizeDescription" =>  " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3],
-                     "TipeProduct" => $key->TipeProduct);
-             
-           }else{
+                    "SizeDescription" => "Panjang: ".$info[0]. " - ". "Lebar: ". $info[1]. " - ". "Tinggi: " .$info[2]. " - ". "Berat:" .$info[3],
+                    "TipeProduct" => $key->categoryName,
+                    "SizeFlag" => $key->SizeFlag);
+           }
+           else
+           {
 
            }
            //print_r($info);
@@ -57,36 +61,33 @@ class Size extends MY_Controller
             echo json_encode($data);
 	}
 
-	//Deactive data
-	function deactivate($categoryId)
+	//Deactive Data
+    function deactivate($SizeID)
     {
-        $data = array("categoryFlag" => 0);
-        $kondisi = array("categoryId" => $categoryId);
-        $this->Size_model->updateCategory($data,$kondisi);
+        $data = array("SizeFlag" => 0);
+        $kondisi = array("SizeID" => $SizeID);
+        $this->Size_model->status($data,$kondisi);
     }
 
-    //Active data
-    function restore($categoryId)
+    //Restore Data
+    function restore($SizeID)
     {
-        $data = array("categoryFlag" => 1);
-        $kondisi = array("categoryId" => $categoryId);
-        $this->Size_model->updateCategory($data,$kondisi);
+        $data = array("SizeFlag" => 1);
+        $kondisi = array("SizeID" => $SizeID);
+        $this->Size_model->status($data,$kondisi);
     }
 
     //Delete data
-	function deleteForever($categoryId)
-	{ $this->Size_model->deleteForever($categoryId); }
+    function deleteForever($SizeID)
+    { $this->Size_model->deleteForever($SizeID); }
 
     //Save data
-    function saveCategory()
+    function saveSize()
     {
-        $categoryName           = $this->input->post("categoryName");
-        $categoryDescription    = $this->input->post("categoryDescription");
-        $categoryCreatedDate    = $this->input->post("categoryCreatedDate");
-        $categoryModifiedDate   = $this->input->post("categoryModifiedDate");
-        $categoryFlag           = $this->input->post("categoryFlag");
-        $parentCategoryId       = $this->input->post("parentCategoryId");
-        $categoryId             = $this->input->post("categoryId");
+        $SizeDescription        = $this->input->post("SizeDescription");
+        $TipeProduct            = $this->input->post("TipeProduct");
+        $SizeFlag               = $this->input->post("SizeFlag");
+        $SizeID                 = $this->input->post("SizeID");
 
         //$nmfile = "ProCat_".date('Y-m-d'); //nama file saya beri nama langsung dan diikuti fungsi time
         $config['upload_path']   = './assets/app_assets/'; //path folder

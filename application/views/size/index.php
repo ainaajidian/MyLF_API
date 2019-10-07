@@ -11,9 +11,10 @@
 	              		<table width='100%' class="table" id="SizeTable">
 	              			<thead>
 	              				<tr>
-		              				<th width="15%">ID Size</th>
-		              				<th width="17%">Descripton Size</th>
-		              				<th width="15%">Tipe Product</th>
+		              				<th width="15">ID Size</th>
+		              				<th width="45%">Descripton Size</th>
+		              				<th width="20%">Tipe Product</th>
+		              				<th width="20%">Action</th>
 		              			</tr>
 		              		</thead>
 		              		
@@ -30,44 +31,43 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Product Category</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Size</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>          
-      <form enctype="multipart/form-data" id="categoryForm" action="<?=base_url();?>ProductCategory/saveCategory" method = "POST" >
+      <form enctype="multipart/form-data" id="categoryForm" action="<?=base_url();?>Size/saveSize" method = "POST" >
 	      <div class="modal-body">
 	          
-	               <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
-	                
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off"  required name="categoryName" type="text"  class="form-control" placeholder="Category Name">
-	                </div>   
+           	<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+            
+            <div class="input-group mb-3">
+            	<select class="form-control" id="TipeProduct" name="TipeProduct">
+        			<option value="" disabled selected>Select Parent Category</option>
+        			<?php foreach ($parent_module as $key) 
+        			{ echo "<option value='".$key->categoryId."'> ".$key->categoryName." </option>"; } ?>
+            	</select>
+            </div>  
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off"  required name="categoryDescription" type="text" class="form-control" placeholder="Category Description">
-	                </div> 
+             <div id="panjang" class="input-group mb-3">
+                <input autocomplete="off"  id="panjang"  name="panjang" type="text" class="form-control" placeholder="Panjang">
+            </div>
 
-	                <div class="input-group mb-3">
-	                	<select class="form-control" id="parentCategoryId" name="parentCategoryId">
-	            			<option value="" disabled selected>Select Parent Category</option>
-	            			<option value="">Parent</option>
-	            			<?php foreach ($parent_module as $key) 
-	            			{ echo "<option value='".$key->categoryId."'> ".$key->categoryName." </option>"; } ?>
-	                	</select>
-	                </div>
+            <div id="lebar" class="input-group mb-3">
+                <input autocomplete="off"  id="lebar"  name="lebar" type="text" class="form-control" placeholder="Lebar">
+            </div>   
 
-	                <div  id="module_image_label" class="input-group mb-3">
-	                    <input id="categoryImage"  name="categoryImage" type="file" class="form-control" placeholder="Category Image">
-	                </div>
+            <div id="tinggi" class="input-group mb-3">
+                <input autocomplete="off"  id="tinggi"  name="tinggi" type="text" class="form-control" placeholder="Tinggi">
+            </div>   
 
-	                <div  id="module_image_label">
-	                	 <input name="categoryCreatedDate" type="date hidden" class="form-control" placeholder="Category Created Date" value="<?php echo date('Y-m-d'); ?>" hidden="true">
-	                </div>
+            <div id="ukuran" class="input-group mb-3">
+                <input autocomplete="off"  id="ukuran"  name="ukuran" type="text" class="form-control" placeholder="Ukuran">
+            </div>   
 
-	                <div  id="module_image_label">
-	                	 <input name="categoryModifiedDate" type="date hidden" class="form-control" placeholder="Category Modified Date" value="<?php echo date('Y-m-d'); ?>" hidden="true">
-	                </div>
+            <div id="berat" class="input-group mb-3">
+                <input autocomplete="off"  id="berat"  name="berat" type="text" class="form-control" placeholder="Berat">
+            </div>
 
 	      </div>
 	      <div class="modal-footer">
@@ -89,21 +89,13 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>          
-      <form enctype="multipart/form-data" id="editcategoryForm" action="<?=base_url();?>ProductCategory/updateCategory" method = "POST" >
+      <form enctype="multipart/form-data" id="editsizeForm" action="<?=base_url();?>Size/updateSize" method = "POST" >
 	      <div class="modal-body">
 	          
 	               <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
-	               <input type="hidden" name="categoryId" id="editcategoryId" />
+	               <input type="hidden" name="SizeID" id="editSizeID" />
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editcategoryName" required name="categoryName" type="text"  class="form-control" placeholder="Category Name">
-	                </div>   
-
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editcategoryDescription" required name="categoryDescription" type="text" class="form-control" placeholder="Category Description">
-	                </div>
-
-	                <div  class="input-group mb-3">
+	               <div  class="input-group mb-3">
 	                	<select class="form-control" id="editparentCategoryId" name="parentCategoryId">
 	                	
 	                		<option value=''>Parent</option>
@@ -114,13 +106,26 @@
 	                	</select>
 	                </div>
 
-	                <div  id="module_image_label" class="input-group mb-3">
-	                    <input id="editcategoryImage"  name="editcategoryImage" type="file" class="form-control" placeholder="Category Image">
-	                </div>    
+	                <div class="input-group mb-3">
+	                    <input autocomplete="off" id="editPanjang" required name="Panjang" type="text"  class="form-control" placeholder="Panjang">
+	                </div>   
 
-	                <div  id="module_image_label" class="input-group mb-3">
-	                	 <input id="editcategoryModified"  name="categoryModifiedDate" type="date hidden" class="form-control" placeholder="Category Modified Date" value="<?php echo date('Y-m-d'); ?>" hidden="true">
-	                </div>
+	                <div class="input-group mb-3">
+	                    <input autocomplete="off" id="editLebar" required name="Lebar" type="text"  class="form-control" placeholder="Lebar">
+	                </div>   
+
+	                <div class="input-group mb-3">
+	                    <input autocomplete="off" id="editTinggi" required name="Tinggi" type="text"  class="form-control" placeholder="Tinggi">
+	                </div>   
+
+	                <div class="input-group mb-3">
+	                    <input autocomplete="off" id="editUkuran" required name="Ukuran" type="text"  class="form-control" placeholder="Ukuran">
+	                </div>   
+
+	                <div class="input-group mb-3">
+	                    <input autocomplete="off" id="editBerat" required name="Berat" type="text"  class="form-control" placeholder="Berat">
+	                </div>   
+
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

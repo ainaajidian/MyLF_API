@@ -8,17 +8,9 @@ class Size_model extends CI_Model
     }
 
     function generateAll()
-    {
-    	return $this->db->query("SELECT * FROM size ORDER BY SizeID ASC")->result();
-    }
-
-    function check_save_categories($categoryName)
-    {
-        $query = $this->db->query("SELECT * FROM product_categories WHERE categoryName = '".$categoryName."'");
-        if($query->num_rows() > 0 )
-            { return false; }
-        return true;
-    }
+    { return $this->db->query( "SELECT a.SizeID, a.SizeDescription, a.TipeProduct, a.SizeFlag, b.categoryName
+                                FROM size a
+                                LEFT JOIN product_categories b ON a.TipeProduct = b.categoryId")->result(); }
 
     function generateParent()
     {
@@ -26,31 +18,28 @@ class Size_model extends CI_Model
         return $data;
     }
 
-    function saveCategory($data)
-    {
-        $this->db->insert('product_categories', $data);
-    }
-
-    function getDate()
-    {
-        $data = $this->db->query("SELECT CURRENT_DATE()")->row();
-        return true;
-    }
-
     function getMaxId()
     {
-        $data = $this->db->query("SELECT MAX(categoryId) categoryId FROM product_categories")->row();
-        return ++$data->categoryId;
+        $data = $this->db->query("SELECT MAX(SizeID) SizeID FROM size")->row();
+        return ++$data->SizeID;
     }
+
+    function status($data,$kondisi)
+    {
+        $this->db->where($kondisi);
+        $this->db->update('size', $data);
+    }
+
+    function deleteForever($SizeID)
+    { $this->db->query("DELETE FROM size WHERE SizeID = '".$SizeID."' "); }
+
+    function saveCategory($data)
+    { $this->db->insert('size', $data); }
 
     function getCategorydetail($categoryId)
       { return $this->db->query("SELECT categoryId FROM product_categories WHERE categoryId = '".$categoryId."' ")->row(); }
 
-    function updateCategory($data,$kondisi)
-    {
-        $this->db->where($kondisi);
-        $this->db->update('product_categories', $data);
-    }
+    
 
     function updateCategoryImg($data)
     {
@@ -74,7 +63,4 @@ class Size_model extends CI_Model
         $hsl = $this->db->query($sql, $data);
         return $hsl;
     }
-
-    function deleteForever($categoryId)
-        { $this->db->query("DELETE FROM product_categories WHERE categoryId = '".$categoryId."' "); }
 }
