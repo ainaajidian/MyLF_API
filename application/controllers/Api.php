@@ -13,7 +13,7 @@ class Api extends CI_Controller
     function sendConfirmationEmail($id)
     {
         $config['protocol']    = 'smtp';
-        $config['smtp_host']   = '172.16.0.7'; //'103.9.124.162'; 
+        $config['smtp_host']   = '103.9.124.162'; //'103.9.124.162'; 
         $config['smtp_port']   = '587';
         $config['smtp_user']   = 'no-reply@rpgroup.co.id';
         $config['smtp_pass']   = 'N4ughty!';
@@ -50,7 +50,7 @@ class Api extends CI_Controller
         $email = $this->input->post("email");
         
         $config['protocol']    = 'smtp';
-        $config['smtp_host']   = '172.16.0.7'; //'103.9.124.162'; 
+        $config['smtp_host']   = '103.9.124.162'; //'103.9.124.162'; 
         $config['smtp_port']   = '587';
         $config['smtp_user']   = 'no-reply@rpgroup.co.id';
         $config['smtp_pass']   = 'N4ughty!';
@@ -234,7 +234,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                                select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                                 group by productId
                                             ) pc on a.productId = pc.productId
                                         where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'
@@ -247,7 +247,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                            select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                            select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                             group by productId
                                         ) pc on a.productId = pc.productId
                                         where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'
@@ -259,18 +259,18 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                                                                 INNER JOIN (
-                                            select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                            select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                             group by productId
                                         ) pc on a.productId = pc.productId
                                         where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'
                                         ORDER BY a.productId desc LIMIT $limit , $offset ");
         } else {
-            $data = $this->db->query("sSELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
+            $data = $this->db->query("SELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
                                         productDescription,IF(b.UserId IS NULL, 0,1) as isLiked,pc.*,childCategoryId from products a
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                            select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                            select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                             group by productId
                                         ) pc on a.productId = pc.productId
                                         where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'
@@ -292,7 +292,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                            select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                            select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                             group by productId
                                         ) pc on a.productId = pc.productId
                                          where isHot = 1");
@@ -308,7 +308,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "' 
                                         INNER JOIN (
-                                            select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                            select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                             group by productId
                                         ) pc on a.productId = pc.productId
                                         where isNew = 1");
@@ -337,7 +337,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                                select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                                 group by productId
                                             ) pc on a.productId = pc.productId
                                         where  a.categoryId = '" . $productCategory . "'  and productName like '%" . $productName . "%' ");
@@ -348,7 +348,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                                select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                                 group by productId
                                             ) pc on a.productId = pc.productId
                                         where a.categoryId = '" . $productCategory . "'  and productName like '%" . $productName . "%' and productPrice >= '" . $productStartingPrice . "'");
@@ -358,7 +358,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                                select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                                 group by productId
                                             ) pc on a.productId = pc.productId
                                         where a.categoryId = '" . $productCategory . "'  and productName like '%" . $productName . "%' and productPrice >= '" . $productStartingPrice . "' and productPrice <= '" . $productEndPrice . "'");
@@ -372,7 +372,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                                select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                                 group by productId
                                             ) pc on a.productId = pc.productId
                                         where  productName like '%" . $productName . "%'");
@@ -393,7 +393,7 @@ class Api extends CI_Controller
                                         LEFT JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "'
                                         INNER JOIN (
-                                                select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                                 group by productId
                                             ) pc on a.productId = pc.productId
                                         where  productName like '%" . $productName . "%' and productPrice >= '" . $productStartingPrice . "' and productPrice <= '" . $productEndPrice . "'");
@@ -575,7 +575,7 @@ class Api extends CI_Controller
                                         INNER JOIN  wishlist b on (a.productId = b.productId) and (a.categoryId = b.categoryId)
                                         and b.userId = '" . $userId . "' 
                                         INNER JOIN (
-                                            select max(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                            select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
                                             group by productId
                                         ) pc on a.productId = pc.productId");
         $return = $data->result();
@@ -744,29 +744,211 @@ function message(){
     }
    function getItemInfo(){
         $productId = $this->input->post("productId");
-        $queryresult = $this->db->query("select productID,a.SizeID,SizeDescription,TipeProduct from TransactionItemSalesStock a inner join size b on a.SizeID = b.SizeID where productID = '".$productId."' group by productID,a.SizeID")->result();
+        $queryresult = $this->db->query("select productID,a.SizeID,SizeDescription,TipeProduct  from TransactionItemSalesStock a inner join size b on a.SizeID = b.SizeID 
+                                            where productID = '".$productId."' group by productID,a.SizeID,SizeDescription,TipeProduct ")->result();
          foreach ($queryresult as $key) {
            $info = explode(";", $key->SizeDescription);
            if($key->TipeProduct == "C_00001"){
                 $data[] = array ( 
-                    "SizeID" => $key->SizeID,  
+                    "SizeID"            => $key->SizeID,  
                     "SizeDescription" => " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3],
-                     "TipeProduct" => $key->TipeProduct);
+                    "TipeProduct" => $key->TipeProduct,
+                    "productId" => $key->productID
+                                    );
            }else if($key->TipeProduct == "C_00007"){
                 $data[] = array ( 
                     "SizeID" => $key->SizeID,  
                     "SizeDescription" => " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3] . " Ukuran :" .$info[4],
-                    "TipeProduct" => $key->TipeProduct
+                    "TipeProduct" => $key->TipeProduct,
+                    "productId" => $key->productID,
                 );
            }else if($key->TipeProduct == "C_00003"){
                 $data[] = array ( 
                     "SizeID" => $key->SizeID,  
                     "SizeDescription" => " Panjang : ".$info[0]. " Lebar : ". $info[1]. " Tinggi : " .$info[2]. " Berat :" .$info[3] . " Ukuran :" .$info[4],
-                    "TipeProduct" => $key->TipeProduct
+                    "TipeProduct" => $key->TipeProduct,
+                    "productId" => $key->productID,
                 );
            }
-         
         }
           echo json_encode($data);
     }
+
+    function getItemInfo2(){
+        $productId = $this->input->post("productId");
+        $productColorId =  $this->input->post("productColorId");
+        $data = [];
+        $queryresult = $this->db->query("select a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName  
+                                            from TransactionItemSalesStock a 
+                                                inner join size b on a.SizeID = b.SizeID 
+                                                inner join product_colors pc on a.productId = pc.productId and a.productColorID = pc.productColorID
+                                                inner join combination_color cc on pc.combination_color = ccId
+                                                inner join products p on p.productId = a.productId
+                                                inner join product_categories cat on p.categoryId = cat.categoryId
+                                            where a.productID = '".$productId."' and a.productColorId = '".$productColorId."'  
+                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName ")->result();
+         foreach ($queryresult as $key) {
+           $info = explode(";", $key->SizeDescription);
+           if($key->TipeProduct == "C_00001"){
+                $data[] = array ( 
+                    "SizeID"            => $key->SizeID,  
+                    "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2],
+                    "productWeight"    => $info[3],
+                    "TipeProduct" => $key->TipeProduct,
+                    "productId" => $key->productID,
+                    "productColorId" => $key->productColorId,
+                    "colorName" => $key->ccName,
+                    "productName" => $key->productName,
+                    "categoryName" => $key->categoryName
+                                    );
+           }else if($key->TipeProduct == "C_00007"){
+                $data[] = array ( 
+                    "SizeID" => $key->SizeID,  
+                    "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                    "productWeight"    => $info[3],
+                    "TipeProduct" => $key->TipeProduct,
+                    "productId" => $key->productID,
+                    "productColorId" => $key->productColorId,
+                    "colorName" => $key->ccName,
+                    "productName" => $key->productName,
+                    "categoryName" => $key->categoryName
+
+                );
+           }else if($key->TipeProduct == "C_00003"){
+                $data[] = array ( 
+                    "SizeID" => $key->SizeID,  
+                    "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                    "productWeight"    => $info[3],
+                    "TipeProduct" => $key->TipeProduct,
+                    "productId" => $key->productID,
+                    "productColorId" => $key->productColorId,
+                    "colorName" => $key->ccName,
+                    "productName" => $key->productName,
+                    "categoryName" => $key->categoryName
+                );
+           }
+        }
+          echo json_encode($data);
+    }
+
+    function insertToChart(){
+        $userId = $this->input->post("userId");
+        $productId = $this->input->post("productId");
+        $productColorId = $this->input->post("productColorId");
+        $sizeId = $this->input->post("sizeId");
+        $qty = 1;
+        $maxId = $this->getMaxChartId($userId);
+
+        $data = array(
+            "chartId" => $maxId,
+            "userId" => $userId,
+            "productId" => $productId,
+            "productColorId"=>$productColorId,
+            "sizeId" => $sizeId,
+            "qty" => $qty,
+            "storeId" => "",
+            "createdDate" => date("Y-m-d H:i:s"),
+            "chartFlag" => 0
+        );
+
+        $kondisi = array(
+            "userId" => $userId,
+            "productId" => $productId,
+            "productColorId"=>$productColorId,
+            "sizeId" => $sizeId,
+            "storeId" => ""
+        );
+
+        $this->db->select('*');
+        $this->db->where($kondisi);
+        $query = $this->db->get('chart');
+        $num = $query->num_rows();
+
+        if($num > 0){
+            $run = $this->db->set('qty','`qty`+1', false);
+                $this->db->where($kondisi);
+                $this->db->update('chart');
+        }else{
+            $run = $this->db->insert("chart",$data);
+        }
+
+    }
+
+    function getMaxChartId($userId)
+    {
+        $data = $this->db->query("SELECT MAX(chartId) chartId FROM chart where userId = '".$userId."' and MONTH(createdDate) = MONTH(NOW()) and YEAR(createdDate) = YEAR(NOW()) ")->row();
+        if(++$data->chartId == "1"){
+			$maxId = "CHART-".$userId."-".date('m').date('y')."000001";
+		}else{
+            $maxId = $data->chartId;
+            $maxId = $maxId++;
+		}
+        return $maxId;
+    }
+
+    function countChart(){
+        $userId = $this->input->post("userId");
+        $queryresult = $this->db->query("SELECT * FROM chart where userId = '".$userId."'");
+        echo json_encode($queryresult->num_rows());
+    }
+
+    function getChart(){
+        $userId = $this->input->post("userId");
+        $data = [];
+        $queryresult = $this->db->query("select a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,a.qty
+                                            from chart a 
+                                                inner join size b on a.SizeID = b.SizeID 
+                                                inner join product_colors pc on a.productId = pc.productId and a.productColorID = pc.productColorID
+                                                inner join combination_color cc on pc.combination_color = ccId
+                                                inner join products p on p.productId = a.productId
+                                                inner join product_categories cat on p.categoryId = cat.categoryId
+                                            where a.userId = '".$userId."' 
+                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,qty ")->result();
+            foreach ($queryresult as $key) {
+                $info = explode(";", $key->SizeDescription);
+                if($key->TipeProduct == "C_00001"){
+                        $data[] = array ( 
+                            "SizeID"            => $key->SizeID,  
+                            "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2],
+                            "productWeight"    => $info[3],
+                            "TipeProduct" => $key->TipeProduct,
+                            "productId" => $key->productID,
+                            "productColorId" => $key->productColorId,
+                            "colorName" => $key->ccName,
+                            "productName" => $key->productName,
+                            "categoryName" => $key->categoryName,
+                            "quantity" => $key->quantity
+                                            );
+                }else if($key->TipeProduct == "C_00007"){
+                        $data[] = array ( 
+                            "SizeID" => $key->SizeID,  
+                            "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                            "productWeight"    => $info[3],
+                            "TipeProduct" => $key->TipeProduct,
+                            "productId" => $key->productID,
+                            "productColorId" => $key->productColorId,
+                            "colorName" => $key->ccName,
+                            "productName" => $key->productName,
+                            "categoryName" => $key->categoryName,
+                            "quantity" => $key->quantity
+        
+                        );
+                }else if($key->TipeProduct == "C_00003"){
+                        $data[] = array ( 
+                            "SizeID" => $key->SizeID,  
+                            "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                            "productWeight"    => $info[3],
+                            "TipeProduct" => $key->TipeProduct,
+                            "productId" => $key->productID,
+                            "productColorId" => $key->productColorId,
+                            "colorName" => $key->ccName,
+                            "productName" => $key->productName,
+                            "categoryName" => $key->categoryName,
+                            "quantity" => $key->quantity
+                        );
+                }
+                }
+            echo json_encode($data);
+    }
+
 }
