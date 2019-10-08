@@ -33,7 +33,7 @@ class Size_model extends CI_Model
     function deleteForever($SizeID)
     { $this->db->query("DELETE FROM size WHERE SizeID = '".$SizeID."' "); }
 
-    function saveCategory($data)
+    function saveSize($data)
     { $this->db->insert('size', $data); }
 
     function getCategorydetail($categoryId)

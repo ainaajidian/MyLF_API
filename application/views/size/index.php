@@ -12,8 +12,8 @@
 	              			<thead>
 	              				<tr>
 		              				<th width="15">ID Size</th>
-		              				<th width="45%">Descripton Size</th>
 		              				<th width="20%">Tipe Product</th>
+		              				<th width="45%">Descripton Size</th>
 		              				<th width="20%">Action</th>
 		              			</tr>
 		              		</thead>
@@ -36,37 +36,37 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>          
-      <form enctype="multipart/form-data" id="categoryForm" action="<?=base_url();?>Size/saveSize" method = "POST" >
+      <form enctype="multipart/form-data" id="sizeForm" action="<?=base_url();?>Size/saveSize" method = "POST" >
 	      <div class="modal-body">
 	          
            	<input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
             
             <div class="input-group mb-3">
             	<select class="form-control" id="TipeProduct" name="TipeProduct">
-        			<option value="" disabled selected>Select Parent Category</option>
+        			<option value="" disabled selected>Select Product Type</option>
         			<?php foreach ($parent_module as $key) 
-        			{ echo "<option value='".$key->categoryId."'> ".$key->categoryName." </option>"; } ?>
+        			{ echo "<option value='".$key->categoryId."'> ".$key->categoryId." - ".$key->categoryName." </option>"; } ?>
             	</select>
             </div>  
 
-             <div id="panjang" class="input-group mb-3">
-                <input autocomplete="off"  id="panjang"  name="panjang" type="text" class="form-control" placeholder="Panjang">
+            <div id="Panjang" class="input-group mb-3">
+                <input autocomplete="off"  id="Panjang" name="Panjang" type="text" class="form-control" placeholder="Panjang">
             </div>
 
-            <div id="lebar" class="input-group mb-3">
-                <input autocomplete="off"  id="lebar"  name="lebar" type="text" class="form-control" placeholder="Lebar">
+            <div id="Lebar" class="input-group mb-3">
+                <input autocomplete="off"  id="Lebar"  name="Lebar" type="text" class="form-control" placeholder="Lebar">
             </div>   
 
-            <div id="tinggi" class="input-group mb-3">
-                <input autocomplete="off"  id="tinggi"  name="tinggi" type="text" class="form-control" placeholder="Tinggi">
+            <div id="Tinggi" class="input-group mb-3">
+                <input autocomplete="off"  id="Tinggi" name="Tinggi" type="text" class="form-control" placeholder="Tinggi">
             </div>   
 
-            <div id="ukuran" class="input-group mb-3">
-                <input autocomplete="off"  id="ukuran"  name="ukuran" type="text" class="form-control" placeholder="Ukuran">
+            <div id="Ukuran" class="input-group mb-3">
+                <input autocomplete="off"  id="Ukuran" name="Ukuran" type="text" class="form-control" placeholder="Ukuran">
             </div>   
 
-            <div id="berat" class="input-group mb-3">
-                <input autocomplete="off"  id="berat"  name="berat" type="text" class="form-control" placeholder="Berat">
+            <div id="Berat" class="input-group mb-3">
+                <input autocomplete="off"  id="Berat" name="Berat" type="text" class="form-control" placeholder="Berat">
             </div>
 
 	      </div>
@@ -96,14 +96,11 @@
 	               <input type="hidden" name="SizeID" id="editSizeID" />
 
 	               <div  class="input-group mb-3">
-	                	<select class="form-control" id="editparentCategoryId" name="parentCategoryId">
-	                	
-	                		<option value=''>Parent</option>
-                			<?php foreach ($parent_module AS $key) 
-                			{ echo "<option value='".$key->categoryId."'> ".$key->categoryName." </option>"; } ?>
-	                			}
-	                	?>
-	                	</select>
+	                	<select class="form-control" id="editTipeProduct" name="TipeProduct">
+	                		<option value="" disabled selected>Select Product Type</option>
+                      <?php foreach ($parent_module as $key) 
+                      { echo "<option value='".$key->categoryId."'> ".$key->categoryId." - ".$key->categoryName." </option>"; } ?>
+                    </select>
 	                </div>
 
 	                <div class="input-group mb-3">

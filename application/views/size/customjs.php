@@ -8,11 +8,11 @@ $(function ()
   var publicBerat;
   var publicUkuran;
 
-  $("#panjang").hide();
-  $("#lebar").hide();
-  $("#tinggi").hide();
-  $("#berat").hide();
-  $("#ukuran").hide();
+  $("#Panjang").hide();
+  $("#Lebar").hide();
+  $("#Tinggi").hide();
+  $("#Berat").hide();
+  $("#Ukuran").hide();
 
 
     var datatable = $("#SizeTable").DataTable({
@@ -30,8 +30,8 @@ $(function ()
          "aoColumns": 
             [
               { mData: 'SizeID' } ,
+              { mData: 'TipeProduct' } ,
               { mData: 'SizeDescription' } ,
-              { mData: 'TipeProduct' } ,  
               {
               "mData": null,
               "bSortable": false,
@@ -110,33 +110,32 @@ $(function ()
 
     });
 
-
-
     $("#exampleModal").on("change","#TipeProduct",function()
     {
         var TipeProduct = $(this).val();
         if(TipeProduct == 'C_00001')
         {
-          $("#panjang").show();
-          $("#lebar").show();
-          $("#tinggi").show();
-          $("#berat").show();
-          $("#ukuran").hide();
+          $("#Panjang").show();
+          $("#Lebar").show();
+          $("#Tinggi").show();
+          $("#Berat").show();
+          $("#Ukuran").hide();
         }
         else if (TipeProduct == 'C_00007')
         {
-          $("#panjang").hide();
-          $("#lebar").hide();
-          $("#tinggi").hide();
-          $("#berat").show();
-          $("#ukuran").show();
+          $("#Panjang").hide();
+          $("#Lebar").hide();
+          $("#Tinggi").hide();
+          $("#Berat").show();
+          $("#Ukuran").show();
         }
         else
         {
-          $("#module_icon").hide();
-          $("#module_icon_1").hide();
-          $("#module_icon_2").hide();
-           ("#module_parent").hide();
+          $("#Panjang").hide();
+          $("#Lebar").hide();
+          $("#Tinggi").hide();
+          $("#Berat").hide();
+          $("#Ukuran").hide();
         }
     });
 
@@ -144,21 +143,19 @@ $(function ()
     { $("#exampleModal").modal("show"); }
 
 
-
-
     $('#SizeTable tbody').on('click', '.showeditModal', function() 
     {
         $("#editsizeForm")[0].reset();
         var data  = datatable.row($(this).parents('tr')).data();
         var modal = $("#editModal").modal("show");
-        var edit_tipe_product   = data.module_type;
-        var edit_panjang        = data.module_name;
-        var edit_lebar          = data.module_parent;
-        var edit_tinggi         = data.module_path;
-        var edit_berat          = data.module_icon;
-        var edit_ukuran         = data.module_icon;
-        publicSizeID          = data.SizeID;
-        publicModuleIcon        = edit_module_icon
+        var edit_tipe_product   = data.TipeProduct;
+        var edit_panjang        = data.SizeDescription;
+        var edit_lebar          = data.SizeDescription;
+        var edit_tinggi         = data.SizeDescription;
+        var edit_berat          = data.SizeDescription;
+        var edit_ukuran         = data.SizeDescription;
+        publicSizeID            = data.SizeID;
+        publicTipeProduct       = edit_module_icon
         $("#edit_module_name").val(edit_module_name);
         $("#edit_module_type").val(edit_module_type);
         $("#edit_module_parent").val(edit_module_parent);

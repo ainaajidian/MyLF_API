@@ -41,20 +41,25 @@ class Size extends MY_Controller
 	public function getSize()
 	{
 		$queryresult = $this->Size_model->generateAll();
-        foreach ($queryresult as $key) {
-
+        foreach ($queryresult as $key) 
+        {
            $info = explode(";", $key->SizeDescription);
            if($key->TipeProduct == "C_00001")
            {
                 $data['data'][] = array ( 
-                    "SizeID" => $key->SizeID,  
-                    "SizeDescription" => "Panjang: ".$info[0]. " - ". "Lebar: ". $info[1]. " - ". "Tinggi: " .$info[2]. " - ". "Berat:" .$info[3],
-                    "TipeProduct" => $key->categoryName,
-                    "SizeFlag" => $key->SizeFlag);
+                    "SizeID"          => $key->SizeID,  
+                    "SizeDescription" => "Panjang: ".$info[0]. " - ". "Lebar: ". $info[1]. " - ". 
+                                         "Tinggi: " .$info[2]. " - ". "Berat:" .$info[3],
+                    "TipeProduct"     => $key->categoryName,
+                    "SizeFlag"        => $key->SizeFlag);
            }
-           else
+           elseif($key->TipeProduct == "C_00007")
            {
-
+                $data['data'][] = array ( 
+                    "SizeID"          => $key->SizeID,  
+                    "SizeDescription" => "Ukuran: ".$info[0]. " - ". "Berat: ". $info[1],
+                    "TipeProduct"     => $key->categoryName,
+                    "SizeFlag"        => $key->SizeFlag);
            }
            //print_r($info);
         }
@@ -81,73 +86,56 @@ class Size extends MY_Controller
     function deleteForever($SizeID)
     { $this->Size_model->deleteForever($SizeID); }
 
-    //Save data
+    //Save Data
     function saveSize()
     {
-        $SizeDescription        = $this->input->post("SizeDescription");
-        $TipeProduct            = $this->input->post("TipeProduct");
-        $SizeFlag               = $this->input->post("SizeFlag");
-        $SizeID                 = $this->input->post("SizeID");
+        $SizeID         = $this->input->post("SizeID");
+        $Panjang        = $this->input->post("Panjang");
+        $Lebar          = $this->input->post("Lebar");
+        $Tinggi         = $this->input->post("Tinggi");
+        $Ukuran         = $this->input->post("Ukuran");
+        $Berat          = $this->input->post("Berat");
+        $TipeProduct    = $this->input->post("TipeProduct");
 
-        //$nmfile = "ProCat_".date('Y-m-d'); //nama file saya beri nama langsung dan diikuti fungsi time
-        $config['upload_path']   = './assets/app_assets/'; //path folder
-        $config['allowed_types'] = 'jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
-        $config['max_size'] = '2048000000'; //maksimum besar file 2M
-        $config['max_width']  = '1288'; //lebar maksimum 1288 px
-        $config['max_height']  = '1000'; //tinggi maksimu 1000 px
-        //$config['file_name'] = $nmfile; //nama yang terupload nantinya
-
-        $this->upload->initialize($config);
-        $this->load->library('upload',$config);
-        if(!empty($_FILES['categoryImage']['name']))
+        if($TipeProduct == 'C_00001')
         {
-            if ($this->upload->do_upload('categoryImage'))
-            {       
-                    $pic = $this->upload->data();
-                    $picture = $pic['file_name'];
-                    $datasave = array(  "categoryName"          => $categoryName,
-                                        "categoryImage"         => $picture,
-                                        "categoryDescription"   => $categoryDescription,
-                                        "categoryCreatedDate"   => $categoryCreatedDate,
-                                        "categoryModifiedDate"  => $categoryModifiedDate,
-                                        "categoryFlag"          => 1,
-                                        "parentCategoryId"      => $parentCategoryId,
-                                        "categoryId"            => $this->Size_model->getMaxId() );
-                    $this->Size_model->saveCategory($datasave,$categoryId);
+            $datasave = array(  "SizeDescription"   => $Panjang . " CM; " . $Lebar . " CM; " .
+                                                       $Tinggi . " CM; " . $Berat . " KG",
+                                "TipeProduct"       => "C_00001",
+                                "SizeFlag"         => 1,
+                                "SizeID"            => $this->Size_model->getMaxId() );
+        
+            $this->Size_model->saveSize($datasave,$SizeID);
 
-                    die("<script>
-                        alert('Add Product Category Success');
-                        window.location.href='".base_url()."Size';
-                        </script>");
-            } 
-            else 
-            {
-                die('<script>
-                    alert("'.$this->upload->display_errors().'");
-                    window.location.href="'.base_url().'Size";
-                    </script>');
-            }
-            
+            die("<script>
+                alert('Add Size Success');
+                window.location.href='".base_url()."Size';
+                </script>");   
         }
+
+        elseif($TipeProduct == 'C_00007')
+        {
+            $datasave = array(  "SizeDescription"   => $Ukuran . "; " . $Berat . " KG",
+                                "TipeProduct"       => "C_00007",
+                                "SizeFlag"          => 1,
+                                "SizeID"            => $this->Size_model->getMaxId() );
+        
+            $this->Size_model->saveSize($datasave,$SizeID);
+
+            die("<script>
+                alert('Add Size Success');
+                window.location.href='".base_url()."Size';
+                </script>");   
+        }
+
         else
         {
-
-            $datasave = array(  "categoryName"          => $categoryName,
-                                "categoryImage"         => NULL,
-                                "categoryDescription"   => $categoryDescription,
-                                "categoryCreatedDate"   => $categoryCreatedDate,
-                                "categoryModifiedDate"  => $categoryModifiedDate,
-                                "categoryFlag"          => 1,
-                                "parentCategoryId"      => $parentCategoryId,
-                                "categoryId"            => $this->Size_model->getMaxId() );
-            
-            $this->Size_model->saveCategory($datasave,$categoryId);
-
-           die("<script>
-                alert('Add Product Category Success');
+            die("<script>
+                alert('Add Size Success');
                 window.location.href='".base_url()."Size';
-                </script>");
+                </script>"); 
         }
+        
     }
 
 	//Edit Data
