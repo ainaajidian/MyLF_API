@@ -22,7 +22,9 @@ $(function () {
               { mData: 'storeAddress' } ,
               { mData: 'storeDetail' } ,
               { mData: 'storeLongitude' } ,
-              { mData: 'storeLatitude' } ,  
+              { mData: 'storeLatitude' } , 
+              { mData: 'storeProvinceId' } , 
+              { mData: 'storeCityId' } ,  
               {
               "mData": null,
               "bSortable": false,
@@ -64,6 +66,8 @@ $(function () {
         var edit_storeDetail    = data.storeDetail;
         var edit_storeLongitude = data.storeLongitude;
         var edit_storeLatitude  = data.storeLatitude;
+        var edit_storeCityId    = data.storeCityId;
+        var edit_storeProvinceId= data.storeProvinceId;
         var edit_storeId        = data.storeId;
 
         $("#editstoreName").val(edit_storeName);
@@ -72,6 +76,8 @@ $(function () {
         $("#editstoreDetail").val(edit_storeDetail);
         $("#editstoreLongitude").val(edit_storeLongitude);
         $("#editstoreLatitude").val(edit_storeLatitude);
+        $("#editCity").val(edit_storeCityId);
+        $("#editProvince").val(edit_storeProvinceId);
         $("#editstoreId").val(edit_storeId);
 
     });

@@ -30,6 +30,8 @@
 		              				<th>Detail</th>
 		              				<th>Longitude</th>
 		              				<th>Lotitude</th>
+		              				<th>City</th>
+		              				<th>Province</th>
 		              				<th>Action</th>
 		              			</tr>
 		              		</thead>
@@ -152,7 +154,7 @@
 	                </div>
 
 					<div class="input-group mb-3">
-						<select id="province" name="province" class="form-control">
+						<select id="editProvince" name="editProvince" class="form-control">
 							<option value="" disabled selected>Select Province</option>
 							<?php
 								foreach ($provinces as $province) 
@@ -162,7 +164,7 @@
 	                </div>  
 
 					<div class="input-group mb-3">
-						<select id="city" name="city" class="form-control">
+						<select id="editCity" name="editCity" class="form-control">
 							<option value="" disabled selected>Select City</option>
 							<?php
 								foreach ($cities as $city) 
@@ -212,6 +214,22 @@
 
 <script>
   $('#city').select2({
+        trigger : 'change',
+        width:'100%',
+        placeholder: 'Select City'
+    });
+</script>
+
+<script>
+  $('#editProvince').select2({
+        trigger : 'change',
+        width:'100%',
+        placeholder: 'Select Province'
+    });
+</script>
+
+<script>
+  $('#editCity').select2({
         trigger : 'change',
         width:'100%',
         placeholder: 'Select City'

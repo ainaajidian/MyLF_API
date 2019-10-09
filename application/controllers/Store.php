@@ -103,8 +103,8 @@ class Store extends MY_Controller {
 		$storeLongitude 	= $this->input->post("storeLongitude");
 		$storeLatitude 		= $this->input->post("storeLatitude");
 		$storeId 			= $this->input->post("storeId");
-		$province 			= $this->input->post("province");
-		$city 				= $this->input->post("city");
+		$province 			= $this->input->post("editProvince");
+		$city 				= $this->input->post("editCity");
 
 		$data = array("storeName" 		=> $storeName,
 					"storeMall" 		=> $storeMall,
