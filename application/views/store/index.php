@@ -68,6 +68,30 @@
 	                <div class="input-group mb-3">
 	                    <input autocomplete="off"  required name="storeLatitude" type="text" class="form-control" placeholder="Store Latitude">
 	                </div>  
+
+					<div class="input-group mb-3">
+						<select name="province" class="form-control">
+							<?php
+								foreach ($provinces as $province) {
+							?>
+								<option value="<?=$province->provinceID;?>"> <?=$province->provinceName;?></option>
+							<?php
+								}
+							?>
+						</select>
+	                </div>  
+
+					<div class="input-group mb-3">
+						<select name="city" class="form-control">
+							<?php
+								foreach ($cities as $city) {
+							?>
+								<option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option>
+							<?php
+								}
+							?>
+						</select>
+	                </div>   
    
 	      </div>
 	      <div class="modal-footer">
@@ -118,6 +142,30 @@
 	                <div class="input-group mb-3">
 	                    <input autocomplete="off"  required id="editstoreLatitude" name="storeLatitude" type="text" class="form-control" placeholder="Store Latitude">
 	                </div>
+
+					<div class="input-group mb-3">
+						<select name="province" class="form-control">
+							<?php
+								foreach ($provinces as $province) {
+							?>
+								<option value="<?=$province->provinceID;?>"> <?=$province->provinceName;?></option>
+							<?php
+								}
+							?>
+						</select>
+	                </div>  
+
+					<div class="input-group mb-3">
+						<select name="city" class="form-control">
+							<?php
+								foreach ($cities as $city) {
+							?>
+								<option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option>
+							<?php
+								}
+							?>
+						</select>
+	                </div>   
 
 	      </div>
 	      <div class="modal-footer">
