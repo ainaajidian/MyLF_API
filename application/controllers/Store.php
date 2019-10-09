@@ -27,6 +27,8 @@ class Store extends MY_Controller {
 		$data['customjs'] 				= "store/customjs";
 		$data['view'] 					= "store/index";
 		$data['store_module']		= $this->Store_model->generateAll();
+		$data['provinces']			= $this->getProvince();
+		$data['cities']				= $this->getCity();
 		$this->go_to($data);   
 	}
 
@@ -67,6 +69,9 @@ class Store extends MY_Controller {
 		$storeLongitude 	= $this->input->post("storeLongitude");
 		$storeLatitude 		= $this->input->post("storeLatitude");
 		$storeId 			= $this->input->post("storeId");
+		$province 			= $this->input->post("province");
+		$city 				= $this->input->post("city");
+
 
 		$datasave = array(  "storeName" 		=> $storeName,
 							"storeMall" 		=> $storeMall,
@@ -75,7 +80,10 @@ class Store extends MY_Controller {
 							"storeLongitude"	=> $storeLongitude,
 							"storeLatitude"		=> $storeLatitude,
 							"storeFlag"			=> 1,
-							"storeId"   		=> $this->Store_model->getMaxId() );
+							"storeId"   		=> $this->Store_model->getMaxId(),
+							"storeProvinceId"	=> $province,
+							"storeCityId"		=> $city
+						);
         
         $this->Store_model->saveStore($datasave,$storeId);
 
@@ -95,13 +103,17 @@ class Store extends MY_Controller {
 		$storeLongitude 	= $this->input->post("storeLongitude");
 		$storeLatitude 		= $this->input->post("storeLatitude");
 		$storeId 			= $this->input->post("storeId");
+		$province 			= $this->input->post("province");
+		$city 				= $this->input->post("city");
 
 		$data = array("storeName" 		=> $storeName,
 					"storeMall" 		=> $storeMall,
 					"storeAddress" 		=> $storeAddress,
 					"storeDetail" 		=> $storeDetail,
 					"storeLongitude"	=> $storeLongitude,
-					"storeLatitude"		=> $storeLatitude);
+					"storeLatitude"		=> $storeLatitude,
+					"storeProvinceId"	=> $province,
+					"storeCityId"		=> $city);
 
 		$kondisi	= array("storeId"	=> $storeId );
         
@@ -111,6 +123,16 @@ class Store extends MY_Controller {
 			alert('Update Store Success');
 			window.location.href='".base_url()."Store';
 			</script>");
-    }
+	}
+	
+	function getProvince(){
+		$data = $this->db->query("SELECT * from province")->result();
+		return $data;
+	}
+
+	function getCity(){
+		$data = $this->db->query("SELECT * from city")->result();
+		return $data;
+	}
 	
 }
