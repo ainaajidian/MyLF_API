@@ -1,3 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.css"/>
+
+  <script src="https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.js"></script>
+</head>
+
+<body>
+
 <div class="content">
    <div class="container-fluid">
       <div class="row">
@@ -70,25 +82,21 @@
 	                </div>  
 
 					<div class="input-group mb-3">
-						<select name="province" class="form-control">
+						<select id="province" name="province" class="form-control">
+							<option value="" disabled selected>Select Province</option>
 							<?php
-								foreach ($provinces as $province) {
-							?>
-								<option value="<?=$province->provinceID;?>"> <?=$province->provinceName;?></option>
-							<?php
-								}
+								foreach ($provinces as $province)
+								{ ?> <option value="<?=$province->provinceID;?>"> <?=$province->provinceName;?></option> <?php }
 							?>
 						</select>
 	                </div>  
 
 					<div class="input-group mb-3">
-						<select name="city" class="form-control">
+						<select id="city" name="city" class="form-control">
+							<option value="" disabled selected>Select City</option>
 							<?php
-								foreach ($cities as $city) {
-							?>
-								<option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option>
-							<?php
-								}
+								foreach ($cities as $city) 
+								{ ?> <option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option> <?php }
 							?>
 						</select>
 	                </div>   
@@ -144,25 +152,21 @@
 	                </div>
 
 					<div class="input-group mb-3">
-						<select name="province" class="form-control">
+						<select id="province" name="province" class="form-control">
+							<option value="" disabled selected>Select Province</option>
 							<?php
-								foreach ($provinces as $province) {
-							?>
-								<option value="<?=$province->provinceID;?>"> <?=$province->provinceName;?></option>
-							<?php
-								}
+								foreach ($provinces as $province) 
+								{ ?> <option value="<?=$province->provinceID;?>"> <?=$province->provinceName;?></option> <?php }
 							?>
 						</select>
 	                </div>  
 
 					<div class="input-group mb-3">
-						<select name="city" class="form-control">
+						<select id="city" name="city" class="form-control">
+							<option value="" disabled selected>Select City</option>
 							<?php
-								foreach ($cities as $city) {
-							?>
-								<option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option>
-							<?php
-								}
+								foreach ($cities as $city) 
+								{ ?> <option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option> <?php }
 							?>
 						</select>
 	                </div>   
@@ -197,3 +201,22 @@
     </div>
   </div>
 </div>
+
+<script>
+  $('#province').select2({
+        trigger : 'change',
+        width:'100%',
+        placeholder: 'Select Province'
+    });
+</script>
+
+<script>
+  $('#city').select2({
+        trigger : 'change',
+        width:'100%',
+        placeholder: 'Select City'
+    });
+</script>
+
+</body>
+</html>
