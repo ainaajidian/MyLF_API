@@ -2,6 +2,9 @@
 <script type="text/javascript">
 $(document).ready( function () {
 
+$("#addSize").click(function(){
+  $("#addSizeModal").modal("show");
+});
 
 $("#productColorId").change(function(){
    $.ajax({
@@ -13,8 +16,8 @@ $("#productColorId").change(function(){
           var result = jQuery.parseJSON(result);
           console.log(result.productColorId);
           $("#imageexample1").attr('src', '../../../assets/app_assets/product_image/'+result.image1);
-            $("#imageexample2").attr('src', '../../../assets/app_assets/product_image/'+result.image2);
-              $("#imageexample3").attr('src', '../../../assets/app_assets/product_image/'+result.image3);
+          $("#imageexample2").attr('src', '../../../assets/app_assets/product_image/'+result.image2);
+          $("#imageexample3").attr('src', '../../../assets/app_assets/product_image/'+result.image3);
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
        

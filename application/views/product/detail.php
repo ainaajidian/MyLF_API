@@ -58,6 +58,35 @@
 	        				<button type="button" class="btn btn-warning">Ubah Stok</button> 
 	        			</a>
 
+						<a id="addSize" href="#"> 
+	        				<button type="button" class="btn btn-warning">Tambah Ukuran</button> 
+	        			</a>
+						<br>
+
+						<br>
+						<div class="col-md-5">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th> Color </th> 
+									<th> Size </th>
+									<th> Action </th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php foreach($ProductSizes as $productsize) { ?>
+								<tr>
+									<td><?=$productsize->ccName;?></td>
+									<td><?=$productsize->SizeDescription;?></td>
+									<td><a href="<?=base_url();?>Product/deleteSize/<?=$productsize->ProductSizeId;?>"> Hapus </a> </td>
+								</tr>
+							<?php } ?>
+								
+							</tbody>
+						</table>
+						</div>
+
+
 	        			<div class="card-header"> Product Color List </div>
 	        			<br>
 	        			<a href="<?=base_url();?>Product/addcolor/<?=$product->productId;?>"><button href="#coloraddForm" class="btn btn-info" style="margin-bottom: 10px;margin-left: 10px">  Add New Color </button></a>
@@ -116,4 +145,55 @@
       </div>
    </div>
 </div>
+</div>
+
+
+<div class="modal fade" id="addSizeModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow:hidden;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Size (Format size : P - L - T - Berat )</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>          
+      <form enctype="multipart/form-data" id="editstoreForm" action="<?=base_url();?>Product/saveSize/<?=$product->productId;?>" method = "POST" >
+	      <div class="modal-body">
+	          
+	               <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+	               <input type="hidden" name="storeId" id="editstoreId" />
+
+				   <div class="input-group mb-3">
+						<select name="productColor" class="form-control">
+							<?php
+								foreach ($product_colors as $pc) {
+							?>
+								<option value="<?=$pc->productColorId;?>"> <?=$pc->ccName;?></option>
+							<?php
+								}
+							?>
+						</select>
+	                </div>  
+
+					<div class="input-group mb-3">
+						<select name="SizeID" class="form-control">
+							<?php
+								foreach ($sizes as $size) {
+							?>
+								<option value="<?=$size->SizeID;?>"> <?=$size->SizeDescription;?></option>
+							<?php
+								}
+							?>
+						</select>
+	                </div>   
+
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="submit"  class="btn btn-primary">Save changes</button>
+	      </div>
+       </form>
+
+    </div>
+  </div>
 </div>

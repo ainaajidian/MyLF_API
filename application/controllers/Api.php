@@ -113,33 +113,6 @@ class Api extends CI_Controller
         echo json_encode($data);
     }
 
-    function googleLogin()
-    {
-        $email    = $this->input->post("email");
-        $password = $this->input->post("password");
-        $fullname = $this->input->post("fullname");
-        $dob      = $this->input->post("dob");
-        $gender   = $this->input->post("gender");
-        $deviceId = $this->input->post("deviceId");
-
-        $registerDate = date("Y-m-d");
-        
-        $cekEmail = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "' ")->num_rows();
-        if ($cekEmail > 0) {
-            $data['err']     = 1;
-            $data['message'] = "GoLogin";
-        } else {
-            $id = $this->generateUserid();
-            $this->db->query("INSERT INTO members (userGender,userId,userEmail,userPassword,userFullname,userBirthDate,userActive,userRegisterDate,userDeviceId) 
-                    values ('" . $gender . "','" . $id . "','" . $email . "','" . md5($password) . "','" . $fullname . "','" . $dob . "',0,'".$registerDate."','" . $deviceId . "') ");
-            $data['err']     = 0;
-            $data['message'] = "Register success. We sent an email to you";
-            $this->sendConfirmationEmail($id);
-        }
-        echo json_encode($data);
-    }
-
-    
     function generateUserid()
     {
         $maxMemberId = $this->db->query("SELECT MAX(userID) userId FROM members ORDER BY userID DESC LIMIT 0, 1");
@@ -628,13 +601,13 @@ function getProvince(){
         curl_close($curl);
 
         if ($err) {
-          echo "cURL Error #:" . $err;
+          return "cURL Error #:" . $err;
         } else {
-          echo $response;
+          return $response;
         }
 }
-function getCity($province){
-header('Access-Control-Allow-Origin: *');
+function getCity(){
+        header('Access-Control-Allow-Origin: *');
     	header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
     	header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
@@ -642,7 +615,7 @@ header('Access-Control-Allow-Origin: *');
 $curl = curl_init();
 
 curl_setopt_array($curl, array(
-  CURLOPT_URL => "https://api.rajaongkir.com/starter/city?province=$province",
+  CURLOPT_URL => "https://api.rajaongkir.com/starter/city",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
@@ -660,9 +633,9 @@ $err = curl_error($curl);
 curl_close($curl);
 
 if ($err) {
-  echo "cURL Error #:" . $err;
+    return "cURL Error #:" . $err;
 } else {
-  echo $response;
+    return $response;
 }
 }
 function calculatePrice($from, $to ,$cour){
@@ -693,9 +666,9 @@ $err = curl_error($curl);
 curl_close($curl);
 
 if ($err) {
-  echo "cURL Error #:" . $err;
+  return "cURL Error #:" . $err;
 } else {
-  echo $response;
+  return $response;
 }    
 }
 
@@ -777,25 +750,29 @@ function message(){
     function getItemInfo2(){
         $productId = $this->input->post("productId");
         $productColorId =  $this->input->post("productColorId");
+
+       // $productId = "p_00018";
+       // $productColorId = "PC00000000010";
+
         $data = [];
-        $queryresult = $this->db->query("select a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName  
-                                            from TransactionItemSalesStock a 
-                                                inner join size b on a.SizeID = b.SizeID 
-                                                inner join product_colors pc on a.productId = pc.productId and a.productColorID = pc.productColorID
-                                                inner join combination_color cc on pc.combination_color = ccId
-                                                inner join products p on p.productId = a.productId
-                                                inner join product_categories cat on p.categoryId = cat.categoryId
-                                            where a.productID = '".$productId."' and a.productColorId = '".$productColorId."'  
-                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName ")->result();
+        $queryresult = $this->db->query("select b.SizeID,a.productId,pc.productColorId,ccName,SizeDescription,ProductSizeId,TipeProduct,productName,categoryName  
+                                            from products a 
+                                            inner join product_colors pc on a.productId = pc.productId 
+                                            inner join combination_color cc on combination_color = ccId 
+                                            inner join ProductSize ps on  ps.productId = a.productId and pc.productColorId = ps.productColorId
+                                            inner join size b on ps.SizeID = b.SizeID 
+                                            inner join product_categories cat on cat.categoryId = a.categoryId
+                                            where a.productId = '".$productId."' and pc.productColorId = '".$productColorId."'  
+                                            group by a.productId,b.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName ")->result();
          foreach ($queryresult as $key) {
            $info = explode(";", $key->SizeDescription);
            if($key->TipeProduct == "C_00001"){
                 $data[] = array ( 
                     "SizeID"            => $key->SizeID,  
-                    "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2],
+                    "SizeDescription" => $info[0]. " x " . $info[1]. " x " .$info[2],
                     "productWeight"    => $info[3],
                     "TipeProduct" => $key->TipeProduct,
-                    "productId" => $key->productID,
+                    "productId" => $key->productId,
                     "productColorId" => $key->productColorId,
                     "colorName" => $key->ccName,
                     "productName" => $key->productName,
@@ -804,10 +781,10 @@ function message(){
            }else if($key->TipeProduct == "C_00007"){
                 $data[] = array ( 
                     "SizeID" => $key->SizeID,  
-                    "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                    "SizeDescription" => $info[0]. " x " . $info[1]. " x " .$info[2]. " Size :" .$info[4],
                     "productWeight"    => $info[3],
                     "TipeProduct" => $key->TipeProduct,
-                    "productId" => $key->productID,
+                    "productId" => $key->productId,
                     "productColorId" => $key->productColorId,
                     "colorName" => $key->ccName,
                     "productName" => $key->productName,
@@ -817,10 +794,10 @@ function message(){
            }else if($key->TipeProduct == "C_00003"){
                 $data[] = array ( 
                     "SizeID" => $key->SizeID,  
-                    "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                    "SizeDescription" => $info[0]. " x " . $info[1]. " x " .$info[2]. " Size :" .$info[4],
                     "productWeight"    => $info[3],
                     "TipeProduct" => $key->TipeProduct,
-                    "productId" => $key->productID,
+                    "productId" => $key->productId,
                     "productColorId" => $key->productColorId,
                     "colorName" => $key->ccName,
                     "productName" => $key->productName,
@@ -831,16 +808,16 @@ function message(){
           echo json_encode($data);
     }
 
-    function insertToChart(){
+    function insertToCart(){
         $userId = $this->input->post("userId");
         $productId = $this->input->post("productId");
         $productColorId = $this->input->post("productColorId");
         $sizeId = $this->input->post("sizeId");
         $qty = 1;
-        $maxId = $this->getMaxChartId($userId);
+        $maxId = $this->getMaxCartId($userId);
 
         $data = array(
-            "chartId" => $maxId,
+            "cartId" => $maxId,
             "userId" => $userId,
             "productId" => $productId,
             "productColorId"=>$productColorId,
@@ -848,68 +825,49 @@ function message(){
             "qty" => $qty,
             "storeId" => "",
             "createdDate" => date("Y-m-d H:i:s"),
-            "chartFlag" => 0
+            "cartFlag" => 0
         );
+        $run = $this->db->insert("cart",$data);
 
-        $kondisi = array(
-            "userId" => $userId,
-            "productId" => $productId,
-            "productColorId"=>$productColorId,
-            "sizeId" => $sizeId,
-            "storeId" => ""
-        );
-
-        $this->db->select('*');
-        $this->db->where($kondisi);
-        $query = $this->db->get('chart');
-        $num = $query->num_rows();
-
-        if($num > 0){
-            $run = $this->db->set('qty','`qty`+1', false);
-                $this->db->where($kondisi);
-                $this->db->update('chart');
-        }else{
-            $run = $this->db->insert("chart",$data);
-        }
 
     }
 
-    function getMaxChartId($userId)
-    {
-        $data = $this->db->query("SELECT MAX(chartId) chartId FROM chart where userId = '".$userId."' and MONTH(createdDate) = MONTH(NOW()) and YEAR(createdDate) = YEAR(NOW()) ")->row();
-        if(++$data->chartId == "1"){
-			$maxId = "CHART-".$userId."-".date('m').date('y')."000001";
+    function getMaxCartId($userId){
+        $data = $this->db->query("SELECT MAX(cartId) cartId FROM cart where userId = '".$userId."' and MONTH(createdDate) = MONTH(NOW()) and YEAR(createdDate) = YEAR(NOW()) ")->row();
+        if(++$data->cartId == "1"){
+			$maxId = "CART-".$userId."-".date('m').date('y')."000001";
 		}else{
-            $maxId = $data->chartId;
+            $maxId = $data->cartId;
             $maxId = $maxId++;
 		}
         return $maxId;
     }
 
-    function countChart(){
+    function countCart(){
         $userId = $this->input->post("userId");
-        $queryresult = $this->db->query("SELECT * FROM chart where userId = '".$userId."'");
+        $queryresult = $this->db->query("SELECT * FROM cart where userId = '".$userId."'");
         echo json_encode($queryresult->num_rows());
     }
 
-    function getChart(){
+    function getCart(){
         $userId = $this->input->post("userId");
+        $userId = "M-00710";
         $data = [];
-        $queryresult = $this->db->query("select a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,a.qty
-                                            from chart a 
+        $queryresult = $this->db->query("select cartId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price
+                                            from cart a 
                                                 inner join size b on a.SizeID = b.SizeID 
                                                 inner join product_colors pc on a.productId = pc.productId and a.productColorID = pc.productColorID
                                                 inner join combination_color cc on pc.combination_color = ccId
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
                                             where a.userId = '".$userId."' 
-                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,qty ")->result();
+                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice ")->result();
             foreach ($queryresult as $key) {
                 $info = explode(";", $key->SizeDescription);
                 if($key->TipeProduct == "C_00001"){
                         $data[] = array ( 
                             "SizeID"            => $key->SizeID,  
-                            "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2],
+                            "SizeDescription" => $info[0]. " x " . $info[1]. " x " .$info[2],
                             "productWeight"    => $info[3],
                             "TipeProduct" => $key->TipeProduct,
                             "productId" => $key->productID,
@@ -917,12 +875,15 @@ function message(){
                             "colorName" => $key->ccName,
                             "productName" => $key->productName,
                             "categoryName" => $key->categoryName,
-                            "quantity" => $key->quantity
+                            "quantity" => $key->quantity,
+                            "image" => $key->image1,
+                            "cartId" => $key->cartId,
+                            "price"=> $key->price,
                                             );
                 }else if($key->TipeProduct == "C_00007"){
                         $data[] = array ( 
                             "SizeID" => $key->SizeID,  
-                            "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                            "SizeDescription" => $info[0]. " x " . $info[1]. " x " .$info[2]. " Size :" .$info[4],
                             "productWeight"    => $info[3],
                             "TipeProduct" => $key->TipeProduct,
                             "productId" => $key->productID,
@@ -930,13 +891,17 @@ function message(){
                             "colorName" => $key->ccName,
                             "productName" => $key->productName,
                             "categoryName" => $key->categoryName,
-                            "quantity" => $key->quantity
+                            "quantity" => $key->quantity,
+                            "image" => $key->image1,
+                            "cartId" => $key->cartId,
+                            "price"=> $key->price,
+
         
                         );
                 }else if($key->TipeProduct == "C_00003"){
                         $data[] = array ( 
                             "SizeID" => $key->SizeID,  
-                            "SizeDescription" => $info[0]. "x". $info[1]. "x" .$info[2]. " Size :" .$info[4],
+                            "SizeDescription" => $info[0]. " x " .$info[1]. " x " .$info[2]. " Size :" .$info[4],
                             "productWeight"    => $info[3],
                             "TipeProduct" => $key->TipeProduct,
                             "productId" => $key->productID,
@@ -944,11 +909,38 @@ function message(){
                             "colorName" => $key->ccName,
                             "productName" => $key->productName,
                             "categoryName" => $key->categoryName,
-                            "quantity" => $key->quantity
+                            "quantity" => $key->quantity,
+                            "image" => $key->image1,
+                            "cartId" => $key->cartId,
+                            "price"=> $key->price,
                         );
                 }
                 }
             echo json_encode($data);
+    }
+//getCity
+    function syncProvince(){
+        $data = $this->getProvince();
+        $convert = json_decode($data,true);
+        $this->db->query("DELETE FROM province");
+        foreach ($convert['rajaongkir']['results'] as $key) {
+            $this->db->query("INSERT INTO province (provinceID,provinceName) values ('".$key['province_id']."', '".$key['province']."')");
+        }
+    }
+
+    function syncCity(){
+        $data = $this->getCity();
+        $convert = json_decode($data,true);
+        $this->db->query("DELETE FROM city");
+        foreach ($convert['rajaongkir']['results'] as $key) {
+           // echo "INSERT INTO city (cityID,provinceID,cityName) values ('".$key['city_id']."','".$key['province_id']."', '".$key['city_name']."')";
+            $this->db->query("INSERT INTO city (cityID,provinceID,cityName) values ('".$key['city_id']."','".$key['province_id']."', '".$key['city_name']."')");
+        }
+    }
+
+    function deleteCart(){
+        $cartId = $this->input->post("cartId");
+        $this->db->query("DELETE FROM cart where cartId = '".$cartId."' ");
     }
 
 }

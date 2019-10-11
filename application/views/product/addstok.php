@@ -84,7 +84,7 @@
 		              				<select required class="form-control" id="sizes"  name="sizes">
 		              					<option value="" disabled selected> -- Product Size -- </option>
 		              					<?php foreach ($sizes as $key) { ?>
-		              						<option value="<?=$key->SizeID;?>"><?=$key->SizeDescription;?></option>
+		              						<option value="<?=$key->ProductSizeId;?>"><?=$key->SizeDescription;?></option>
 		              						<?php 	}	?>
 		              				</select>
 		              				</td>

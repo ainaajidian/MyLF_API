@@ -124,6 +124,18 @@ class Product extends MY_Controller {
 		$data['product_colors']			= $this->db->query("SELECT a.*,b.ccName FROM product_colors a 
 															INNER JOIN combination_color b on a.combination_color = b.ccId
 															WHERE productId = '".$productId."'")->result();
+		$data['ukuran']					= $this->db->query("SELECT * FROM ProductSize where ProductId = '".$productId."'")->result();
+		$categoryId 					= $data['product']->categoryId;
+		$data['sizes']			= $this->db->query("SELECT * FROM size where TipeProduct = '".$categoryId."' ")->result();
+		$data['ProductSizes']			= $this->db->query("select ccName,SizeDescription,ProductSizeId  
+														from products a 
+														inner join product_colors pc on a.productId = pc.productId 
+														inner join combination_color cc on combination_color = ccId 
+														inner join ProductSize ps on  ps.productId = a.productId and pc.productColorId = ps.productColorId
+														inner join size b on ps.SizeID = b.SizeID WHERE a.productId = '".$productId."'
+														group by ccName,SizeDescription,ProductSizeId 
+												")->result();
+
 
 		$this->go_to($data);  
 	}
@@ -216,7 +228,7 @@ class Product extends MY_Controller {
 		$data['infoProduct'] 	= $this->db->query("SELECT * from products where productId = '".$productId."'")->row();
 		$data['infoCategory'] 	= $this->db->query("SELECT * from product_categories where categoryId = '".$categoryId."'")->row();
 		$data['infoColor'] 		= $this->db->query("SELECT * from product_colors a inner join combination_color cc on a.combination_color = cc.ccId where productId = '".$productId."'")->result();
-		$data['sizes']			= $this->db->query("SELECT * FROM size where TipeProduct = '".$categoryId."'")->result();
+		$data['sizes']			= $this->db->query("SELECT * FROM size a inner join ProductSize b on a.SizeID = b.SizeID where productId = '".$productId."' ")->result();
 
 
 
@@ -265,8 +277,6 @@ class Product extends MY_Controller {
     function insertDummystock(){
     	$dataoutlet = $this->db->query("SELECT * FROM store");
     	$totaldataoutlet = $dataoutlet->num_rows();
-
-    
     foreach ($dataoutlet->result() as $key) {
   		if($this->getStokId() == "1"){
 				$maxId = "STOK00000000000001";
@@ -277,8 +287,32 @@ class Product extends MY_Controller {
 			(SalesStockId,storeID,productID,CategoryID,productColorId,StockQTY,SizeID,CreatedBy,CreatedDate) values 
 			('".$maxId."','".$key->storeName."','p_00025','C_00001','PC00000000027','".rand(1,5)."','SZ0000003','".$this->Usersession->getUsername()."',NOW())");
     	}
+	}
+	function saveSize($productId){
+		if($this->getProductSizeId() == "1"){
+			$maxId = "PSZE000000001";
+		}else{
+			$maxId = $this->getProductSizeId();
+		}
+		$SizeID 		= $this->input->post("SizeID");
+		$productColor 	= $this->input->post("productColor"); 
+		$this->db->query("INSERT INTO ProductSize (ProductSizeId,ProductId,SizeID,productColorId) values ('".$maxId."','".$productId."','".$SizeID."','".$productColor."')");
+		die("<script>
+		alert('Proses Simpan Berhasil');
+		window.location.href='".base_url()."Product/detail/".$productId."';
+		</script>");
+	}
+	function deleteSize($ProductSizeId){
+		$this->db->query("DELETE from ProductSize where ProductSizeId = '".$ProductSizeId."'");
+		die("<script>
+		alert('Proses Hapus Berhasil');
+		window.location.href='".base_url()."Product/detail/".$productId."';
+		</script>");
+	}
+
+	function getProductSizeId()
+    {
+        $data = $this->db->query("SELECT MAX(ProductSizeId) ProductSizeId FROM ProductSize")->row();
+        return ++$data->ProductSizeId;
     }
-
- 
-
 }
