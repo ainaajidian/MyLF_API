@@ -14,7 +14,8 @@ class Size_model extends CI_Model
 
     function generateParent()
     {
-        $data = $this->db->query("SELECT * FROM product_categories WHERE parentCategoryId = '' OR parentCategoryId IS NULL")->result();
+        $data = $this->db->query("SELECT * FROM product_categories 
+                                  WHERE parentCategoryId = '' OR parentCategoryId IS NULL")->result();
         return $data;
     }
 
@@ -24,46 +25,22 @@ class Size_model extends CI_Model
         return ++$data->SizeID;
     }
 
-    function status($datasave)
-    {
-        $sql = "UPDATE size SET SizeDescription = ?, TipeProduct = ?, SizeFlag = ? WHERE SizeID = ?";
-        $hsl = $this->db->query($sql, $datasave);
-        return $hsl;
-        // $this->db->where('SizeID', $SizeID);
-        // $this->db->update('size', $datasave);
-    }
-
     function deleteForever($SizeID)
     { $this->db->query("DELETE FROM size WHERE SizeID = '".$SizeID."' "); }
 
     function saveSize($data)
     { $this->db->insert('size', $data); }
 
-    function getCategorydetail($categoryId)
-      { return $this->db->query("SELECT categoryId FROM product_categories WHERE categoryId = '".$categoryId."' ")->row(); }
-
-    
-
-    function updateCategoryImg($data)
+    function updateSize($datasave)
     {
-        $sql = "UPDATE product_categories 
-                SET categoryName=?, categoryDescription=?,
-                    categoryModifiedDate=?, parentCategoryId=?,
-                    categoryImage=?
-                WHERE categoryId=?";
-        $hsl = $this->db->query($sql, $data);
+        $sql = "UPDATE size SET SizeDescription = ?, TipeProduct = ?, SizeFlag = ? WHERE SizeID = ?";
+        $hsl = $this->db->query($sql, $datasave);
         return $hsl;
     }
 
-    function updateCategoryNoImg($data)
+    function status($data,$kondisi)
     {
-        $sql = "UPDATE product_categories 
-                SET categoryName=?,
-                    categoryDescription=?,
-                    parentCategoryId=?,
-                    categoryModifiedDate=?
-                    WHERE categoryId=?";
-        $hsl = $this->db->query($sql, $data);
-        return $hsl;
+        $this->db->where($kondisi);
+        $this->db->update('size', $data);
     }
 }

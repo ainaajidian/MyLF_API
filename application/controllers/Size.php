@@ -48,23 +48,25 @@ class Size extends MY_Controller
            {
                 $data['data'][] = array ( 
                     "SizeID"          => $key->SizeID,  
-                    "SizeDescription" => "Panjang: ".$info[0]. " - ". "Lebar: ". $info[1]. " - ". 
-                                         "Tinggi: " .$info[2]. " - ". "Berat:" .$info[3],
-                    "panjang"        => $info[0],
-                    "lebar"         => $info[1],
-                    "tinggi"        => $info[2],
-                    "berat"         => $info[3],
+                    "SizeDescription" => "Panjang: ".$info[0]. " CM" . " - ". "Lebar: ". $info[1]. " CM" . " - ". 
+                                         "Tinggi: " .$info[2]. " CM" . " - ". "Berat: " .$info[3]. " KG",
+                    "panjang"         => $info[0],
+                    "lebar"           => $info[1],
+                    "tinggi"          => $info[2],
+                    "berat"           => $info[3],
                     "TipeProduct"     => $key->TipeProduct,
+                    "categoryName"    => $key->categoryName,
                     "SizeFlag"        => $key->SizeFlag);
            }
            elseif($key->TipeProduct == "C_00007")
            {
                 $data['data'][] = array ( 
                     "SizeID"          => $key->SizeID,  
-                    "SizeDescription" => "Ukuran: ".$info[0]. " - ". "Berat: ". $info[1],
-                    "ukuran"        => $info[0],
-                    "berat"         => $info[1],
+                    "SizeDescription" => "Ukuran: ".$info[0]. " - ". "Berat: ". $info[1] ." KG",
+                    "ukuran"          => $info[0],
+                    "berat"           => $info[1],
                     "TipeProduct"     => $key->TipeProduct,
+                    "categoryName"    => $key->categoryName,
                     "SizeFlag"        => $key->SizeFlag);
            }
            //print_r($info);
@@ -105,10 +107,10 @@ class Size extends MY_Controller
 
         if($TipeProduct == 'C_00001')
         {
-            $datasave = array(  "SizeDescription"   => $Panjang . " CM; " . $Lebar . " CM; " .
-                                                       $Tinggi . " CM; " . $Berat . " KG",
+            $datasave = array(  "SizeDescription"   => $Panjang . "; " . $Lebar . "; " .
+                                                       $Tinggi . "; " . $Berat,
                                 "TipeProduct"       => "C_00001",
-                                "SizeFlag"         => 1,
+                                "SizeFlag"          => 1,
                                 "SizeID"            => $this->Size_model->getMaxId() );
         
             $this->Size_model->saveSize($datasave,$SizeID);
@@ -121,7 +123,7 @@ class Size extends MY_Controller
 
         elseif($TipeProduct == 'C_00007')
         {
-            $datasave = array(  "SizeDescription"   => $Ukuran . "; " . $Berat . " KG",
+            $datasave = array(  "SizeDescription"   => $Ukuran . "; " . $Berat,
                                 "TipeProduct"       => "C_00007",
                                 "SizeFlag"          => 1,
                                 "SizeID"            => $this->Size_model->getMaxId() );
@@ -157,12 +159,12 @@ class Size extends MY_Controller
 
         if($TipeProduct == "C_00001")
         {
-            $datasave = array(      "SizeDescription"   => $Panjang . "; " . $Lebar . "; " .
-                                                       $Tinggi . "; " . $Berat . "",
-                                    "TipeProduct" => $TipeProduct,
-                                    "SizeFlag"  => 1,
-                                    "SizeID" => $SizeID );
-            $this->Size_model->status($datasave);
+            $datasave = array(      "SizeDescription"   =>  $Panjang . "; " . $Lebar . "; " .
+                                                            $Tinggi . "; " . $Berat . "",
+                                    "TipeProduct"       =>  $TipeProduct,
+                                    "SizeFlag"          =>  1,
+                                    "SizeID"            =>  $SizeID );
+            $this->Size_model->updateSize($datasave);
 
             die("<script>
                 alert('Update Size Success');
@@ -173,10 +175,10 @@ class Size extends MY_Controller
         if($TipeProduct == "C_00007")
         {
             $datasave = array(      "SizeDescription"   => $Ukuran . "; " . $Berat . "",
-                                    "TipeProduct" => $TipeProduct,
-                                    "SizeFlag"  => 1,
-                                    "SizeID" => $SizeID );
-            $this->Size_model->status($datasave);
+                                    "TipeProduct"       => $TipeProduct,
+                                    "SizeFlag"          => 1,
+                                    "SizeID"            => $SizeID );
+            $this->Size_model->updateSize($datasave);
 
             die("<script>
                 alert('Update Size Success');
