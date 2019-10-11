@@ -43,14 +43,18 @@ class Size extends MY_Controller
 		$queryresult = $this->Size_model->generateAll();
         foreach ($queryresult as $key) 
         {
-           $info = explode(";", $key->SizeDescription);
+           $info = explode("; ", $key->SizeDescription);
            if($key->TipeProduct == "C_00001")
            {
                 $data['data'][] = array ( 
                     "SizeID"          => $key->SizeID,  
                     "SizeDescription" => "Panjang: ".$info[0]. " - ". "Lebar: ". $info[1]. " - ". 
                                          "Tinggi: " .$info[2]. " - ". "Berat:" .$info[3],
-                    "TipeProduct"     => $key->categoryName,
+                    "panjang"        => $info[0],
+                    "lebar"         => $info[1],
+                    "tinggi"        => $info[2],
+                    "berat"         => $info[3],
+                    "TipeProduct"     => $key->TipeProduct,
                     "SizeFlag"        => $key->SizeFlag);
            }
            elseif($key->TipeProduct == "C_00007")
@@ -58,7 +62,9 @@ class Size extends MY_Controller
                 $data['data'][] = array ( 
                     "SizeID"          => $key->SizeID,  
                     "SizeDescription" => "Ukuran: ".$info[0]. " - ". "Berat: ". $info[1],
-                    "TipeProduct"     => $key->categoryName,
+                    "ukuran"        => $info[0],
+                    "berat"         => $info[1],
+                    "TipeProduct"     => $key->TipeProduct,
                     "SizeFlag"        => $key->SizeFlag);
            }
            //print_r($info);
@@ -139,65 +145,41 @@ class Size extends MY_Controller
     }
 
 	//Edit Data
-	function updateCategory()
+	function updateSize($SizeID)
 	{
-		$categoryName 			= $this->input->post("categoryName");
-		$categoryDescription    = $this->input->post("categoryDescription");
-        $parentCategoryId       = $this->input->post("parentCategoryId");
-		$categoryModifiedDate 	= $this->input->post("categoryModifiedDate");
-        $parentCategoryId       = $this->input->post("parentCategoryId");
-		$categoryId 			= $this->input->post("categoryId");
-        
-        $config['upload_path']   = './assets/app_assets/'; //path folder
-        $config['allowed_types'] = 'jpg|png|jpeg'; //type yang dapat diakses bisa anda sesuaikan
-        $config['max_size']      = '2048000000'; //maksimum besar file 2M
-        $config['max_width']     = ''; //lebar maksimum 1288 px
-        $config['max_height']    = ''; //tinggi maksimu 1000 px
-        
-        $this->upload->initialize($config);
-        $this->load->library('upload',$config);
-        if(!empty($_FILES['editcategoryImage']['name']))
-        {
-            if ($this->upload->do_upload('editcategoryImage'))
-            {       
-                    $pic = $this->upload->data();
-                    $picture = $pic['file_name'];
-                	$dataupdate = array("categoryName"          => $categoryName, 
-                						"categoryDescription"   => $categoryDescription, 
-                						"categoryModifiedDate"  => $categoryModifiedDate,
-                                        "parentCategoryId"      => $parentCategoryId,
-                						"categoryImage"         => $picture,
-                                        "parentCategoryId"      => $parentCategoryId,
-                						"categoryId"            => $categoryId );
+        $SizeID         = $this->input->post("SizeID");
+        $Panjang        = $this->input->post("Panjang");
+        $Lebar          = $this->input->post("Lebar");
+        $Tinggi         = $this->input->post("Tinggi");
+        $Ukuran         = $this->input->post("Ukuran");
+        $Berat          = $this->input->post("Berat");
+        $TipeProduct    = $this->input->post("TipeProduct");
 
-                	$this->Size_model->updateCategoryImg($dataupdate,$categoryId);
-
-                	die("<script>
-						alert('Update Product Category Success');
-						window.location.href='".base_url()."Size';
-						</script>");
-            } 
-            else 
-            {
-                die('<script>
-					alert("'.$this->upload->display_errors().'");
-					window.location.href="'.base_url().'Size";
-					</script>');
-            }
-            
-        }
-        else
+        if($TipeProduct == "C_00001")
         {
-            $dataupdate = array("categoryName" => $categoryName, 
-                                "categoryDescription" => $categoryDescription,
-                                "parentCategoryId"      => $parentCategoryId,
-                                "categoryModifiedDate" => $categoryModifiedDate,
-                                "categoryId" => $categoryId);
-            
-            $this->Size_model->updateCategoryNoImg($dataupdate,$categoryId);
+            $datasave = array(      "SizeDescription"   => $Panjang . "; " . $Lebar . "; " .
+                                                       $Tinggi . "; " . $Berat . "",
+                                    "TipeProduct" => $TipeProduct,
+                                    "SizeFlag"  => 1,
+                                    "SizeID" => $SizeID );
+            $this->Size_model->status($datasave);
 
             die("<script>
-                alert('Update Product Category Success');
+                alert('Update Size Success');
+                window.location.href='".base_url()."Size';
+                </script>");
+        }
+
+        if($TipeProduct == "C_00007")
+        {
+            $datasave = array(      "SizeDescription"   => $Ukuran . "; " . $Berat . "",
+                                    "TipeProduct" => $TipeProduct,
+                                    "SizeFlag"  => 1,
+                                    "SizeID" => $SizeID );
+            $this->Size_model->status($datasave);
+
+            die("<script>
+                alert('Update Size Success');
                 window.location.href='".base_url()."Size';
                 </script>");
         }

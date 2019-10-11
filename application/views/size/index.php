@@ -89,10 +89,11 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>          
-      <form enctype="multipart/form-data" id="editsizeForm" action="<?=base_url();?>Size/updateSize" method = "POST" >
+      <form enctype="multipart/form-data" id="editsizeForm" action="#" method = "POST" >
 	      <div class="modal-body">
 	          
 	               <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+
 	               <input type="hidden" name="SizeID" id="editSizeID" />
 
 	               <div  class="input-group mb-3">
@@ -103,24 +104,30 @@
                     </select>
 	                </div>
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editPanjang" required name="Panjang" type="text"  class="form-control" placeholder="Panjang">
+	                <div id="DivPanjang" class="input-group mb-3">
+                      <div class="col-md-8">
+                        <input autocomplete="off" id="editPanjang" name="Panjang" type="text"  class="form-control" placeholder="Panjang">  
+                      </div>
+                      <div class="col-md-4">
+                        <input disabled type="text" value="CM" class="form-control">
+                      </div>
+	                    
 	                </div>   
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editLebar" required name="Lebar" type="text"  class="form-control" placeholder="Lebar">
+	                <div id="DivLebar" class="input-group mb-3">
+	                    <input autocomplete="off" id="editLebar" name="Lebar" type="text"  class="form-control" placeholder="Lebar">
 	                </div>   
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editTinggi" required name="Tinggi" type="text"  class="form-control" placeholder="Tinggi">
+	                <div id="DivTinggi" class="input-group mb-3">
+	                    <input autocomplete="off" id="editTinggi" name="Tinggi" type="text"  class="form-control" placeholder="Tinggi">
 	                </div>   
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editUkuran" required name="Ukuran" type="text"  class="form-control" placeholder="Ukuran">
+	                <div id="DivUkuran" class="input-group mb-3">
+	                    <input autocomplete="off" id="editUkuran" name="Ukuran" type="text"  class="form-control" placeholder="Ukuran">
 	                </div>   
 
-	                <div class="input-group mb-3">
-	                    <input autocomplete="off" id="editBerat" required name="Berat" type="text"  class="form-control" placeholder="Berat">
+	                <div id="DivBerat" class="input-group mb-3">
+	                    <input autocomplete="off" id="editBerat" name="Berat" type="text"  class="form-control" placeholder="Berat">
 	                </div>   
 
 	      </div>

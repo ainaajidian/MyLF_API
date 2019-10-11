@@ -2,11 +2,7 @@
 <script type="text/javascript">
 $(function () 
 {
-  var publicPanjang;
-  var publicLebar;
-  var publicTinggi;
-  var publicBerat;
-  var publicUkuran;
+  var publicSizeID;
 
   $("#Panjang").hide();
   $("#Lebar").hide();
@@ -148,58 +144,45 @@ $(function ()
         $("#editsizeForm")[0].reset();
         var data  = datatable.row($(this).parents('tr')).data();
         var modal = $("#editModal").modal("show");
-        var edit_tipe_product   = data.TipeProduct;
-        var edit_panjang        = data.SizeDescription;
-        var edit_lebar          = data.SizeDescription;
-        var edit_tinggi         = data.SizeDescription;
-        var edit_berat          = data.SizeDescription;
-        var edit_ukuran         = data.SizeDescription;
-        publicSizeID            = data.SizeID;
-        publicTipeProduct       = edit_module_icon
-        $("#edit_module_name").val(edit_module_name);
-        $("#edit_module_type").val(edit_module_type);
-        $("#edit_module_parent").val(edit_module_parent);
-        $("#edit_module_icon_2").val(edit_module_icon);
-        $("#edit_module_path").val(edit_module_path);
-        
-        if(edit_module_type === "1")
+
+        var edit_SizeID              = data.SizeID;
+        var edit_tipe_product     = data.TipeProduct;
+        var panjang   = data.panjang;
+        var lebar  = data.lebar;
+        var tinggi = data.tinggi;
+        var berat = data.berat;
+        var ukuran = data.ukuran; 
+
+        publicSizeID = data.SizeID;
+        if(edit_tipe_product === "C_00001")
         {
-            $("#edit_module_icon_2").hide();
-            $("#edit_module_icon_1").show();          
-            $("#edit_module_parent").hide();
-            $("#edit_module_icon_2").val("");
-            publicModuleIcon = ""
+            $("#editSizeID").val(edit_SizeID);
+            $("#editTipeProduct").val(edit_tipe_product);
+            $("#DivPanjang").show();
+            $("#DivLebar").show();          
+            $("#DivTinggi").show();
+            $("#editPanjang").val(panjang);
+            $("#editLebar").val(lebar);          
+            $("#editTinggi").val(tinggi);
+            $("#DivUkuran").hide();
+            $("#editBerat").val(berat);
         }
-        else if(edit_module_type === "2")
+        else if(edit_tipe_product === "C_00007")
         {
-            $("#edit_module_parent").show();
-            $("#edit_module_icon_1").hide();
-            $("#edit_module_icon_2").show();
-            $("#edit_module_icon_2").val(publicModuleIcon);
+            $("#editSizeID").val(edit_SizeID);
+            $("#editTipeProduct").val(edit_tipe_product);
+            $("#DivPanjang").hide();
+            $("#DivLebar").hide();          
+            $("#DivTinggi").hide();
+            $("#DivUkuran").show();
+            $("#editUkuran").val(ukuran);
+            $("#editBerat").val(berat);
         }
     });
 
-    $("#editModal").on("change","#edit_module_type",function(){
-        var module_type = $(this).val();
-        if(module_type == 1){
-            $("#edit_module_icon_2").hide();
-            $("#edit_module_icon_1").show();          
-            $("#edit_module_parent").hide();
-            $("#edit_module_icon_2").val("");
-        }else if (module_type == 2){
-            $("#edit_module_parent").show();
-            $("#edit_module_icon_1").hide();
-            $("#edit_module_icon_2").show();
-            $("#edit_module_icon_2").val(publicModuleIcon);
-        }else{
-            $("#edit_module_parent").hide();
-            $("#edit_module_icon_1").hide();
-            $("#edit_module_icon_2").hide();
-        }
-    });
 
-    $("#editmoduleForm").submit(function(e){
-            $(this).attr('action', '<?=base_url();?>module/updatemodule/'+publicModuleId);
+    $("#editsizeForm").submit(function(e){
+            $(this).attr('action', '<?=base_url();?>size/updateSize/'+publicSizeID);
     })
 
     
