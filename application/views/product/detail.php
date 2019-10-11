@@ -78,7 +78,7 @@
 								<tr>
 									<td><?=$productsize->ccName;?></td>
 									<td><?=$productsize->SizeDescription;?></td>
-									<td><a href="<?=base_url();?>Product/deleteSize/<?=$productsize->ProductSizeId;?>"> Hapus </a> </td>
+									<td><a href="<?=base_url();?>Product/deleteSize/<?=$product->productId;?>/<?=$productsize->ProductSizeId;?>"> Hapus </a> </td>
 								</tr>
 							<?php } ?>
 								
@@ -111,17 +111,17 @@
 	              					<td> <?=$key->ccName;?> </td>
 	              					 <td> 
 	              					 	<?php if($key->image1 != "") { ?> 
-	              					 		<img height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
+	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image1;?>" height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
 	              					 	<?php } ?>
 	              					 	 </td> 
 	              					 	 <td> 
 	              					 	<?php if($key->image2 != "") { ?> 
-	              					 		<img height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
+	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image2;?>"  eight="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
 	              					 	<?php } ?>
 	              					 	 </td> 
 	              					 	 <td> 
 	              					 	<?php if($key->image3 != "") { ?> 
-	              					 		<img height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
+	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image3;?>"  height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
 	              					 	<?php } ?>
 	              					 	 </td> 
 

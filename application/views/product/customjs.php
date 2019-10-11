@@ -25,6 +25,25 @@ $("#productColorId").change(function(){
   });
 });
 
+$(".productImage").click(function(){
+  var image = $(this).data("id");
+  var productId = $(this).data("value");
+  isGood=confirm('Set sebagai gambar default ?');
+    if (isGood) {
+      $.ajax({
+        url: "<?=base_url();?>Product/saveDefaultImage/"+image+"/"+productId,
+        beforeSend: function() {
+          
+        },
+        success:function(result){
+            var result = jQuery.parseJSON(result);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        
+        }
+    });
+    } else { return;    }
+});
 
 
 var selOpts = "";

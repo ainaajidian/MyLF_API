@@ -314,5 +314,9 @@ class Product extends MY_Controller {
     {
         $data = $this->db->query("SELECT MAX(ProductSizeId) ProductSizeId FROM ProductSize")->row();
         return ++$data->ProductSizeId;
-    }
+	}
+	
+	function saveDefaultImage($image,$productId){
+		$this->db->query("UPDATE products set productImage = '".$image."' where productId = '".$productId."'  ");
+	}
 }
