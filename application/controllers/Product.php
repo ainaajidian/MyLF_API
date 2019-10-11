@@ -302,7 +302,7 @@ class Product extends MY_Controller {
 		window.location.href='".base_url()."Product/detail/".$productId."';
 		</script>");
 	}
-	function deleteSize($ProductSizeId){
+	function deleteSize($productId,$ProductSizeId){
 		$this->db->query("DELETE from ProductSize where ProductSizeId = '".$ProductSizeId."'");
 		die("<script>
 		alert('Proses Hapus Berhasil');
