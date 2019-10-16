@@ -31,14 +31,20 @@ class Product extends MY_Controller {
 	}
 
 
-	function getProduct(){
-		$data['data']		= $this->db->query("SELECT a.*, b.categoryName FROM products a inner join product_categories b on a.categoryId = b.categoryId")->result();
+	function getProduct()
+	{
+		$data['data']	= $this->db->query("SELECT a.*, b.categoryName 
+											FROM products a 
+											INNER JOIN product_categories b ON a.categoryId = b.categoryId")->result();
 		echo json_encode($data);
 
 	}
 
-	function getChildCategory($parentCategoryID){
-			$data	= $this->db->query("SELECT * FROM product_categories where parentCategoryID ='".$parentCategoryID."' order by categoryName asc")->result();
+	function getChildCategory($parentCategoryID)
+	{
+			$data	= $this->db->query("SELECT * FROM product_categories 
+										WHERE parentCategoryID ='".$parentCategoryID."' 
+										ORDER BY categoryName ASC")->result();
 			echo json_encode($data);
 	}
 
@@ -63,7 +69,8 @@ class Product extends MY_Controller {
 		$this->go_to($data);   
 	}
 
-	function saveheader(){
+	function saveheader()
+	{
 		$productId 	 		= $this->getMaxId();
 		$productName 		= $this->input->post("productName");
 		$productPrice 		= $this->input->post("productPrice");
@@ -82,13 +89,17 @@ class Product extends MY_Controller {
 				VALUES
 				('".$productId."','".$productName."',0,1,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."','".$productErpCode."','".$uomCode."')
 				 ");
-		}else if($productFlag == "2"){
+		}
+		else if($productFlag == "2")
+		{
 				$this->db->query("INSERT INTO products 
 						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId,productErpCode,UOMCode)
 						VALUES
 						('".$productId."','".$productName."',1,0,'".$productCategory."',0,'".$productPrice."','".$productDescription."','".$childproductCategory."','".$productErpCode."','".$uomCode."')
 						 ");
-		}else{
+		}
+		else
+		{
 				$this->db->query("INSERT INTO products 
 						(productId,productName,isNew,isHot,categoryId,productFlag,productPrice,productDescription,childCategoryId,productErpCode,UOMCode)
 
@@ -104,7 +115,8 @@ class Product extends MY_Controller {
 	}
 
 
-	function detail($productId){
+	function detail($productId)
+	{
 		$data['csrf'] = array(
 	        'name' => $this->security->get_csrf_token_name(),
 	        'hash' => $this->security->get_csrf_hash()
@@ -115,29 +127,70 @@ class Product extends MY_Controller {
 						   		<script src="'.base_url().'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
 						    	<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
 						  ';
-		$data['view'] 					= "product/detail";
-		$data['customjs'] 				= "product/customjs";
-		$data['colors']					= $this->db->query("SELECT * FROM combination_color ORDER BY ccName ASC")->result();
-		$data['product']				= $this->db->query("SELECT a.*, b.categoryName FROM products a
-															INNER JOIN product_categories b ON a.categoryId = b.categoryId 
-															WHERE productId = '".$productId."'")->row();
-		$data['product_colors']			= $this->db->query("SELECT a.*,b.ccName FROM product_colors a 
-															INNER JOIN combination_color b on a.combination_color = b.ccId
-															WHERE productId = '".$productId."'")->result();
-		$data['ukuran']					= $this->db->query("SELECT * FROM ProductSize where ProductId = '".$productId."'")->result();
-		$categoryId 					= $data['product']->categoryId;
-		$data['sizes']			= $this->db->query("SELECT * FROM size where TipeProduct = '".$categoryId."' ")->result();
-		$data['ProductSizes']			= $this->db->query("select ccName,SizeDescription,ProductSizeId  
-														from products a 
-														inner join product_colors pc on a.productId = pc.productId 
-														inner join combination_color cc on combination_color = ccId 
-														inner join ProductSize ps on  ps.productId = a.productId and pc.productColorId = ps.productColorId
-														inner join size b on ps.SizeID = b.SizeID WHERE a.productId = '".$productId."'
-														group by ccName,SizeDescription,ProductSizeId 
-												")->result();
+		$data['view'] 				= "product/detail";
+		$data['customjs'] 			= "product/customjs";
+		$data['colors']				= $this->db->query("SELECT * FROM combination_color ORDER BY ccName ASC")->result();
 
+		$data['product']			= $this->db->query("SELECT a.*, b.categoryName 
+														FROM products a
+														INNER JOIN product_categories b ON a.categoryId = b.categoryId 
+														WHERE productId = '".$productId."'")->row();
 
-		$this->go_to($data);  
+		$data['product_colors']		= $this->db->query("SELECT a.productColorId, a.productId, a.combination_color, 
+														a.image1, a.image2, a.image3, 
+														a.image4, a.image5, b.ccName 
+														FROM product_colors a 
+														INNER JOIN combination_color b on a.combination_color = b.ccId
+														WHERE productId = '".$productId."'")->result();
+
+		$data['ukuran']				= $this->db->query("SELECT * FROM ProductSize 
+														WHERE ProductId = '".$productId."'")->result();
+
+		$categoryId 				= $data['product']->categoryId;
+
+		$data['sizes']				= $this->db->query("SELECT * FROM size 
+														WHERE TipeProduct = '".$categoryId."' ")->result();
+
+		$data['ProductSizes']		= $this->db->query("SELECT ccName, SizeDescription, ProductSizeId  
+														FROM products a 
+														INNER JOIN product_colors pc ON a.productId = pc.productId 
+														INNER JOIN combination_color cc ON combination_color = ccId 
+														INNER JOIN ProductSize ps ON  ps.productId = a.productId 
+														AND pc.productColorId = ps.productColorId
+														INNER JOIN size b ON ps.SizeID = b.SizeID
+														WHERE a.productId = '".$productId."'
+														GROUP BY ccName, SizeDescription, ProductSizeId ")->result();
+		
+		$this->go_to($data);
+	}
+
+	function deleteColor($productId,$productColorId)
+	{	
+		$image = $this->db->query("SELECT image1, image2, image3 FROM product_colors 
+											WHERE productId = '".$productId."'
+											AND productColorId = '".$productColorId."'")->result();
+
+		$delete = $this->db->query("DELETE FROM product_colors 
+					 				WHERE productId = '".$productId."' 
+					 				AND productColorId = '".$productColorId."'");
+		
+		foreach($image AS $dataimage)
+		{
+			if($dataimage->image1 != '')	
+			{ unlink('./assets/app_assets/product_image/'.$dataimage->image1); }
+			
+			if($dataimage->image2 != '')	
+			{ unlink('./assets/app_assets/product_image/'.$dataimage->image2); }
+			
+			if($dataimage->image3 != '')	
+			{ unlink('./assets/app_assets/product_image/'.$dataimage->image3); }
+			
+		}	
+		
+		die("<script>
+		alert('Proses Hapus Berhasil');
+		window.location.href='".base_url()."Product/detail/".$productId."';
+		</script>");
 	}
 
 	function getMaxId()
@@ -145,7 +198,6 @@ class Product extends MY_Controller {
         $data = $this->db->query("SELECT MAX(productId) productId FROM products")->row();
         return ++$data->productId;
     }
-
 
     function addcolor($productId){
 		$data['csrf'] = array(
@@ -288,7 +340,9 @@ class Product extends MY_Controller {
 			('".$maxId."','".$key->storeName."','p_00025','C_00001','PC00000000027','".rand(1,5)."','SZ0000003','".$this->Usersession->getUsername()."',NOW())");
     	}
 	}
-	function saveSize($productId){
+
+	function saveSize($productId)
+	{
 		if($this->getProductSizeId() == "1"){
 			$maxId = "PSZE000000001";
 		}else{
@@ -302,7 +356,9 @@ class Product extends MY_Controller {
 		window.location.href='".base_url()."Product/detail/".$productId."';
 		</script>");
 	}
-	function deleteSize($productId,$ProductSizeId){
+
+	function deleteSize($productId,$ProductSizeId)
+	{
 		$this->db->query("DELETE from ProductSize where ProductSizeId = '".$ProductSizeId."'");
 		die("<script>
 		alert('Proses Hapus Berhasil');
