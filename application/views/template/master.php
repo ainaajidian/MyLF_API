@@ -127,9 +127,7 @@ $(document).ready(function(){
     { $this->load->view($customjs); }
 ?>
 
-<script>
-  CKEDITOR.replace( 'editor1' );
-</script>
+
 
 </body>
 </html>

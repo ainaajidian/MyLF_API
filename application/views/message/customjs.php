@@ -1,6 +1,7 @@
 
 <script type="text/javascript">
 $(function () {
+  CKEDITOR.replace( 'editor1' );
 
 var publicvoucherImage;
 var publicvoucherId;
@@ -115,7 +116,6 @@ var publicvoucherId;
           });
 
     });
-
     
 
 });
