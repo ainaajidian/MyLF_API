@@ -104,17 +104,6 @@ class Product extends MY_Controller
 				</script>");
 	}
 
-	function active($productId)
-	{
-		$this->db->query("UPDATE products SET productFlag = '1' 
-					 	  WHERE productId = '".$productId."'  ");
-		
-		die("<script>
-		alert('Proses Active Berhasil');
-		window.location.href='".base_url()."product/detail/" "';
-		</script>");
-	}
-
 	function detail($productId)
 	{
 		$data['csrf'] = array(
@@ -153,18 +142,10 @@ class Product extends MY_Controller
 	}
 
 	function getMaxId()
-<<<<<<< HEAD
     {
         $data = $this->db->query("SELECT MAX(productId) productId FROM products")->row();
         return ++$data->productId;
     }
-=======
-	{
-		$data = $this->db->query("SELECT MAX(productId) productId FROM products")->row();
-		return ++$data->productId;
-	}
-
->>>>>>> cce6f046a9e7f0e33354c519eaf76766342d66f5
 
 	function addcolor($productId)
 	{
