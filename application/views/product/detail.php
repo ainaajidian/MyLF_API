@@ -125,7 +125,9 @@
 	              					 	<?php } ?>
 	              					 	 </td> 
 
-	              					 <td>  </td> 
+	              					 <td> 
+	              					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>"> Hapus </a> </td>
+	              					 </td> 
 
 	              					</tr>
 

@@ -128,7 +128,7 @@ class Product extends MY_Controller
 		$data['ukuran']					= $this->db->query("SELECT * FROM ProductSize where ProductId = '" . $productId . "'")->result();
 		$categoryId 					= $data['product']->categoryId;
 		$data['sizes']			= $this->db->query("SELECT * FROM size where TipeProduct = '" . $categoryId . "' ")->result();
-		$data['ProductSizes']			= $this->db->query("select ccName,SizeDescription,ProductSizeId  
+		$data['ProductSizes']			= $this->db->query("SELECT ccName,SizeDescription,ProductSizeId  
 														from products a 
 														inner join product_colors pc on a.productId = pc.productId 
 														inner join combination_color cc on combination_color = ccId 
