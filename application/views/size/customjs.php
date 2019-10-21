@@ -26,7 +26,7 @@ $(function ()
          "aoColumns": 
             [
               { mData: 'SizeID' } ,
-              { mData: 'TipeProduct' } ,
+              { mData: 'categoryName' } ,
               { mData: 'SizeDescription' } ,
               {
               "mData": null,

@@ -153,13 +153,22 @@ buttons:
           if(full.productFlag === "1")
           {
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
+<<<<<<< HEAD
                     '<a class="btn btn-danger btn-sm"> Deactive </a>';
+=======
+                    '<a class="btn btn-danger btn-sm deactiveConfirmation"> Deactive </a>';
+>>>>>>> cce6f046a9e7f0e33354c519eaf76766342d66f5
           }
           else
           {
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
+<<<<<<< HEAD
                    '<a class="btn btn-success btn-sm"> Active </a> ' +
                    '<a class="btn btn-danger btn-sm"> Delete </a>' ;
+=======
+                   '<a class="btn btn-success btn-sm activeConfirmation"> Active </a> ' +
+                   '<a class="btn btn-danger btn-sm deleteForever"> Delete </a>' ;
+>>>>>>> cce6f046a9e7f0e33354c519eaf76766342d66f5
           }
         }
       }
@@ -170,7 +179,8 @@ buttons:
 //ADDSTOK//
 
 
-//  
+  //
+
 
 } );
 </script>

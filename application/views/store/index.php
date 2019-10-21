@@ -96,12 +96,20 @@
 					<div class="input-group mb-3">
 						<select id="city" name="city" class="form-control">
 							<option value="" disabled selected>Select City</option>
+							
+						</select>
+					</div> 
+					
+					
+					<div class="input-group mb-3">
+						<select id="subdistrict" name="subdistrict" class="form-control">
+							<option value="" disabled selected>Select Sub District</option>
 							<?php
 								foreach ($cities as $city) 
 								{ ?> <option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option> <?php }
 							?>
 						</select>
-	                </div>   
+	                </div> 
    
 	      </div>
 	      <div class="modal-footer">
@@ -166,12 +174,18 @@
 					<div class="input-group mb-3">
 						<select id="editCity" name="editCity" class="form-control">
 							<option value="" disabled selected>Select City</option>
+						</select>
+					</div>   
+					
+					<div class="input-group mb-3">
+						<select id="editsubdistrict" name="editsubdistrict" class="form-control">
+							<option value="" disabled selected>Select Sub District</option>
 							<?php
 								foreach ($cities as $city) 
 								{ ?> <option value="<?=$city->cityID;?>"> <?=$city->cityName;?></option> <?php }
 							?>
 						</select>
-	                </div>   
+	                </div> 
 
 	      </div>
 	      <div class="modal-footer">
@@ -203,38 +217,6 @@
     </div>
   </div>
 </div>
-
-<script>
-  $('#province').select2({
-        trigger : 'change',
-        width:'100%',
-        placeholder: 'Select Province'
-    });
-</script>
-
-<script>
-  $('#city').select2({
-        trigger : 'change',
-        width:'100%',
-        placeholder: 'Select City'
-    });
-</script>
-
-<script>
-  $('#editProvince').select2({
-        trigger : 'change',
-        width:'100%',
-        placeholder: 'Select Province'
-    });
-</script>
-
-<script>
-  $('#editCity').select2({
-        trigger : 'change',
-        width:'100%',
-        placeholder: 'Select City'
-    });
-</script>
 
 </body>
 </html>
