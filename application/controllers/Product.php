@@ -114,6 +114,16 @@ class Product extends MY_Controller {
 
 	}
 
+	function active($productId)
+	{
+		$this->db->query("UPDATE products SET productFlag = '1' 
+					 	  WHERE productId = '".$productId."'  ");
+		
+		die("<script>
+		alert('Proses Active Berhasil');
+		window.location.href='".base_url()."product/detail/" "';
+		</script>");
+	}
 
 	function detail($productId)
 	{
@@ -162,35 +172,6 @@ class Product extends MY_Controller {
 														GROUP BY ccName, SizeDescription, ProductSizeId ")->result();
 		
 		$this->go_to($data);
-	}
-
-	function deleteColor($productId,$productColorId)
-	{	
-		$image = $this->db->query("SELECT image1, image2, image3 FROM product_colors 
-											WHERE productId = '".$productId."'
-											AND productColorId = '".$productColorId."'")->result();
-
-		$delete = $this->db->query("DELETE FROM product_colors 
-					 				WHERE productId = '".$productId."' 
-					 				AND productColorId = '".$productColorId."'");
-		
-		foreach($image AS $dataimage)
-		{
-			if($dataimage->image1 != '')	
-			{ unlink('./assets/app_assets/product_image/'.$dataimage->image1); }
-			
-			if($dataimage->image2 != '')	
-			{ unlink('./assets/app_assets/product_image/'.$dataimage->image2); }
-			
-			if($dataimage->image3 != '')	
-			{ unlink('./assets/app_assets/product_image/'.$dataimage->image3); }
-			
-		}	
-		
-		die("<script>
-		alert('Proses Hapus Berhasil');
-		window.location.href='".base_url()."Product/detail/".$productId."';
-		</script>");
 	}
 
 	function getMaxId()
@@ -266,6 +247,39 @@ class Product extends MY_Controller {
 				</script>");
     }
 
+    function deleteColor($productId,$productColorId)
+	{	
+		$image  = $this->db->query("SELECT image1, image2, image3 FROM product_colors 
+									WHERE productId = '".$productId."'
+									AND productColorId = '".$productColorId."'")->result();
+
+		$delete = $this->db->query("DELETE FROM product_colors 
+					 				WHERE productId = '".$productId."' 
+					 				AND productColorId = '".$productColorId."'");
+		
+		foreach($image AS $dataimage)
+		{
+			if($dataimage->image1 != '')	
+			{ unlink('./assets/app_assets/product_image/'.$dataimage->image1); }
+			else
+			{ }
+			
+			if($dataimage->image2 != '')	
+			{ unlink('./assets/app_assets/product_image/'.$dataimage->image2); }
+			else
+			{ }
+
+			if($dataimage->image3 != '')	
+			{ unlink('./assets/app_assets/product_image/'.$dataimage->image3); }
+			else
+			{ }
+		}	
+		
+		die("<script>
+		alert('Proses Hapus Berhasil');
+		window.location.href='".base_url()."Product/detail/".$productId."';
+		</script>");
+	}
 
     function getProductColorId()
     {
