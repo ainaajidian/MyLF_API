@@ -126,7 +126,7 @@
 	              					 	 </td> 
 
 	              					 <td> 
-	              					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>"> Hapus </a> </td>
+	              					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
 	              					 </td> 
 
 	              					</tr>

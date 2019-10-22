@@ -122,6 +122,11 @@
                     </tr>
                 </tbody>
             </table>
+            <br><br>
+            Jika ada kendala pada Aplikasi Member LF, segera menghubungi Kami.<br>
+            Terima kasih atas kepercayaan anda menggunakan Aplikasi Member LF. <br>
+            <p class='footer'> Terima Kasih, <br>
+            Developer Aplikasi Member LF
         </div>
         <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
     </div>
