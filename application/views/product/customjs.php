@@ -152,7 +152,6 @@ buttons:
         {
           if(full.productFlag === "1")
           {
-<<<<<<< HEAD
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
                     '<a href="<?=base_url();?>Product/deactive/'+full.productId+'" class="btn btn-danger btn-sm"> Deactive </a>';
           }
@@ -161,16 +160,7 @@ buttons:
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
                    '<a href="<?=base_url();?>Product/active/'+full.productId+'" class="btn btn-success btn-sm"> Active </a> ' +
                    '<a href="<?=base_url();?>Product/deleteProduct/'+full.productId+'" class="btn btn-danger btn-sm"> Delete </a>' ;
-=======
-            return '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
-            '<a class="btn btn-danger btn-sm deactiveConfirmation"> Deactive </a>';
-          }
-          else
-          {
-            return '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
-            '<a class="btn btn-success btn-sm activeConfirmation"> Active </a> ' +
-            '<a class="btn btn-danger btn-sm deleteForever"> Delete </a>' ;
->>>>>>> c6ebda87663b3e533d7ee33e3828aef6487c5a7e
+
           }
         }
       }
