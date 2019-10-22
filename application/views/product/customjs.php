@@ -153,13 +153,13 @@ buttons:
           if(full.productFlag === "1")
           {
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
-                    '<a class="btn btn-danger btn-sm deactiveConfirmation"> Deactive </a>';
+                    '<a href="<?=base_url();?>Product/deactive/'+full.productId+'" class="btn btn-danger btn-sm"> Deactive </a>';
           }
           else
           {
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +
-                   '<a class="btn btn-success btn-sm activeConfirmation"> Active </a> ' +
-                   '<a class="btn btn-danger btn-sm deleteForever"> Delete </a>' ;
+                   '<a href="<?=base_url();?>Product/active/'+full.productId+'" class="btn btn-success btn-sm"> Active </a> ' +
+                   '<a href="<?=base_url();?>Product/deleteProduct/'+full.productId+'" class="btn btn-danger btn-sm"> Delete </a>' ;
           }
         }
       }
@@ -170,8 +170,7 @@ buttons:
 //ADDSTOK//
 
 
-  //
-
+//  
 
 } );
 </script>
