@@ -29,8 +29,6 @@ class Size_model extends CI_Model
         $sql = "UPDATE size SET SizeDescription = ?, TipeProduct = ?, SizeFlag = ? WHERE SizeID = ?";
         $hsl = $this->db->query($sql, $datasave);
         return $hsl;
-        // $this->db->where('SizeID', $SizeID);
-        // $this->db->update('size', $datasave);
     }
 
     function deleteForever($SizeID)
