@@ -117,8 +117,8 @@ class Product extends MY_Controller
 		$data['includecss'] = '<link rel="stylesheet" href="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.css">
 							<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">';
 		$data['includejs'] 	= '<script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/jquery.dataTables.js"></script>
-						   		<script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
-						    	<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+						   	   <script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
+						       <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
 						  ';
 		$data['view'] 					= "product/detail";
 		$data['customjs'] 				= "product/customjs";
@@ -126,22 +126,19 @@ class Product extends MY_Controller
 		$data['product']				= $this->db->query("SELECT a.*, b.categoryName FROM products a
 															INNER JOIN product_categories b ON a.categoryId = b.categoryId 
 															WHERE productId = '" . $productId . "'")->row();
-		$data['product_colors']			= $this->db->query("SELECT a.*,b.ccName FROM product_colors a 
+		$data['product_colors']			= $this->db->query("SELECT DISTINCT a.*,b.ccName FROM product_colors a 
 															INNER JOIN combination_color b on a.combination_color = b.ccId
 															WHERE productId = '" . $productId . "'")->result();
 		$data['ukuran']					= $this->db->query("SELECT * FROM ProductSize where ProductId = '" . $productId . "'")->result();
 		$categoryId 					= $data['product']->categoryId;
-		$data['sizes']			= $this->db->query("SELECT * FROM size where TipeProduct = '" . $categoryId . "' ")->result();
+		$data['sizes']					= $this->db->query("SELECT * FROM size where TipeProduct = '" . $categoryId . "' ")->result();
 		$data['ProductSizes']			= $this->db->query("SELECT ccName,SizeDescription,ProductSizeId  
 														from products a 
 														inner join product_colors pc on a.productId = pc.productId 
 														inner join combination_color cc on combination_color = ccId 
 														inner join ProductSize ps on  ps.productId = a.productId and pc.productColorId = ps.productColorId
 														inner join size b on ps.SizeID = b.SizeID WHERE a.productId = '" . $productId . "'
-														group by ccName,SizeDescription,ProductSizeId 
-												")->result();
-
-
+														group by ccName,SizeDescription,ProductSizeId  ")->result();
 		$this->go_to($data);
 	}
 
@@ -156,17 +153,20 @@ class Product extends MY_Controller
 					 				AND productColorId = '" . $productColorId . "'");
 
 		foreach ($image as $dataimage) {
-			if ($dataimage->image1 != '') {
-				unlink('./assets/app_assets/product_image/' . $dataimage->image1);
-			}
+			if ($dataimage->image1 != '') 
+				{ unlink('./assets/app_assets/product_image/' . $dataimage->image1); }
+			else
+				{ }
 
-			if ($dataimage->image2 != '') {
-				unlink('./assets/app_assets/product_image/' . $dataimage->image2);
-			}
+			if ($dataimage->image2 != '') 
+				{ unlink('./assets/app_assets/product_image/' . $dataimage->image2); }
+			else
+				{ }
 
-			if ($dataimage->image3 != '') {
-				unlink('./assets/app_assets/product_image/' . $dataimage->image3);
-			}
+			if ($dataimage->image3 != '') 
+				{ unlink('./assets/app_assets/product_image/' . $dataimage->image3); }
+			else
+				{ }
 		}
 
 		die("<script>
