@@ -93,42 +93,42 @@
 
 
      	<div class="table-responsive">
-	              		<table width='100%' class="table" >
-	              			<thead>
-	              				<tr>
-	              						<th> No </th>
-	              						<th> Color Name </th>
-	              						<th> Image 1</th>
-	              						<th> Image 2</th>
-	              						<th> Image 3</th>
-	              						<th> Action</th>
-	              				</tr>
+      		<table width='100%' class="table" >
+      			<thead>
+      				<tr>
+  						<th> No </th>
+  						<th> Color Name </th>
+  						<th> Image 1</th>
+  						<th> Image 2</th>
+  						<th> Image 3</th>
+  						<th> Action</th>
+      				</tr>
 
-	              				<?php $x=0; foreach ($product_colors as $key) { $x++; ?>
+	              	<?php $x=0; foreach ($product_colors as $key) { $x++; ?>
 	              				
-	              				<tr> 
-	              					<td> <?=$x;?> </td> 
-	              					<td> <?=$key->ccName;?> </td>
-	              					 <td> 
-	              					 	<?php if($key->image1 != "") { ?> 
-	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image1;?>" height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
-	              					 	<?php } ?>
-	              					 	 </td> 
-	              					 	 <td> 
-	              					 	<?php if($key->image2 != "") { ?> 
-	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image2;?>"  eight="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
-	              					 	<?php } ?>
-	              					 	 </td> 
-	              					 	 <td> 
-	              					 	<?php if($key->image3 != "") { ?> 
-	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image3;?>"  height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
-	              					 	<?php } ?>
-	              					 	 </td> 
+      				<tr> 
+      					<td> <?=$x;?> </td> 
+      					<td> <?=$key->ccName;?> </td>
+      					 <td> 
+      					 	<?php if($key->image1 != "") { ?> 
+      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image1;?>" height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
+      					 	<?php } ?>
+      					 	 </td> 
+      					 	 <td> 
+      					 	<?php if($key->image2 != "") { ?> 
+      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image2;?>"  eight="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
+      					 	<?php } ?>
+      					 	 </td> 
+      					 	 <td> 
+      					 	<?php if($key->image3 != "") { ?> 
+      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image3;?>"  height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
+      					 	<?php } ?>
+      					 	 </td> 
 
-	              					 <td> 
-	              					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
-	              					 </td> 
-	              					</tr>	              		
+      					 <td> 
+      					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
+      					 </td> 
+      				</tr>	              		
 
 	              				<?php } ?>
 		              		

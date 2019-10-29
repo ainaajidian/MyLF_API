@@ -390,6 +390,6 @@ class Product extends MY_Controller
 
 	function saveDefaultImage($image, $productId)
 	{
-		$this->db->query("UPDATE products set productImage = '" . $image . "' where productId = '" . $productId . "'  ");
+		$this->db->query("UPDATE products SET productImage = '".$image."' WHERE productId = '".$productId."' ");
 	}
 }
