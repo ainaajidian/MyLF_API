@@ -104,10 +104,10 @@
           mData: 'storeLatitude'
         },
         {
-          mData: 'storeProvinceId'
+          mData: 'provinceName'
         },
         {
-          mData: 'storeCityId'
+          mData: 'cityName'
         },
         {
           "mData": null,

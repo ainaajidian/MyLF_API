@@ -28,10 +28,11 @@ class Cart_model extends CI_Model
         $data = $this->db->query("SELECT * FROM members WHERE userActive = '1' AND userDeviceId IS NOT NULL ORDER BY userId ASC")->result();
         return $data;
     }
-    
-    function saveTransaction($data)
+
+    function updateResi($data,$kondisi)
     {
-        $this->db->insert('TransactionMember', $data);
+        $this->db->where($kondisi);
+        $this->db->update('cart', $data);
     }
 
 }

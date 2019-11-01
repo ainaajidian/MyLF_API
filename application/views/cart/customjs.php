@@ -28,7 +28,13 @@ $(function ()
               { mData: 'ccName' } ,
               { mData: 'sizeId' } ,
               { mData: 'storeId' } ,
-              { mData: 'responseDescription' }
+              { mData: 'responseDescription' },
+              {
+                "mData": null,
+                "bSortable": false,
+                "mRender": function(data, type, full)
+                { return  ' <a href="<?=base_url();?>Cart/detail/'+full.cartId+'" class="btn btn-success btn-sm"> Detail </a> ' }
+              }
             ]    
         });
 
@@ -41,6 +47,5 @@ $(function ()
     }    
 
 });
-
 
 </script>
