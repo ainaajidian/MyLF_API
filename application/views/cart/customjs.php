@@ -39,6 +39,20 @@ $(function ()
         });
 
 
+var datatable2 = $("#Delivery").DataTable({
+         "bProcessing": true,
+         "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus",
+         "aoColumns": 
+            [
+              { mData: 'manifest_code' } ,
+              { mData: 'manifest_description' } ,
+              { mData: 'manifest_date' } ,
+              { mData: 'manifest_time' } ,
+              { mData: 'city_name' }
+            ]    
+        });
+
+
     // Add //
     function openAddmodal()
     {

@@ -108,6 +108,33 @@ class Product extends MY_Controller
 				</script>");
 	}
 
+	function active($productId)
+	{
+		$this->db->query("UPDATE products SET productFlag = 1 WHERE productId = '".$productId."' ");
+		die("<script>
+				alert('Active Product Succes');
+				window.location.href='" . base_url() . "Product/" . "';
+				</script>");
+	}
+
+	function deactive($productId)
+	{
+		$this->db->query("UPDATE products SET productFlag = 0 WHERE productId = '".$productId."' ");
+		die("<script>
+				alert('Deactive Product Succes');
+				window.location.href='" . base_url() . "Product/" . "';
+				</script>");
+	}
+
+	function deleteProduct($productId)
+	{
+		$this->db->query("DELETE FROM products WHERE productId = '".$productId."' ");
+		die("<script>
+				alert('Delete Product Succes');
+				window.location.href='" . base_url() . "Product/" . "';
+				</script>");
+	}
+
 	function detail($productId)
 	{
 		$data['csrf'] = array(

@@ -11,33 +11,51 @@
             <div class="card">
             	<h3 style="padding-top: 10px; padding-left: 10px;"> Detail Cart <b><?=$cart->cartId?></b> </h3>
             		<div class="col-md-12" style="padding-top: 10px; padding-bottom: 50px;"> 
-					<form action="<?=base_url();?>Cart/saveResi" method="POST">
-						<table class="table table-bordered" style="width:100%;">
-							<thead>
-								<tr>
-									<th>Cart Id</th>
-									<td><?=$cart->cartId;?></td>
-								</tr>
-								<tr>
-									<th>User Id</th>
-									<td><?=$cart->userId;?></td>
-								</tr>
-								<tr>
-									<th>Store Name</th>
-									<td><?=$cart->storeMall;?></td>
-								</tr>>
-								<tr>
-									<th>Resi</th>
-									<td>
-										<input type="hidden" name="cartId" value="<?=$cart->cartId;?>">
-										<input type="text" name="deliveryResiNo" value="<?=$cart->deliveryResiNo;?>">
-										<button class="btn btn-warning"> Input Resi </button>
-									</td>
-								</tr>
-							</thead>
-						</table>
-					</form>
-
+        			<div class="row">
+						<div class="col-md-6">
+							<!-- <form method="POST" action="<?=base_url();?>Cart/saveResi"> -->
+								<table class="table table-bordered" style="width:100%">
+									<thead>
+										<tr>
+											<th>Cart Id</th>
+											<td><?=$cart->cartId;?></td>
+										</tr>
+										<tr>
+											<th>User Id</th>
+											<td><?=$cart->userId;?></td>
+										</tr>
+										<tr>
+											<th>Store Name</th>
+											<td><?=$cart->storeMall;?></td>
+										</tr>
+										<tr>
+											<th>Resi</th>
+											<td>
+												<input type="hidden" name="cartId" value="<?=$cart->cartId;?>">
+												<input type="text" name="deliveryResiNo" value="<?=$cart->deliveryResiNo;?>">
+												<button class="btn btn-warning"> Input Resi </button>
+											</td>
+										</tr>
+									</thead>
+								</table>
+							</form>
+						</div>
+						
+						<div class="col-md-6 direct-chat-messages">
+							<table class="table table-bordered" style="padding-right:5px; width:100%;" id='Delivery'>
+								<thead>
+									<tr>
+										<th>Manifest Code</th>
+										<th>Manifest Description</th>
+										<th>Manifest Date</th>
+										<th>Manifest Time</th>
+										<th>City Name</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+					
 					</br>
 				
 					<table class="table table-bordered col-md-12" style="max-width: 100%">

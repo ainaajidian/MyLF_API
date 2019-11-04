@@ -11,7 +11,7 @@ class Cart extends MY_Controller
         $this->load->model('Cart_model');
         $this->load->model('Usersession');
         $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, no-transform,
-								   max-age=0, post-check=0, pre-check=0");
+                                   max-age=0, post-check=0, pre-check=0");
         $this->output->set_header("Pragma: no-cache");
         $this->load->library('upload');
     }
@@ -24,12 +24,12 @@ class Cart extends MY_Controller
         );
 
         $data['includecss'] = '<link rel="stylesheet"
-							   href="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.css">
-							   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">';
+                               href="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.css">
+                               <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">';
         $data['includejs']     = '<script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/jquery.dataTables.js"></script>
-							   <script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
-							    <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
-							  ';
+                               <script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
+                                <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+                              ';
 
         $data['customjs']             = "cart/customjs";
         $data['view']                 = "cart/index";
@@ -42,7 +42,7 @@ class Cart extends MY_Controller
         $data['data'] = $this->Cart_model->generateAll();
         echo json_encode($data);
     }
-
+    
     function detail($cartId)
     {
         $data['csrf'] = array(
@@ -86,4 +86,31 @@ class Cart extends MY_Controller
                 window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
                 </script>");
     }
+
+    function getDeliveryStatus()
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://pro.rajaongkir.com/api/waybill",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => "waybill=JP0943665840&courier=jnt",
+        CURLOPT_HTTPHEADER => array(
+                                        "content-type: application/x-www-form-urlencoded",
+                                        "key:5882027194d829e46c2cdd55f8875dde"
+                                    ),
+        ));
+
+        $response = curl_exec($curl);
+        $err        = curl_error($curl);
+        $response = json_decode($response,true);
+        $data = $response['rajaongkir']['result']['manifest'];
+        echo json_encode(array("data" => $data));
+        curl_close($curl);
+    }
+
 }
