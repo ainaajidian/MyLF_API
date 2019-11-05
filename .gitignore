@@ -1,4 +1,6 @@
 
 .htaccess
 application/config/config.php
-application/config/config.php
+application/config/database.php
+application/libraries/PHPMailer/PHPMailerAutoload.php
+application/libraries/MyPHPMailer.php
