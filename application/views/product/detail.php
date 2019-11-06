@@ -10,9 +10,9 @@
          <div class="col-md-12">
             <div class="card">
               	<div class="card-header">
-                	<h3 class="card-title">Detail Product</h3>
+                <h3 class="card-title">Detail Product</h3>
               	</div>
-              	<div class="card-body">
+              	<div class="card-body"> <!-- Div Body -->
 	             	<div class="table-responsive">
 	             		<form method="POST" action="<?=base_url();?>Product/saveheader/">
 	              		<table width='100%' class="table" >
@@ -50,9 +50,9 @@
 	              		</table>
 	              		</form>
 	            	</div>
-	        	</div>
+	        	</div> <!-- Div Body -->
 
-	        	<div class="row">
+	        	<div class="row"> <!-- Div Row -->
 	        		<div class="card-body col-md">
 	        			<a href="<?=base_url();?>Product/addstok/<?=$product->productId;?>/<?=$product->categoryId;?>"> 
 	        				<button type="button" class="btn btn-warning">Ubah Stok</button> 
@@ -64,7 +64,7 @@
 						<br>
 
 						<br>
-						<div class="col-md-5">
+						<div class="col-md-5"> <!-- Div col-md-5 -->
 						<table class="table table-bordered">
 							<thead>
 								<tr>
@@ -84,7 +84,7 @@
 								
 							</tbody>
 						</table>
-						</div>
+						</div> <!-- Div col-md-5 -->
 
 
 	        			<div class="card-header"> Product Color List </div>
@@ -92,51 +92,51 @@
 	        			<a href="<?=base_url();?>Product/addcolor/<?=$product->productId;?>"><button href="#coloraddForm" class="btn btn-info" style="margin-bottom: 10px;margin-left: 10px">  Add New Color </button></a>
 
 
-     	<div class="table-responsive">
-	              		<table width='100%' class="table" >
-	              			<thead>
-	              				<tr>
-	              						<th> No </th>
-	              						<th> Color Name </th>
-	              						<th> Image 1</th>
-	              						<th> Image 2</th>
-	              						<th> Image 3</th>
-	              						<th> Action</th>
-	              				</tr>
+				     	<div class="table-responsive"> <!-- Div Table Responsive -->
+				      		<table width='100%' class="table" >
+				      			<thead>
+				      				<tr>
+				  						<th> No </th>
+				  						<th> Color Name </th>
+				  						<th> Image 1</th>
+				  						<th> Image 2</th>
+				  						<th> Image 3</th>
+				  						<th> Action</th>
+				      				</tr>
 
-	              				<?php $x=0; foreach ($product_colors as $key) { $x++; ?>
-	              				
-	              				<tr> 
-	              					<td> <?=$x;?> </td> 
-	              					<td> <?=$key->ccName;?> </td>
-	              					 <td> 
-	              					 	<?php if($key->image1 != "") { ?> 
-	              					 		<img height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
-	              					 	<?php } ?>
-	              					 	 </td> 
-	              					 	 <td> 
-	              					 	<?php if($key->image2 != "") { ?> 
-	              					 		<img height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
-	              					 	<?php } ?>
-	              					 	 </td> 
-	              					 	 <td> 
-	              					 	<?php if($key->image3 != "") { ?> 
-	              					 		<img height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
-	              					 	<?php } ?>
-	              					 	 </td> 
+					              	<?php $x=0; foreach ($product_colors as $key) { $x++; ?>
+					              				
+				      				<tr> 
+				      					<td> <?=$x;?> </td> 
+				      					<td> <?=$key->ccName;?> </td>
+				      					 <td> 
+				      					 	<?php if($key->image1 != "") { ?> 
+				      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image1;?>" height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
+				      					 	<?php } ?>
+				      					 	 </td> 
+				      					 	 <td> 
+				      					 	<?php if($key->image2 != "") { ?> 
+				      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image2;?>"  eight="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
+				      					 	<?php } ?>
+				      					 	 </td> 
+				      					 	 <td> 
+				      					 	<?php if($key->image3 != "") { ?> 
+				      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image3;?>"  height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
+				      					 	<?php } ?>
+				      					 	 </td> 
 
-	              					 <td> 
-	              					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
-	              					 </td> 
-	              					</tr>	              		
+				      					 <td> 
+				      					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
+				      					 </td> 
+				      				</tr>	              		
 
 	              				<?php } ?>
 		              		
 		              		</thead>
 		             		              		
 	              		</table>
-	            	</div>
-	        	</div>
+	            	</div> <!-- Div Table Responsive -->
+	        	</div> <!-- Div col-md-5 -->
 
 	        </div>
 

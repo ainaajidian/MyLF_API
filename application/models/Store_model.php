@@ -9,7 +9,12 @@ class Store_model extends CI_Model {
 
     function generateAll()
     {
-        return $this->db->query("SELECT * FROM store ORDER BY storeId + 0 ASC")->result();
+        return $this->db->query("SELECT a.storeId, a.storeName, a.storeMall, a.storeAddress, a.storeDetail, 
+                                 a.storeLongitude, a.storeLatitude, b.provinceName, c.cityName 
+                                 FROM store a
+                                 LEFT JOIN province b ON a.storeProvinceId = b.provinceID
+                                 LEFT JOIN city c ON a.storeCityId = c.cityID
+                                 ORDER BY storeId + 0 ASC")->result();
     }
 
     function getStoredetail($categoryId)
