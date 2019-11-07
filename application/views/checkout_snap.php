@@ -1,6 +1,7 @@
 <html>
 <title>Checkout</title>
   <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript"
             src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="SB-Mid-client-mcJ8yoHc-a9b-Rex"></script>

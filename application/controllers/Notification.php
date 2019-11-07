@@ -42,28 +42,6 @@ class Notification extends MY_Controller
         echo json_encode($data);
     }
 
-    //Deactive data
-    function deactivate($categoryId)
-    {
-        $data = array("categoryFlag" => 0);
-        $kondisi = array("categoryId" => $categoryId);
-        $this->Notification_model->updateCategory($data, $kondisi);
-    }
-
-    //Active data
-    function restore($categoryId)
-    {
-        $data = array("categoryFlag" => 1);
-        $kondisi = array("categoryId" => $categoryId);
-        $this->Notification_model->updateCategory($data, $kondisi);
-    }
-
-    //Delete data
-    function deleteForever($categoryId)
-    {
-        $this->Notification_model->deleteForever($categoryId);
-    }
-
     //Save data
     function saveNotification()
     {

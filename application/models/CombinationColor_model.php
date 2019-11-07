@@ -1,5 +1,6 @@
 <?php
-class CombinationColor_model extends CI_Model {
+class CombinationColor_model extends CI_Model 
+{
 
     function __construct()
     {
@@ -32,9 +33,7 @@ class CombinationColor_model extends CI_Model {
     { return $this->db->query("SELECT ccId FROM combination_color WHERE ccId = '".$ccId."' ")->row(); }
 
     function saveColor($data)
-    {
-        $this->db->insert('combination_color', $data);
-    }
+    { $this->db->insert('combination_color', $data); }
 
     function updateCC($data,$kondisi)
     {
@@ -54,6 +53,6 @@ class CombinationColor_model extends CI_Model {
     }
 
     function deleteForever($ccId)
-        { $this->db->query("DELETE FROM combination_color WHERE ccId = '".$ccId."' "); }
+    { $this->db->query("DELETE FROM combination_color WHERE ccId = '".$ccId."' "); }
 
 }

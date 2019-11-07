@@ -68,8 +68,8 @@ class Message extends MY_Controller
                 $datasave = array(
                     "userId"                => $userId[1],
                     "deviceId"              => $userId[0],
-                    "messageContent"         => $messageContent,
-                    "messageImage"             => $picture,
+                    "messageContent"        => $messageContent,
+                    "messageImage"          => $picture,
                     "messageTitle"          => $messageTitle,
                     "messageId"             => $this->Message_model->getMaxId()
                 );
@@ -165,10 +165,5 @@ class Message extends MY_Controller
                 window.location.href='" . base_url() . "Message';
                 </script>");
         }
-    }
-
-    function delete($categoryId)
-    {
-        $this->Message_model->deleteCategories($categoryId);
     }
 }

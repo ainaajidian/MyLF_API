@@ -42,20 +42,8 @@ class Size extends MY_Controller
         $queryresult = $this->Size_model->generateAll();
         foreach ($queryresult as $key) {
             $info = explode("; ", $key->SizeDescription);
-            if ($key->TipeProduct == "C_00001") {
-                $data['data'][] = array(
-                    "SizeID"          => $key->SizeID,
-                    "SizeDescription" => "Panjang: " . $info[0] . " CM" . " - " . "Lebar: " . $info[1] . " CM" . " - " .
-                        "Tinggi: " . $info[2] . " CM" . " - " . "Berat: " . $info[3] . " KG",
-                    "panjang"         => $info[0],
-                    "lebar"           => $info[1],
-                    "tinggi"          => $info[2],
-                    "berat"           => $info[3],
-                    "TipeProduct"     => $key->TipeProduct,
-                    "categoryName"    => $key->categoryName,
-                    "SizeFlag"        => $key->SizeFlag
-                );
-            } elseif ($key->TipeProduct == "C_00007") {
+            if ($key->TipeProduct == "C_00001") 
+            {
                 $data['data'][] = array(
                     "SizeID"          => $key->SizeID,
                     "SizeDescription" => "Ukuran: " . $info[0] . " - " . "Berat: " . $info[1] . " KG",
@@ -65,8 +53,18 @@ class Size extends MY_Controller
                     "categoryName"    => $key->categoryName,
                     "SizeFlag"        => $key->SizeFlag
                 );
+            } elseif ($key->TipeProduct == "C_00007") 
+            {
+                $data['data'][] = array(
+                    "SizeID"          => $key->SizeID,
+                    "SizeDescription" => "Size: " . $info[0] . " - " . "Berat: " . $info[1] . " KG",
+                    "size"            => $info[0],
+                    "berat"           => $info[1],
+                    "TipeProduct"     => $key->TipeProduct,
+                    "categoryName"    => $key->categoryName,
+                    "SizeFlag"        => $key->SizeFlag
+                );
             }
-            //print_r($info);
         }
         echo json_encode($data);
     }
@@ -97,17 +95,16 @@ class Size extends MY_Controller
     function saveSize()
     {
         $SizeID         = $this->input->post("SizeID");
-        $Panjang        = $this->input->post("Panjang");
         $Lebar          = $this->input->post("Lebar");
         $Tinggi         = $this->input->post("Tinggi");
         $Ukuran         = $this->input->post("Ukuran");
+        $Size           = $this->input->post("Size");
         $Berat          = $this->input->post("Berat");
         $TipeProduct    = $this->input->post("TipeProduct");
 
         if ($TipeProduct == 'C_00001') {
             $datasave = array(
-                "SizeDescription"   => $Panjang . "; " . $Lebar . "; " .
-                    $Tinggi . "; " . $Berat,
+                "SizeDescription"   => $Ukuran . "; " . $Berat,
                 "TipeProduct"       => "C_00001",
                 "SizeFlag"          => 1,
                 "SizeID"            => $this->Size_model->getMaxId()
@@ -121,7 +118,7 @@ class Size extends MY_Controller
                 </script>");
         } elseif ($TipeProduct == 'C_00007') {
             $datasave = array(
-                "SizeDescription"   => $Ukuran . "; " . $Berat,
+                "SizeDescription"   => $Size . "; " . $Berat,
                 "TipeProduct"       => "C_00007",
                 "SizeFlag"          => 1,
                 "SizeID"            => $this->Size_model->getMaxId()
@@ -145,47 +142,40 @@ class Size extends MY_Controller
     function updateSize($SizeID)
     {
         $SizeID         = $this->input->post("SizeID");
-        $Panjang        = $this->input->post("Panjang");
         $Lebar          = $this->input->post("Lebar");
         $Tinggi         = $this->input->post("Tinggi");
         $Ukuran         = $this->input->post("Ukuran");
+        $Size           = $this->input->post("Size");
         $Berat          = $this->input->post("Berat");
         $TipeProduct    = $this->input->post("TipeProduct");
 
-        if ($TipeProduct == "C_00001") {
-            $datasave = array(
-                "SizeDescription"   =>  $Panjang . "; " . $Lebar . "; " .
-                    $Tinggi . "; " . $Berat . "",
+        if ($TipeProduct == "C_00001") 
+        {
+            $dataUpdate = array(
+                "SizeDescription"   =>  $Ukuran . "; " . $Berat . "",
                 "TipeProduct"       =>  $TipeProduct,
                 "SizeFlag"          =>  1,
                 "SizeID"            =>  $SizeID
             );
-            $this->Size_model->updateSize($datasave);
 
-            die("<script>
-                alert('Update Size Success');
-                window.location.href='" . base_url() . "Size';
-                </script>");
+            $this->Size_model->updateSize($dataUpdate);
+
         }
 
         if ($TipeProduct == "C_00007") {
-            $datasave = array(
-                "SizeDescription"   => $Ukuran . "; " . $Berat . "",
+            $dataUpdate = array(
+                "SizeDescription"   => $Size . "; " . $Berat . "",
                 "TipeProduct"       => $TipeProduct,
                 "SizeFlag"          => 1,
                 "SizeID"            => $SizeID
             );
-            $this->Size_model->updateSize($datasave);
+
+            $this->Size_model->updateSize($dataUpdate);
+        }
 
             die("<script>
                 alert('Update Size Success');
                 window.location.href='" . base_url() . "Size';
                 </script>");
-        }
-    }
-
-    function delete($categoryId)
-    {
-        $this->Size_model->deleteCategories($categoryId);
     }
 }

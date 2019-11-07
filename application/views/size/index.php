@@ -52,16 +52,7 @@
             </div>
           </div>
 
-          <div id="Panjang" class="input-group mb-3">
-            <div class="col-md-8">
-              <input autocomplete="off" id="Panjang" name="Panjang" type="number" class="form-control" placeholder="Panjang">
-            </div>
-            <div class="col-md-4">
-              <input disabled type="text" value="CM" class="form-control">
-            </div>
-          </div>
-
-          <div id="Lebar" class="input-group mb-3">
+          <!-- <div id="Lebar" class="input-group mb-3">
             <div class="col-md-8">
               <input autocomplete="off" id="Lebar" name="Lebar" type="number" class="form-control" placeholder="Lebar">
             </div>
@@ -77,14 +68,23 @@
             <div class="col-md-4">
               <input disabled type="text" value="CM" class="form-control">
             </div>
-          </div>
+          </div> -->
 
           <div id="Ukuran" class="input-group mb-3">
             <div class="col-md-8">
-              <input autocomplete="off" id="Ukuran" name="Ukuran" type="number" class="form-control" placeholder="Ukuran">
+              <input autocomplete="off" id="Ukuran" name="Ukuran" type="text" class="form-control" placeholder="Ukuran">
             </div>
             <div class="col-md-4">
-              <input disabled type="text" value="SIZE" class="form-control">
+              <input disabled type="text" value="Size" class="form-control">
+            </div>
+          </div>
+
+          <div id="Size" class="input-group mb-3">
+            <div class="col-md-8">
+              <input autocomplete="off" id="Size" name="Size" type="number" class="form-control" placeholder="Size">
+            </div>
+            <div class="col-md-4">
+              <input disabled type="text" value="Size" class="form-control">
             </div>
           </div>
 
@@ -125,20 +125,11 @@
 
           <div id="DivTipeProduct" class="input-group mb-3">
             <div class="col-md-12">
-              <input disabled="true" autocomplete="off" id="editTipeProduct" name="TipeProduct" type="text" class="form-control" placeholder="Tipe Product">
+              <input readonly="true" autocomplete="off" id="editTipeProduct" name="TipeProduct" type="text" class="form-control" placeholder="Tipe Product">
             </div>
           </div>
 
-          <div id="DivPanjang" class="input-group mb-3">
-            <div class="col-md-8">
-              <input autocomplete="off" id="editPanjang" name="Panjang" type="number" class="form-control" placeholder="Panjang">
-            </div>
-            <div class="col-md-4">
-              <input disabled type="text" value="CM" class="form-control">
-            </div>
-          </div>
-
-          <div id="DivLebar" class="input-group mb-3">
+          <!-- <div id="DivLebar" class="input-group mb-3">
             <div class="col-md-8">
               <input autocomplete="off" id="editLebar" name="Lebar" type="number" class="form-control" placeholder="Lebar">
             </div>
@@ -154,14 +145,23 @@
             <div class="col-md-4">
               <input disabled type="text" value="CM" class="form-control">
             </div>
-          </div>
+          </div> -->
 
           <div id="DivUkuran" class="input-group mb-3">
             <div class="col-md-8">
-              <input autocomplete="off" id="editUkuran" name="Ukuran" type="number" class="form-control" placeholder="Ukuran">
+              <input autocomplete="off" id="editUkuran" name="Ukuran" type="text" class="form-control" placeholder="Ukuran">
             </div>
             <div class="col-md-4">
-              <input disabled type="text" value="SIZE" class="form-control">
+              <input disabled type="text" value="Size" class="form-control">
+            </div>
+          </div>
+
+          <div id="DivSize" class="input-group mb-3">
+            <div class="col-md-8">
+              <input autocomplete="off" id="editSize" name="Size" type="number" class="form-control" placeholder="Size">
+            </div>
+            <div class="col-md-4">
+              <input disabled type="text" value="Size" class="form-control">
             </div>
           </div>
 

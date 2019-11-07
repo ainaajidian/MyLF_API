@@ -109,7 +109,7 @@
                                         <tr>
                                             <td style="word-wrap:break-word;font-size:0px;padding:15px 15px 15px 15px;" align="center">
                                                 <div style="cursor:auto;color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:14px;line-height:1.5;text-align:center;">
-                                                    <h3 style="line-height: 100%;">Dear ,</h3>
+                                                    <h3 style="line-height: 100%;">Hai Ka!</h3>
                                                 </div>
                                             </td>
                                         </tr>
@@ -119,8 +119,8 @@
                                         <tr>
                                             <td style="word-wrap:break-word;font-size:0px;padding:15px 15px 15px 15px;" align="center">
                                                 <div style="cursor:auto;color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:14px;line-height:1.5;text-align:center;">
-                                                    <h3 style="line-height: 100%;">You're product has arrived,<br>
-                                                        don't forget to click button below for confirmation:&#xA0;</h3>
+                                                    <h3 style="line-height: 100%;">Produk yang kamu beli sudah sampai nih,<br>
+                                                        jangan lupa untuk klik tombol konfirmasi dibawah ini ya.&#xA0;</h3>
                                                 </div>
                                             </td>
                                         </tr>
@@ -133,7 +133,7 @@
                                                     <tbody>
                                                         <tr>
                                                             <td style="border:0px solid #000;border-radius:24px;color:#fff;cursor:auto;padding:5px 36px;" align="center" valign="middle" bgcolor="#8B6F4E">
-                                                                <a href="<?php echo $url; ?>" style="text-decoration:none;background:#8B6F4E;color:#fff;font-family:Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif;font-size:18px;font-weight:normal;line-height:120%;text-transform:none;margin:0px;" target="_blank">Product Has Arrived</a>
+                                                                <a href="<?php echo $url; ?>" style="text-decoration:none;background:#8B6F4E;color:#fff;font-family:Ubuntu, Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif;font-size:18px;font-weight:normal;line-height:120%;text-transform:none;margin:0px;" target="_blank">Barang telah sampai</a>
                                                             </td>
                                                         </tr>
                                                     </tbody>

@@ -14,7 +14,8 @@ class Size_model extends CI_Model
 
     function generateParent()
     {
-        $data = $this->db->query("SELECT * FROM product_categories WHERE parentCategoryId = '' OR parentCategoryId IS NULL")->result();
+        $data = $this->db->query("SELECT * FROM product_categories
+                                  WHERE parentCategoryId = '' OR parentCategoryId IS NULL")->result();
         return $data;
     }
 
@@ -24,11 +25,17 @@ class Size_model extends CI_Model
         return ++$data->SizeID;
     }
 
-    function status($datasave)
+    function updateSize($dataUpdate)
     {
         $sql = "UPDATE size SET SizeDescription = ?, TipeProduct = ?, SizeFlag = ? WHERE SizeID = ?";
-        $hsl = $this->db->query($sql, $datasave);
+        $hsl = $this->db->query($sql, $dataUpdate);
         return $hsl;
+    }
+
+    function status($data,$kondisi)
+    {
+        $this->db->where($kondisi);
+        $this->db->update('size', $data);
     }
 
     function deleteForever($SizeID)
@@ -36,32 +43,4 @@ class Size_model extends CI_Model
 
     function saveSize($data)
     { $this->db->insert('size', $data); }
-
-    function getCategorydetail($categoryId)
-      { return $this->db->query("SELECT categoryId FROM product_categories WHERE categoryId = '".$categoryId."' ")->row(); }
-
-    
-
-    function updateCategoryImg($data)
-    {
-        $sql = "UPDATE product_categories 
-                SET categoryName=?, categoryDescription=?,
-                    categoryModifiedDate=?, parentCategoryId=?,
-                    categoryImage=?
-                WHERE categoryId=?";
-        $hsl = $this->db->query($sql, $data);
-        return $hsl;
-    }
-
-    function updateCategoryNoImg($data)
-    {
-        $sql = "UPDATE product_categories 
-                SET categoryName=?,
-                    categoryDescription=?,
-                    parentCategoryId=?,
-                    categoryModifiedDate=?
-                    WHERE categoryId=?";
-        $hsl = $this->db->query($sql, $data);
-        return $hsl;
-    }
 }

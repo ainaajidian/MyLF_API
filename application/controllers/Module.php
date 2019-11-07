@@ -104,14 +104,10 @@ class Module extends MY_Controller
 	}
 
 	function delete($id)
-	{
-		$this->Module_model->deletemodule($id);
-	}
+	{ $this->Module_model->deletemodule($id); }
 
 	function deleteForever($id)
-	{
-		$this->Module_model->deleteForever($id);
-	}
+	{ $this->Module_model->deleteForever($id); }
 
 
 	function updatemodule($id)

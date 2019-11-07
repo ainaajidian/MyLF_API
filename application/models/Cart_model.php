@@ -9,7 +9,7 @@ class Cart_model extends CI_Model
 
     function generateAll()
     {
-    	return $this->db->query("SELECT a.cartId, a.userId, b.productName, c.image1, d.ccName, a.sizeId, a.storeId, e.responseDescription
+        return $this->db->query("SELECT a.cartId, a.userId, b.productName, c.image1, d.ccName, a.sizeId, a.storeId, e.responseDescription
                                 FROM cart a
                                 LEFT JOIN products b ON a.productId = b.productId
                                 LEFT JOIN product_colors c ON a.productColorId = c.productColorId

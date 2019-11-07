@@ -4,12 +4,11 @@ $(function ()
 {
   var publicSizeID;
 
-  $("#Panjang").hide();
   $("#Lebar").hide();
   $("#Tinggi").hide();
-  $("#Berat").hide();
+  $("#Size").hide();
   $("#Ukuran").hide();
-
+  $("#Berat").hide();
 
     var datatable = $("#SizeTable").DataTable({
      dom: 'Bfrtip',
@@ -111,27 +110,27 @@ $(function ()
         var TipeProduct = $(this).val();
         if(TipeProduct == 'C_00001')
         {
-          $("#Panjang").show();
-          $("#Lebar").show();
-          $("#Tinggi").show();
+          $("#Lebar").hide();
+          $("#Tinggi").hide();
+          $("#Ukuran").show();
+          $("#Size").hide();
           $("#Berat").show();
-          $("#Ukuran").hide();
         }
         else if (TipeProduct == 'C_00007')
         {
-          $("#Panjang").hide();
           $("#Lebar").hide();
           $("#Tinggi").hide();
+          $("#Ukuran").hide();
+          $("#Size").show();
           $("#Berat").show();
-          $("#Ukuran").show();
         }
         else
         {
-          $("#Panjang").hide();
           $("#Lebar").hide();
           $("#Tinggi").hide();
-          $("#Berat").hide();
           $("#Ukuran").hide();
+          $("#Size").hide();
+          $("#Berat").hide();
         }
     });
 
@@ -145,47 +144,43 @@ $(function ()
         var data  = datatable.row($(this).parents('tr')).data();
         var modal = $("#editModal").modal("show");
 
-        var edit_SizeID              = data.SizeID;
+        var edit_SizeID           = data.SizeID;
         var edit_tipe_product     = data.TipeProduct;
-        var panjang   = data.panjang;
-        var lebar  = data.lebar;
-        var tinggi = data.tinggi;
-        var berat = data.berat;
-        var ukuran = data.ukuran; 
+        var lebar                 = data.lebar;
+        var tinggi                = data.tinggi;
+        var ukuran                = data.ukuran;
+        var size                  = data.size;
+        var berat                 = data.berat; 
 
         publicSizeID = data.SizeID;
         if(edit_tipe_product === "C_00001")
         {
             $("#editSizeID").val(edit_SizeID);
             $("#editTipeProduct").val(edit_tipe_product);
-            $("#DivPanjang").show();
-            $("#DivLebar").show();          
-            $("#DivTinggi").show();
-            $("#editPanjang").val(panjang);
-            $("#editLebar").val(lebar);          
-            $("#editTinggi").val(tinggi);
-            $("#DivUkuran").hide();
+            $("#DivLebar").hide();          
+            $("#DivTinggi").hide();
+            $("#DivUkuran").show();
+            $("#DivSize").hide();
+            $("#DivBerat").show();
+            $("#editUkuran").val(ukuran);
             $("#editBerat").val(berat);
         }
         else if(edit_tipe_product === "C_00007")
         {
             $("#editSizeID").val(edit_SizeID);
             $("#editTipeProduct").val(edit_tipe_product);
-            $("#DivPanjang").hide();
             $("#DivLebar").hide();          
             $("#DivTinggi").hide();
-            $("#DivUkuran").show();
-            $("#editUkuran").val(ukuran);
+            $("#DivUkuran").hide();
+            $("#DivSize").show();
+            $("#DivBerat").show();
+            $("#editSize").val(size);
             $("#editBerat").val(berat);
         }
     });
 
-
-    $("#editsizeForm").submit(function(e){
-            $(this).attr('action', '<?=base_url();?>size/updateSize/'+publicSizeID);
-    })
-
-    
+    $("#editsizeForm").submit(function(e)
+      { $(this).attr('action', '<?=base_url();?>Size/updateSize/'+publicSizeID); })
 
 });
 
