@@ -1496,4 +1496,30 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
     }
 
+    function checkPhone(){
+        $phone = $this->input->post("phone");
+        $cek = $this->db->query("SELECT * FROM members where userMobilephone = '".$phone."' ");
+        if($cek->num_rows() > 0){
+            $data['err']      = 0;
+            $data['message']  = "Login successful";
+            $data['userInfo'] = $cek->row();
+        }else{
+            $data['err']      = 1;
+            $data['message']  = "Login Failed. please check your format phone format, both on this form and profil page (081234567xxx)";
+        }
+        echo json_encode($data);
+    }
+
+    function getLatestSoldProducts()
+    {
+        $data   = $this->db->query("SELECT a.productId,a.productColorId,image1,productName,productPrice FROM cart a 
+                inner join product_colors b on a.productId = b.productId and a.productColorId = b.productColorId 
+                inner join products c on a.productId = c.productId
+                where cartFlag = 1 and productFlag = 1
+                group by a.productId,a.productColorId,image1 
+                order by createdDate asc LIMIT 6");
+        $return = $data->result();
+        echo json_encode($return);
+    }
+
 }
