@@ -2,18 +2,12 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-
-
 class Loginform extends Ci_Controller
 {
 
 	public $loginmodel;
-
 	public $_username;
-
 	public $_password;
-
-
 
 	function __construct()
 	{
@@ -84,7 +78,5 @@ class Loginform extends Ci_Controller
 	}
 
 	function unsetmenu()
-	{
-		unset($_SESSION['menu']);
-	}
+	{ unset($_SESSION['menu']); }
 }

@@ -100,7 +100,6 @@
 						</select>
 					</div> 
 					
-					
 					<div class="input-group mb-3">
 						<select id="subdistrict" name="subdistrict" class="form-control">
 							<option value="" disabled selected>Select Sub District</option>

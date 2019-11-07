@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class CombinationColor extends MY_Controller {
+class CombinationColor extends MY_Controller 
+{
 
 	function __construct()
     {
@@ -110,11 +111,5 @@ class CombinationColor extends MY_Controller {
 			alert('Update Combination Color Success');
 			window.location.href='".base_url()."CombinationColor';
 			</script>");
-    }
-	
-    //Delete Data
-	function delete($userid){
-		$this->User_model->deleteuser($userid);
-	}
-
+    }	
 }

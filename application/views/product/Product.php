@@ -64,12 +64,11 @@ class Product extends MY_Controller
 		$data['view'] 					= "product/add";
 		$data['customjs'] 				= "product/customjs";
 		$data['categories']				= $this->db->query("SELECT * FROM product_categories where (parentCategoryID = '' or parentCategoryID is null) order by categoryName asc")->result();
-		$data['child_categories']		= $this->db->query("SELECT * FROM product_categories where (parentCategoryID <> '' or parentCategoryID is not null) order by categoryName asc")->result();
-		$data['sizes'] 					= $this->db->query("SELECT * FROM size where TipeProduct = 'C_00001' ")->result();
-
+		$data['child_categories']				= $this->db->query("SELECT * FROM product_categories where (parentCategoryID <> '' or parentCategoryID is not null) order by categoryName asc")->result();
+		$data['sizes'] = $this->db->query("SELECT * FROM size where TipeProduct = 'C_00001' ")->result();
 		foreach ($data['sizes'] as $key) {
 			$info = explode(";", $key->SizeDescription);
-			$sizes[] = array( "SizeID" => $key->SizeID, "Keterangan" =>  " Ukuran " .$info[0]. " Berat ".$info[1]. " KG");
+			$sizes[] = array( "SizeID" => $key->SizeID, "Keterangan" =>  " Panjang " .$info[0]. " Lebar ".$info[1]. " Tinggi ".$info[2]);
 		}
 
 		$data['sizes'] = $sizes;
@@ -117,10 +116,21 @@ class Product extends MY_Controller
 	function active($productId)
 	{
 		$this->db->query("UPDATE products set productFlag = 1 where productId = '".$productId."' ");
-		die("<script>
-				alert('Aktifasi Berhasil');
-				window.location.href='" . base_url() . "Product/detail/" . $productId . "';
-				</script>");
+		
+		die('<script>
+	            alert("' . $this->upload->display_errors() . '");
+	            window.location.href="' . base_url() . 'Product";
+            </script>');
+	}
+
+	function deactive($productId)
+	{
+		$this->db->query("UPDATE products set productFlag = 0 where productId = '".$productId."' ");
+		
+		die('<script>
+	            alert("' . $this->upload->display_errors() . '");
+	            window.location.href="' . base_url() . 'Product";
+            </script>');
 	}
 
 	function detail($productId)
@@ -197,8 +207,7 @@ class Product extends MY_Controller
 					 				WHERE productId = '" . $productId . "' 
 					 				AND productColorId = '" . $productColorId . "'");
 
-		foreach ($image as $dataimage) 
-		{
+		foreach ($image as $dataimage) {
 			if ($dataimage->image1 != '') 
 				{ unlink('./assets/app_assets/product_image/' . $dataimage->image1); }
 			else
@@ -459,7 +468,7 @@ class Product extends MY_Controller
 								and ProductColorID = '".$dataProductSize->productColorId."'  
 								and storeID = '".$storeId."' 
 								");
-			} else {
+			}else{
 				if ($this->getStokId() == "1") {
 					$maxId = "STOK00000000000001";
 				} else {

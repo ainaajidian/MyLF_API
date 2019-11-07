@@ -29,7 +29,6 @@ class Members extends MY_Controller
 		echo json_encode($data);
 	}
 
-
 	function detail($userId)
 	{
 		$data['includecss'] = '<link rel="stylesheet" href="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.css">

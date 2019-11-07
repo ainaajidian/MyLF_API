@@ -39,8 +39,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>          
-      <form enctype="multipart/form-data" id="ccForm" action="<?=base_url();?>CombinationColor/saveColor" method = "POST" >
-	      <div class="modal-body">
+    <form enctype="multipart/form-data" id="ccForm" action="<?=base_url();?>CombinationColor/saveColor" method = "POST" >
+	        <div class="modal-body">
 	          
 	               <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
 	                
@@ -63,13 +63,13 @@
 	                <div class="input-group mb-3">
 	                    <input autocomplete="off"  required name="ccSecHex" type="text" class="form-control" placeholder="Color Secondary Hex Code">
 	                </div>  
-   
+	        </div>
+	    	
+	    	<div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="submit"  class="btn btn-primary">Save changes</button>
 	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	        <button type="submit"  class="btn btn-primary">Save changes</button>
-	      </div>
-       </form>
+    </form>
 
     </div>
   </div>
@@ -109,11 +109,12 @@
 	                <div class="input-group mb-3">
 	                    <input autocomplete="off"  required id="editccSecHex" name="ccSecHex" type="text" class="form-control" placeholder="Color Secondary Hex Code">
 	                </div>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	        <button type="submit"  class="btn btn-primary">Save changes</button>
-	      </div>
+	     	</div>
+	      	
+	      	<div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="submit"  class="btn btn-primary">Save changes</button>
+	      	</div>
        </form>
 
     </div>

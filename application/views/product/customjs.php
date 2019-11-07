@@ -1,10 +1,12 @@
 
 <script type="text/javascript">
 $(document).ready( function () {
+  $("#trSize").hide();
 
 $("#addSize").click(function(){
   $("#addSizeModal").modal("show");
 });
+
 
 $("#productColorId").change(function(){
    $.ajax({
@@ -25,24 +27,24 @@ $("#productColorId").change(function(){
   });
 });
 
-$(".productImage").click(function()
-{
+$(".productImage").click(function(){
   var image = $(this).data("id");
   var productId = $(this).data("value");
-  isGood=confirm('Set sebagai gambar default?');
-    if (isGood) 
-    {
+  isGood=confirm('Set sebagai gambar default ?');
+    if (isGood) {
       $.ajax({
         url: "<?=base_url();?>Product/saveDefaultImage/"+image+"/"+productId,
-        beforeSend: function() 
-        { },
-        success:function(result)
-        { var result = jQuery.parseJSON(result); },
-        error: function(XMLHttpRequest, textStatus, errorThrown) 
-        { }
-      });
-    } 
-    else { return; }
+        beforeSend: function() {
+          
+        },
+        success:function(result){
+            var result = jQuery.parseJSON(result);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        
+        }
+    });
+    } else { return;    }
 });
 
 
@@ -90,7 +92,13 @@ $("#submitBtn").attr("disabled", true);
   });
 
   $("#productCategory").change(function(){
-  
+    var val = $(this).val();
+    if( (val =="C_00001") || (val =="C_00003")){
+      $("#trSize").show();
+    }else{
+      $("#trSize").hide();
+      $("#productSize").val("");
+    }
      $.ajax({
           url: "<?=base_url();?>Product/getChildCategory/"+$(this).val(),
            beforeSend: function() {

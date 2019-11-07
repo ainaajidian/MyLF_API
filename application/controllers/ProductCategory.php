@@ -61,9 +61,7 @@ class ProductCategory extends MY_Controller
 
     //Delete data
     function deleteForever($categoryId)
-    {
-        $this->ProductCategory_model->deleteForever($categoryId);
-    }
+    { $this->ProductCategory_model->deleteForever($categoryId); }
 
     //Save data
     function saveCategory()
@@ -194,10 +192,5 @@ class ProductCategory extends MY_Controller
                 window.location.href='" . base_url() . "ProductCategory';
                 </script>");
         }
-    }
-
-    function delete($categoryId)
-    {
-        $this->ProductCategory_model->deleteCategories($categoryId);
     }
 }

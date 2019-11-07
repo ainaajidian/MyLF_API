@@ -82,44 +82,32 @@
       }],
       "bProcessing": true,
       "sAjaxSource": "<?= base_url(); ?>Store/getStore",
-      "aoColumns": [{
-          mData: 'storeId'
-        },
-        {
-          mData: 'storeName'
-        },
-        {
-          mData: 'storeMall'
-        },
-        {
-          mData: 'storeAddress'
-        },
-        {
-          mData: 'storeDetail'
-        },
-        {
-          mData: 'storeLongitude'
-        },
-        {
-          mData: 'storeLatitude'
-        },
-        {
-          mData: 'provinceName'
-        },
-        {
-          mData: 'cityName'
-        },
+      "aoColumns": 
+      [
+        { mData: 'storeId' },
+        { mData: 'storeName' },
+        { mData: 'storeMall' },
+        { mData: 'storeAddress' },
+        { mData: 'storeDetail' },
+        { mData: 'storeLongitude' },
+        { mData: 'storeLatitude' },
+        { mData: 'provinceName' },
+        { mData: 'cityName' },
         {
           "mData": null,
           "bSortable": false,
-          "mRender": function(data, type, full) {
-            if (full.storeFlag === "1") {
-              return '<a class="btn btn-info btn-sm showeditModal"> Edit </a> ' +
-                '<a class="btn btn-danger btn-sm deactiveConfirmation"> Deactive </a>';
-            } else {
-              return '<a  class="btn btn-info btn-sm showeditModal"> Edit </a> ' +
-                '<a class="btn btn-success btn-sm activeConfirmation"> Active </a> ' +
-                '<a class="btn btn-danger btn-sm deleteForever"> Delete </a>';
+          "mRender": function(data, type, full) 
+          {
+            if (full.storeFlag === "1") 
+            {
+              return  '<a class="btn btn-info btn-sm showeditModal"> Edit </a> ' +
+                      '<a class="btn btn-danger btn-sm deactiveConfirmation"> Deactive </a>';
+            } 
+            else 
+            {
+              return  '<a  class="btn btn-info btn-sm showeditModal"> Edit </a> ' +
+                      '<a class="btn btn-success btn-sm activeConfirmation"> Active </a> ' +
+                      '<a class="btn btn-danger btn-sm deleteForever"> Delete </a>';
             }
           }
         }

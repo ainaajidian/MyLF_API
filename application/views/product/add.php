@@ -57,8 +57,19 @@
 		              				<td>Product Price</td><td colspan="2"><input readonly class="form-control" type="number" id="productPrice" name="productPrice" placeholder="Product Price"></td>
 		              			</tr>
 
-		              			<tr>
-		              				<td>Product Description</td><td colspan="2"><textarea class="form-control" type="number" name="productDescription" placeholder="Product Description"></textarea></td>
+		              			<tr id="trSize">
+									  <td>Product Size</td>
+									  <td colspan="2">
+										  <select id="productSize" name="productSize" class="select2 form-control">
+												  <option> -- Pilih Ukuran </option>
+												  <?php
+												  for($x=0;$x<count($sizes);$x++){
+													echo "<option value='".$sizes[$x]['SizeID']."'> ".$sizes[$x]['Keterangan']." </option>";
+
+												  }
+												?>
+										  </select>
+									  </td>
 		              			</tr>
 
 		              			<tr>

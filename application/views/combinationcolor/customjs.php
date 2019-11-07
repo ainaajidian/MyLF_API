@@ -34,7 +34,7 @@ $(function () {
                   }
                   else
                   {
-                    return '<a  class="btn btn-info btn-sm showeditModal"> Edit </a> ' +
+                    return '<a class="btn btn-info btn-sm showeditModal"> Edit </a> ' +
                            '<a class="btn btn-success btn-sm activeConfirmation"> Active </a> ' +
                            '<a class="btn btn-danger btn-sm deleteForever"> Delete </a>' ;
                   }

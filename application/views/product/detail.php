@@ -10,9 +10,9 @@
          <div class="col-md-12">
             <div class="card">
               	<div class="card-header">
-                <h3 class="card-title">Detail Product</h3>
+                	<h3 class="card-title">Detail Product</h3>
               	</div>
-              	<div class="card-body"> <!-- Div Body -->
+              	<div class="card-body">
 	             	<div class="table-responsive">
 	             		<form method="POST" action="<?=base_url();?>Product/saveheader/">
 	              		<table width='100%' class="table" >
@@ -50,26 +50,22 @@
 	              		</table>
 	              		</form>
 	            	</div>
-	        	</div> <!-- Div Body -->
+	        	</div>
 
-	        	<div class="row"> <!-- Div Row -->
-	        		<div class="card-body col-md">
-	        			<a href="<?=base_url();?>Product/addstok/<?=$product->productId;?>/<?=$product->categoryId;?>"> 
-	        				<button type="button" class="btn btn-warning">Ubah Stok</button> 
-	        			</a>
-
-						<a id="addSize" href="#"> 
-	        				<button type="button" class="btn btn-warning">Tambah Ukuran</button> 
-	        			</a>
-						<br>
-
-						<br>
-						<div class="col-md-5"> <!-- Div col-md-5 -->
+    	<div class="row">
+    		<div class="card-body col-md">	
+				<br> <br>
+				
+				<div class="col-md-5">
+					<form action="<?=base_url();?>Product/saveQtyTest" method="POST">
+						<p class="text-small"> Jika kode outlet tidak muncul, harap refresh halaman </p>
+						<input style="margin-bottom:10px;" class="form-control" type="text" name="storeId" id="storeId" readonly>
 						<table class="table table-bordered">
 							<thead>
 								<tr>
 									<th>Color</th> 
 									<th>Size</th>
+									<th>Qty</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -78,13 +74,21 @@
 								<tr>
 									<td><?=$productsize->ccName;?></td>
 									<td><?=$productsize->SizeDescription;?></td>
+									<td>
+										<input type="hidden" name="productsizeid[]" value="<?=$productsize->ProductSizeId;?>">
+										<input type="text" name="qty[]" value="<?=$productsize->StockQty;?>">
+									</td>
 									<td><a href="<?=base_url();?>Product/deleteSize/<?=$product->productId;?>/<?=$productsize->ProductSizeId;?>"> Hapus </a> </td>
 								</tr>
 							<?php } ?>
+							<tr>
+								<td colspan="4" align="right"> <button class="btn btn-warning"> Update Quantity </button> </td>
+							</tr>
 								
 							</tbody>
 						</table>
-						</div> <!-- Div col-md-5 -->
+					</form>
+				</div>
 
 
 	        			<div class="card-header"> Product Color List </div>
@@ -92,51 +96,53 @@
 	        			<a href="<?=base_url();?>Product/addcolor/<?=$product->productId;?>"><button href="#coloraddForm" class="btn btn-info" style="margin-bottom: 10px;margin-left: 10px">  Add New Color </button></a>
 
 
-				     	<div class="table-responsive"> <!-- Div Table Responsive -->
-				      		<table width='100%' class="table" >
-				      			<thead>
-				      				<tr>
-				  						<th> No </th>
-				  						<th> Color Name </th>
-				  						<th> Image 1</th>
-				  						<th> Image 2</th>
-				  						<th> Image 3</th>
-				  						<th> Action</th>
-				      				</tr>
+     	<div class="table-responsive">
+	              		<table width='100%' class="table" >
+	              			<thead>
+	              				<tr>
+	              						<th> No </th>
+	              						<th> Color Name </th>
+	              						<th> Image 1</th>
+	              						<th> Image 2</th>
+										  <th> Image 3</th>
+	              						<th> Action</th>
+	              				</tr>
 
-					              	<?php $x=0; foreach ($product_colors as $key) { $x++; ?>
-					              				
-				      				<tr> 
-				      					<td> <?=$x;?> </td> 
-				      					<td> <?=$key->ccName;?> </td>
-				      					 <td> 
-				      					 	<?php if($key->image1 != "") { ?> 
-				      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image1;?>" height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
-				      					 	<?php } ?>
-				      					 	 </td> 
-				      					 	 <td> 
-				      					 	<?php if($key->image2 != "") { ?> 
-				      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image2;?>"  eight="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
-				      					 	<?php } ?>
-				      					 	 </td> 
-				      					 	 <td> 
-				      					 	<?php if($key->image3 != "") { ?> 
-				      					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image3;?>"  height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
-				      					 	<?php } ?>
-				      					 	 </td> 
-
-				      					 <td> 
-				      					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
-				      					 </td> 
-				      				</tr>	              		
+	              				<?php $x=0; foreach ($product_colors as $key) { $x++; ?>
+	              				
+	              				<tr> 
+	              					<td> <?=$x;?> </td> 
+	              					<td> <?=$key->ccName;?> </td>
+	              					
+	              					<td> 
+	              					 	<?php if($key->image1 != "") { ?> 
+	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image1;?>" height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image1;?>">
+	              					 	<?php } ?>
+	              					
+	              					</td> 
+	              					 	<td> 
+	              					 	<?php if($key->image2 != "") { ?> 
+	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image2;?>"  eight="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image2;?>">
+	              					 	<?php } ?>
+              					 	</td> 
+              					 	
+              					 	<td> 
+	              					 	<?php if($key->image3 != "") { ?> 
+	              					 		<img class = "productImage" data-value="<?=$product->productId;?>" data-id="<?=$key->image3;?>"  height="100" width="100" src="<?=base_url();?>assets/app_assets/product_image/<?=$key->image3;?>">
+	              					 	<?php } ?>
+	              					</td> 
+	              					 <td> 
+	              					 	<a href="<?=base_url();?>Product/deleteColor/<?=$product->productId;?>/<?=$key->productColorId;?>" class="btn btn-danger"> Hapus </a> </td>
+	              					 </td> 
+	              					</tr>	              		
 
 	              				<?php } ?>
 		              		
 		              		</thead>
 		             		              		
 	              		</table>
-	            	</div> <!-- Div Table Responsive -->
-	        	</div> <!-- Div col-md-5 -->
+	            	</div>
+	        	</div>
 
 	        </div>
 

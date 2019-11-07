@@ -77,18 +77,21 @@
 		              				</select>
 
 		              				</td>
-		              			</tr>		             
-		              			<tr>
-		              				<td>Product Size</td>
-		              				<td colspan="2">
-		              				<select required class="form-control" id="sizes"  name="sizes">
-		              					<option value="" disabled selected> -- Product Size -- </option>
-		              					<?php foreach ($sizes as $key) { ?>
-		              						<option value="<?=$key->ProductSizeId;?>"><?=$key->SizeDescription;?></option>
-		              						<?php 	}	?>
-		              				</select>
-		              				</td>
-		              			</tr>
+								  </tr>	
+								<?php if($infoProduct->categoryId != "C_00001"){ ?>             
+									<tr>
+										<td>Product Size</td>
+										<td colspan="2">
+										<select required class="form-control" id="sizes"  name="sizes">
+											<option value="" disabled selected> -- Product Size -- </option>
+											<?php foreach ($sizes as $key) { ?>
+												<option value="<?=$key->SizeID;?>"><?=$key->SizeDescription;?></option>
+												<?php 	}	?>
+										</select>
+										</td>
+									</tr>
+								<?php } ?>
+
 		              			<tr>
 		              				<td>Stok</td>
 		              				<td colspan="2">

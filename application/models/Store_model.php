@@ -10,7 +10,7 @@ class Store_model extends CI_Model {
     function generateAll()
     {
         return $this->db->query("SELECT a.storeId, a.storeName, a.storeMall, a.storeAddress, a.storeDetail, 
-                                 a.storeLongitude, a.storeLatitude, b.provinceName, c.cityName 
+                                 a.storeLongitude, a.storeLatitude, b.provinceName, c.cityName, a.storeFlag 
                                  FROM store a
                                  LEFT JOIN province b ON a.storeProvinceId = b.provinceID
                                  LEFT JOIN city c ON a.storeCityId = c.cityID

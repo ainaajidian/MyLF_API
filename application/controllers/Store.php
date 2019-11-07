@@ -136,14 +136,14 @@ class Store extends MY_Controller
 
 	function getProvince()
 	{
-		$data = $this->db->query("SELECT * from province")->result();
+		$data = $this->db->query("SELECT * FROM province ORDER BY provinceName ASC")->result();
 		return $data;
 	}
 
 	function getCity($provinceId)
 	{
 
-		$data = $this->db->query("SELECT * from city where provinceId = '" . $provinceId . "' ")->result();
+		$data = $this->db->query("SELECT * FROM city WHERE provinceId = '" . $provinceId . "' ORDER BY cityName ASC ")->result();
 		echo json_encode($data);
 	}
 
