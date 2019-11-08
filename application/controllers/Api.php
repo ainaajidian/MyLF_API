@@ -1512,11 +1512,12 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
     function getLatestSoldProducts()
     {
-        $data   = $this->db->query("SELECT a.productId,a.productColorId,image1,productName,productPrice FROM cart a 
+        $data   = $this->db->query("SELECT sum(a.qty) quantity ,a.productId,a.productColorId,image1 as productImage,
+                                    productName,productPrice,isNew,isHot,categoryId,productDescription,0 as isLiked,image1,image2,image3 FROM cart a 
                 inner join product_colors b on a.productId = b.productId and a.productColorId = b.productColorId 
                 inner join products c on a.productId = c.productId
                 where cartFlag = 1 and productFlag = 1
-                group by a.productId,a.productColorId,image1 
+                group by a.productId,a.productColorId,image1,image2,image3 
                 order by createdDate asc LIMIT 6");
         $return = $data->result();
         echo json_encode($return);
