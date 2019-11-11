@@ -54,9 +54,21 @@ class Api extends CI_Controller
         $this->load->view("email_active_success", TRUE);
     }
 
+    function randomPassword() {
+        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
+    }
+    
     function sendNewPassword()
     {
         $email = $this->input->post("email");
+        $newPassword = $this->randomPassword();
 
         //cek email
         $dataEmail = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "'");
@@ -87,10 +99,10 @@ class Api extends CI_Controller
         $mail->addAddress($email);
         $mail->Subject = 'Password Reset';
 
-        $data['password'] = "123456";
+        $data['password'] = $newPassword;
         $body             = $this->load->view("reset_password", $data, TRUE);
 
-        $this->db->query("update members set userPassword = '" . MD5(123456) . "' where userEmail = '" . $email . "'  ");
+        $this->db->query("update members set userPassword = '" . MD5($newPassword) . "' where userEmail = '" . $email . "'  ");
 
         $mail->Body = $body;
         if (!$mail->send()) {
@@ -110,29 +122,43 @@ class Api extends CI_Controller
         echo json_encode($this->input->post());
     }
 
+    function unregister()
+    {
+        $email              = $this->input->post("email");
+        $password           = $this->input->post("password");
+        $fullname           = $this->input->post("fullname");
+        $dob                = $this->input->post("dob");
+        $gender             = $this->input->post("gender");
+        $deviceId           = $this->input->post("deviceId");
+        $userMobilephone    = $this->input->post("phone");
+
+        $this->db->query("DELETE members where userEmail = '".$email."' ");
+        //echo json_encode($data);
+    }
 
     function register()
     {
-        $email    = $this->input->post("email");
-        $password = $this->input->post("password");
-        $fullname = $this->input->post("fullname");
-        $dob      = $this->input->post("dob");
-        $gender   = $this->input->post("gender");
-        $deviceId = $this->input->post("deviceId");
+        $email              = $this->input->post("email");
+        $password           = $this->input->post("password");
+        $fullname           = $this->input->post("fullname");
+        $dob                = $this->input->post("dob");
+        $gender             = $this->input->post("gender");
+        $deviceId           = $this->input->post("deviceId");
+        $userMobilephone    = $this->input->post("phone");
 
         $registerDate = date("Y-m-d");
 
-        $cekEmail = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "' ")->num_rows();
+        $cekEmail = $this->db->query("SELECT * FROM members where (userEmail = '" . $email . "' or userMobilephone='".$userMobilephone."')")->num_rows();
         if ($cekEmail > 0) {
             $data['err']     = 1;
-            $data['message'] = "Email already registered !!!";
+            $data['message'] = "Email / Phone Number already registered !!!";
         } else {
             $id = $this->generateUserid();
-            $this->db->query("INSERT INTO members (userGender,userId,userEmail,userPassword,userFullname,userBirthDate,userActive,userRegisterDate,userDeviceId) 
-                    values ('" . $gender . "','" . $id . "','" . $email . "','" . md5($password) . "','" . $fullname . "','" . $dob . "',0,'" . $registerDate . "','" . $deviceId . "') ");
+            $this->db->query("INSERT INTO members (userGender,userId,userEmail,userPassword,userFullname,userBirthDate,userActive,userRegisterDate,userDeviceId,userMobilephone) 
+                    values ('" . $gender . "','" . $id . "','" . $email . "','" . md5($password) . "','" . $fullname . "','" . $dob . "',1,'" . $registerDate . "','" . $deviceId . "','".$userMobilephone."') ");
             $data['err']     = 0;
             $data['message'] = "Register success. We sent an email to you";
-            $this->sendConfirmationEmail($id);
+            //$this->sendConfirmationEmail($id);
         }
         echo json_encode($data);
     }
@@ -876,6 +902,14 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     function deleteCart()
     {
         $cartId = $this->input->post("cartId");
+        $dataCart = $this->db->query("SELECT * FROM cart where cartId = '".$cartId."'")->row();
+
+        $this->db->query("UPDATE TransactionItemSalesStock set StockQty = StockQty + $dataCart->qty 
+                                where storeID = '".$dataCart->storeId."'
+                                 and productID = '".$dataCart->productId."' 
+                                 and ProductColorID = '".$dataCart->productColorId."'
+                                 and SizeID = '".$dataCart->sizeId."' 
+                                ");
         $this->db->query("DELETE FROM cart where cartId = '" . $cartId . "' ");
     }
 
@@ -1032,7 +1066,25 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     function setCartStore()
     {
         $cartId                 = $this->input->post("cartId");
-        $storeId      = $this->input->post("storeId");
+        $storeId                = $this->input->post("storeId");
+
+        //Ambil store sebelumnya //
+
+        $dataCart = $this->db->query("SELECT * FROM cart where cartId = '".$cartId."'")->row();
+
+        $this->db->query("UPDATE TransactionItemSalesStock set StockQty = StockQty + $dataCart->qty 
+                                where storeID = '".$dataCart->storeId."'
+                                 and productID = '".$dataCart->productId."' 
+                                 and ProductColorID = '".$dataCart->productColorId."'
+                                 and SizeID = '".$dataCart->sizeId."' 
+                                ");
+
+        $this->db->query("UPDATE TransactionItemSalesStock set StockQty = StockQty - $dataCart->qty 
+                                where storeID = '".$storeId."'
+                                 and productID = '".$dataCart->productId."' 
+                                 and ProductColorID = '".$dataCart->productColorId."'
+                                 and SizeID = '".$dataCart->sizeId."' 
+                                ");
 
         $this->db->query("UPDATE cart set storeId = '" . $storeId . "' where cartId = '" . $cartId . "'");
     }
@@ -1251,14 +1303,6 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                           ");
 
                 $dataCart = $this->db->query("SELECT * FROM cart where midtransOrderID = '" . $result->order_id . "' ")->row();
-
-                $this->db->query("UPDATE TransactionItemSalesStock set StockQty = StockQty-1 
-                                    where storeID = '" . $dataCart->storeId . "' 
-                                    and productID = '" . $dataCart->productId . "' 
-                                    and ProductColorID = '" . $dataCart->productColorId . "' 
-                                    and SizeID = '" . $dataCart->sizeId . "'
-                                     ");
-
 
                 // $datasave = array(
                 //     "userId"                => $datauser->userId,
@@ -1505,7 +1549,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             $data['userInfo'] = $cek->row();
         }else{
             $data['err']      = 1;
-            $data['message']  = "Login Failed. please check your format phone format, both on this form and profil page (081234567xxx)";
+            $data['message']  = "Login Failed. please check your phone number format. both on this form and profil page (081234567xxx)";
         }
         echo json_encode($data);
     }
@@ -1521,6 +1565,58 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                 order by createdDate asc LIMIT 6");
         $return = $data->result();
         echo json_encode($return);
+    }
+
+function instagramPost(){
+
+$access_token = "2134473585.6806ed4.92ac91cef0874d398c71e0949badbbbe";
+$photo_count = 10;
+$json_link = "https://api.instagram.com/v1/users/self/media/recent/?";
+$json_link .="access_token={$access_token}&count={$photo_count}";
+$json = file_get_contents($json_link);
+$obj = json_decode(preg_replace('/("\w+"):(\d+)/', '\\1:"\\2"', $json), true);
+echo "<pre>";
+print_r($obj);
+echo "</pre>";
+foreach ($obj['data'] as $post){
+    $pic_text = $post['caption']['text'];
+    $pic_link = $post['link'];
+    $pic_like_count = $post['likes']['count'];
+    $pic_comment_count=$post['comments']['count'];
+    $pic_src=str_replace("http://", "https://", $post['images']['standard_resolution']['url']);
+    $pic_created_time=date("F j, Y", $post['caption']['created_time']);
+    $pic_created_time=date("F j, Y", strtotime($pic_created_time . " +1 days"));
+    echo "<div class='col-md-4 item_box'>";
+        echo "<a href='{$pic_link}' target='_blank'>";
+          echo "<img class='img-responsive photo-thumb' src='{$pic_src}' alt='{$pic_text}'>";
+        echo "</a>";
+    echo "<p>";
+    echo "<p>";
+        echo "<div style='color:#888;'>";
+            echo "<a href='{$pic_link}' target='_blank'>{$pic_created_time}</a>";
+        echo "</div>";
+    echo "</p>";
+    echo "<p>{$pic_text}</p>";
+    echo "</p>";
+    echo "</div>";
+}
+    }
+
+    function getProductFeedback(){
+        $productId = $this->input->post("productId");
+        $rateFilter = $this->input->post("rateFilter");
+        if($rateFilter == "0"){
+        $data = $this->db->query("SELECT a.*,b.userId,c.userFullname FROM productRate a 
+                            inner join cart b on a.cartId = b.cartId 
+                            inner join members c on b.userId = c.userId
+                            where productId = '".$productId."' order by feedbackDate desc ")->result();
+        }else{
+            $data = $this->db->query("SELECT a.*,b.userId,c.userFullname FROM productRate a 
+                            inner join cart b on a.cartId = b.cartId 
+                            inner join members c on b.userId = c.userId
+                            where productId = '".$productId."' and rate = '".$rateFilter."'  order by feedbackDate desc ")->result();
+        }
+        echo json_encode($data);
     }
 
 }
