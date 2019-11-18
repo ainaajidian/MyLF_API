@@ -9,9 +9,6 @@ class Api extends CI_Controller
         parent::__construct();
         $this->load->model('Message_model');
         $this->load->model('User_model');
-        $params = array('server_key' => 'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL', 'production' => false);
-        $this->load->library('Midtrans');
-        $this->midtrans->config($params);
         $this->load->library("MyPHPMailer");
     }
 
@@ -1301,16 +1298,6 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                         midtransTransactionStatus = '" . $result->transaction_status . "'
                         where midtransOrderID = '" . $result->order_id . "' 
                           ");
-
-                $dataCart = $this->db->query("SELECT * FROM cart where midtransOrderID = '" . $result->order_id . "' ")->row();
-
-                // $datasave = array(
-                //     "userId"                => $datauser->userId,
-                //     "messageContent"        => "Dear our beloved customer, we'd like to inform that your payment transaction for {$datauser->cartId} is {$datauser->midtransTransactionStatus} ",                    
-                //      "messageTitle"          => "Payment Information " . $datauser->cartId,
-                //     "messageId"             => $this->Message_model->getMaxId()
-                // );
-                // $this->db->insert("message", $datasave);
             } else {
                 $this->db->query("UPDATE cart 
                         set midtransPaymentType = '" . $result->payment_type . "', 
@@ -1618,5 +1605,154 @@ foreach ($obj['data'] as $post){
         }
         echo json_encode($data);
     }
+
+    function getMaintenanceStatus(){
+        $data =  $this->db->query("SELECT currentVal from appconfiguration where `key` = 'isMaintenance' ")->row();
+        echo json_encode($data);
+    }
+
+
+    function getCartByID($cartId){
+
+        $transactionId = $cartId."-".rand();
+
+        $data = $this->db->query("SELECT '".$transactionId."' as midtransId, a.*, productPrice, ((a.qty * b.productPrice) + a.deliveryPrice) as grandtotal,c.userFullname,c.userEmail,c.userMobilephone 
+                                FROM cart a inner join products b on a.productId = b.productId 
+                                inner join members c on a.userId = c.userId
+                                where cartId = '".$cartId."' ")->row();
+
+        $this->db->query("UPDATE cart set midtransOrderId ='".$transactionId."' where cartId = '".$cartId."'");
+
+        echo json_encode($data);
+}
+
+function charge(){
+    $is_production = false;
+
+    $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+
+    $api_url = $is_production ? 'https://app.midtrans.com/snap/v1/transactions' : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
+    // Check if request doesn't contains `/charge` in the url/path, display 404
+    if( !strpos($_SERVER['REQUEST_URI'], '/charge') ) {
+    http_response_code(404); 
+    echo "wrong path, make sure it's `/charge`"; exit();
+    }
+    // Check if method is not HTTP POST, display 404
+    if( $_SERVER['REQUEST_METHOD'] !== 'POST'){
+    http_response_code(404);
+    echo "Page not found or wrong HTTP request method is used"; exit();
+    }
+    // get the HTTP POST body of the request
+    $request_body = file_get_contents('php://input');
+    // set response's content type as JSON
+    header('Content-Type: application/json');
+    // call charge API using request body passed by mobile SDK
+    $charge_result = $this->chargeAPI($api_url, $server_key, $request_body);
+    // set the response http status code
+    http_response_code($charge_result['http_code']);
+    // then print out the response body
+    echo $charge_result['body'];
+}
+function chargeAPI($api_url, $server_key, $request_body){
+    $ch = curl_init();
+    $curl_options = array(
+      CURLOPT_URL => $api_url,
+      CURLOPT_RETURNTRANSFER => 1,
+      CURLOPT_POST => 1,
+      CURLOPT_HEADER => 0,
+      // Add header to the request, including Authorization generated from server key
+      CURLOPT_HTTPHEADER => array(
+        'Content-Type: application/json',
+        'Accept: application/json',
+        'Authorization: Basic ' . base64_encode($server_key . ':')
+      ),
+      CURLOPT_POSTFIELDS => $request_body
+    );
+    curl_setopt_array($ch, $curl_options);
+    $result = array(
+      'body' => curl_exec($ch),
+      'http_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+    );
+    return $result;
+  }
+
+  function calculatePriceBangsaw()
+  {
+      
+
+    $cityOrigin = $this->input->post("cityOrigin");
+    $cityDestination = $this->input->post("cityDestination");
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+          CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "POST",
+          CURLOPT_POSTFIELDS => "origin=" . $cityOrigin . "&originType=subdistrict&destination=" . $cityDestination . "&destinationType=subdistrict&weight=1&courier=jnt:jne:tiki",
+          CURLOPT_HTTPHEADER => array(
+              "content-type: application/x-www-form-urlencoded",
+              "key: 5882027194d829e46c2cdd55f8875dde"
+          ),
+      ));
+
+      $response = curl_exec($curl);
+      $err = curl_error($curl);
+
+      // print_r($response);die();
+
+      curl_close($curl);
+
+      if ($err) {
+          echo "cURL Error #:" . $err;
+      } else {
+          $data = json_decode($response, true);
+          for ($a = 0; $a < count($data['rajaongkir']['results']); $a++) {
+              for ($x = 0; $x < count($data['rajaongkir']['results'][$a]['costs']); $x++) {
+                  for ($y = 0; $y < count($data['rajaongkir']['results'][$a]['costs'][$x]['cost']); $y++) {
+                      $hasil[] = array(
+                          "CourId" => strtoupper($data['rajaongkir']['results'][$a]['code']),
+                          "CourName" => strtoupper($data['rajaongkir']['results'][$a]['name']),
+                          "services" => $data['rajaongkir']['results'][$a]['costs'][$x]['service'],
+                          "cost" => "" . $data['rajaongkir']['results'][$a]['costs'][$x]['cost'][$y]['value'] . "",
+                          "etd" => $data['rajaongkir']['results'][$a]['costs'][$x]['cost'][$y]['etd'] . " Day(s)"
+                      );
+                  }
+              }
+          }
+          echo json_encode($hasil);
+      }
+  }
+
+  function no_notifcationhandler($orderId){
+    $this->load->library('veritrans');
+    $params = array('server_key' => 'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL', 'production' => false);
+    $this->veritrans->config($params);
+    $result = $this->veritrans->status($orderId);
+    if ($result->status_code == "200") {
+        $this->db->query("UPDATE cart 
+                set midtransPaymentType = '" . $result->payment_type . "', 
+                midtransGrossAmount = '" . $result->gross_amount . "',
+                midtransTransactionTime = '" . $result->transaction_time . "',
+                midtransStatusCode = '" . $result->status_code . "',
+                cartFlag = 1,
+                midtransTransactionStatus = '" . $result->transaction_status . "'
+                where midtransOrderID = '" . $result->order_id . "' 
+                  ");
+    } else {
+        $this->db->query("UPDATE cart 
+                set midtransPaymentType = '" . $result->payment_type . "', 
+                midtransGrossAmount = '" . $result->gross_amount . "',
+                midtransTransactionTime = '" . $result->transaction_time . "',
+                midtransStatusCode = '" . $result->status_code . "',
+                midtransTransactionStatus = '" . $result->transaction_status . "'
+                where midtransOrderID = '" . $result->order_id . "' 
+                  ");
+    }
+}
+
 
 }
