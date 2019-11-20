@@ -1117,7 +1117,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         // print_r($response);die();
 
         curl_close($curl);
-
+        $hasil[]= array("CourId" => "PICK UP", "CourName" => "Pick Up", "services" => "Pick Up" , "cost" => "0", "etd" => "Pick Up");
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
@@ -1177,6 +1177,8 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         $deliveryService = $this->input->post("deliveryService");
         $deliveryETD = $this->input->post("deliveryETD");
         $deliveryPrice = $this->input->post("deliveryPrice");
+        $pointUsage = $this->input->post("pointUsage");
+        $grandTotal = $this->input->post("grandTotal");
 
         $dataUpdate = array(
             "deliveryCourId" => $deliveryCourId,
@@ -1184,6 +1186,8 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             "deliveryService" => $deliveryService,
             "deliveryETD" => $deliveryETD,
             "deliveryPrice" => $deliveryPrice,
+            "pointUsage" => $pointUsage,
+            "grandTotal" => $grandTotal
         );
 
         $this->db->set($dataUpdate);
@@ -1329,6 +1333,8 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     function getPaymentStatus()
     {
         $cartId = $this->input->post("cartId");
+        $data1 = $this->db->query("SELECT * FROM cart where cartId = '" . $cartId . "'")->row();
+        $this->no_notifcationhandler($data1->midtransOrderID);
         $data = $this->db->query("SELECT * FROM cart where cartId = '" . $cartId . "'")->row();
         if ($data) {
             $data = array("status" => "ok", "payment_status" => $data->midtransStatusCode);
@@ -1336,6 +1342,33 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             $data = array("status" => "fail", "payment_status" => 'failed');
         }
         echo json_encode($data);
+    }
+
+    function no_notifcationhandler($orderId){
+        $this->load->library('veritrans');
+        $params = array('server_key' => 'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL', 'production' => false);
+        $this->veritrans->config($params);
+        $result = $this->veritrans->status($orderId);
+        if ($result->status_code == "200") {
+            $this->db->query("UPDATE cart 
+                    set midtransPaymentType = '" . $result->payment_type . "', 
+                    midtransGrossAmount = '" . $result->gross_amount . "',
+                    midtransTransactionTime = '" . $result->transaction_time . "',
+                    midtransStatusCode = '" . $result->status_code . "',
+                    cartFlag = 1,
+                    midtransTransactionStatus = '" . $result->transaction_status . "'
+                    where midtransOrderID = '" . $result->order_id . "' 
+                      ");
+        } else {
+            $this->db->query("UPDATE cart 
+                    set midtransPaymentType = '" . $result->payment_type . "', 
+                    midtransGrossAmount = '" . $result->gross_amount . "',
+                    midtransTransactionTime = '" . $result->transaction_time . "',
+                    midtransStatusCode = '" . $result->status_code . "',
+                    midtransTransactionStatus = '" . $result->transaction_status . "'
+                    where midtransOrderID = '" . $result->order_id . "' 
+                      ");
+        }
     }
 
     function getCartHist()
@@ -1443,6 +1476,27 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
     function deliveryStatus()
     {
+        $data = $this->db->query("SELECT * FROM cart where cartId = '".$this->input->post('cartId')."' ")->row();
+        $deliveryCourId =  $data->deliveryCourId;
+
+        if($deliveryCourId == "J&T"){
+            $deliveryCourId = "jnt";
+        }
+
+
+
+        $deliveryCourId = strtolower($deliveryCourId);
+
+        if($data->deliveryResiNo == null || $data->deliveryResiNo == ""){
+            $newArray[] = array("manifest_code" => "400",
+             "manifest_description" => "400",
+             "manifest_date" => "400",
+             "manifest_time" => "400",
+             "city_name" => "400",); 
+            echo json_encode($newArray);
+            return;
+        }
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://pro.rajaongkir.com/api/waybill",
@@ -1452,7 +1506,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "waybill=JP0943665840&courier=jnt",
+            CURLOPT_POSTFIELDS => "waybill=$data->deliveryResiNo&courier=$deliveryCourId",
             CURLOPT_HTTPHEADER => array(
                 "content-type: application/x-www-form-urlencoded",
                 "key:5882027194d829e46c2cdd55f8875dde"
@@ -1616,7 +1670,7 @@ foreach ($obj['data'] as $post){
 
         $transactionId = $cartId."-".rand();
 
-        $data = $this->db->query("SELECT '".$transactionId."' as midtransId, a.*, productPrice, ((a.qty * b.productPrice) + a.deliveryPrice) as grandtotal,c.userFullname,c.userEmail,c.userMobilephone 
+        $data = $this->db->query("SELECT '".$transactionId."' as midtransId, a.*, productPrice, grandtotal,c.userFullname,c.userEmail,c.userMobilephone 
                                 FROM cart a inner join products b on a.productId = b.productId 
                                 inner join members c on a.userId = c.userId
                                 where cartId = '".$cartId."' ")->row();
@@ -1727,32 +1781,13 @@ function chargeAPI($api_url, $server_key, $request_body){
       }
   }
 
-  function no_notifcationhandler($orderId){
-    $this->load->library('veritrans');
-    $params = array('server_key' => 'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL', 'production' => false);
-    $this->veritrans->config($params);
-    $result = $this->veritrans->status($orderId);
-    if ($result->status_code == "200") {
-        $this->db->query("UPDATE cart 
-                set midtransPaymentType = '" . $result->payment_type . "', 
-                midtransGrossAmount = '" . $result->gross_amount . "',
-                midtransTransactionTime = '" . $result->transaction_time . "',
-                midtransStatusCode = '" . $result->status_code . "',
-                cartFlag = 1,
-                midtransTransactionStatus = '" . $result->transaction_status . "'
-                where midtransOrderID = '" . $result->order_id . "' 
-                  ");
-    } else {
-        $this->db->query("UPDATE cart 
-                set midtransPaymentType = '" . $result->payment_type . "', 
-                midtransGrossAmount = '" . $result->gross_amount . "',
-                midtransTransactionTime = '" . $result->transaction_time . "',
-                midtransStatusCode = '" . $result->status_code . "',
-                midtransTransactionStatus = '" . $result->transaction_status . "'
-                where midtransOrderID = '" . $result->order_id . "' 
-                  ");
+  function getUserpoint($userId){
+    $data = $this->db->query("SELECT * FROM TransactionMember where userId = 'M-02301' order by TransactionDate desc Limit 1 ");
+    if($data->num_rows() > 0){
+        echo json_encode(array("points" => $data->row()->TotalPoint));
+    }else{
+        echo json_encode(array("points" => 0));
     }
-}
-
+  }
 
 }
