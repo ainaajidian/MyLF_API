@@ -36,6 +36,14 @@
 												<button class="btn btn-warning"> Input Resi </button>
 											</td>
 										</tr>
+										<tr>
+											<th>Nomor Struk</th>
+											<td>
+												<input type="hidden" name="cartId" value="<?=$cart->cartId;?>">
+												<input type="text" maxlength="32" name="salesOrderTransactionNo" value="<?=$cart->salesOrderTransactionNo;?>">
+												<button class="btn btn-warning"> Input Struk </button>
+											</td>
+										</tr>
 									</thead>
 								</table>
 							</form>

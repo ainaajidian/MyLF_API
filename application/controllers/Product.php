@@ -34,7 +34,9 @@ class Product extends MY_Controller
 
 	function getProduct()
 	{
-		$data['data']	= $this->db->query("SELECT a.*, b.categoryName
+		$data['data']	= $this->db->query("SELECT a.productId, a.productName, b.categoryName, 
+											CONCAT('Rp ', FORMAT(productPrice, 0)) AS productPrice,
+											a.isHot, a.isNew, a.productFlag
 											FROM products a 
 											INNER JOIN product_categories b ON a.categoryId = b.categoryId")->result();
 		echo json_encode($data);

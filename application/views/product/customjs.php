@@ -140,7 +140,7 @@ buttons:
       { mData: 'productId' } ,
       { mData: 'productName' } ,
       { mData: 'categoryName' } ,
-      { mData: 'productPrice' } ,
+      { mData: 'productPrice'} ,
       {
         "mData": null,
         "bSortable": false,

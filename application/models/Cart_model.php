@@ -29,10 +29,10 @@ class Cart_model extends CI_Model
         return $data;
     }
 
-    function updateResi($data,$kondisi)
+    function updateResi($dataupdate,$kondisi)
     {
         $this->db->where($kondisi);
-        $this->db->update('cart', $data);
+        $this->db->update('cart', $dataupdate);
     }
 
 }

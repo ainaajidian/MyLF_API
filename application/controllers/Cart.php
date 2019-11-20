@@ -59,7 +59,8 @@ class Cart extends MY_Controller
         $data['customjs']               = "cart/customjs";
 
         $data['cart'] = $this->db->query("SELECT a.cartId, a.userId, b.productName, c.image1, d.ccName, 
-                                        a.sizeId, f.storeMall, e.responseDescription, a.deliveryResiNo, a.customerReceiveStatus
+                                        a.sizeId, f.storeMall, e.responseDescription, a.deliveryResiNo, 
+                                        a.customerReceiveStatus, a.salesOrderTransactionNo
                                         FROM cart a 
                                         LEFT JOIN products b ON a.productId = b.productId 
                                         LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
@@ -72,17 +73,19 @@ class Cart extends MY_Controller
 
     function saveResi()
     {
-        $cartId         = $this->input->post("cartId");
-        $deliveryResiNo = $this->input->post("deliveryResiNo");
-        
-        $dataupdate = array( "deliveryResiNo"             => $deliveryResiNo );
-
-        $kondisi    = array("cartId"   => $cartId);
+        $cartId                  = $this->input->post("cartId");
+        $deliveryResiNo          = $this->input->post("deliveryResiNo");
+        $salesOrderTransactionNo = $this->input->post("salesOrderTransactionNo");
+         
+    
+        $dataupdate = array("deliveryResiNo"             => $deliveryResiNo ,
+                            "salesOrderTransactionNo"    => $salesOrderTransactionNo );
+        $kondisi    = array("cartId"                     => $cartId);
 
         $this->Cart_model->updateResi($dataupdate, $kondisi);
 
         die("<script>
-                alert('Input Resi Success');
+                alert('Input Data Success');
                 window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
                 </script>");
     }
