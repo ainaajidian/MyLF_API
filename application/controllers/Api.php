@@ -71,7 +71,7 @@ class Api extends CI_Controller
         $dataEmail = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "'");
 
         if ($dataEmail->num_rows() < 1) {
-            $data['msg'] = "Email not found !!!";
+            $data['msg'] = "Email tidak terdaftar";
             echo json_encode($data);
             die();
         }
@@ -103,9 +103,9 @@ class Api extends CI_Controller
 
         $mail->Body = $body;
         if (!$mail->send()) {
-            $data['msg'] = "Failed to send email, please try again later";
+            $data['msg'] = "Gagal mengirimkan email, harap coba kembali";
         } else {
-            $data['msg'] = "We send you new password. Please check your email";
+            $data['msg'] = "Kami mengirimkan password baru ke email anda";
         }
         echo json_encode($data);
     }
@@ -148,13 +148,13 @@ class Api extends CI_Controller
         $cekEmail = $this->db->query("SELECT * FROM members where (userEmail = '" . $email . "' or userMobilephone='".$userMobilephone."')")->num_rows();
         if ($cekEmail > 0) {
             $data['err']     = 1;
-            $data['message'] = "Email / Phone Number already registered !!!";
+            $data['message'] = "Email atau No Handphone sudah terdaftar";
         } else {
             $id = $this->generateUserid();
             $this->db->query("INSERT INTO members (userGender,userId,userEmail,userPassword,userFullname,userBirthDate,userActive,userRegisterDate,userDeviceId,userMobilephone) 
                     values ('" . $gender . "','" . $id . "','" . $email . "','" . md5($password) . "','" . $fullname . "','" . $dob . "',1,'" . $registerDate . "','" . $deviceId . "','".$userMobilephone."') ");
             $data['err']     = 0;
-            $data['message'] = "Register success. We sent an email to you";
+            $data['message'] = "Proses Daftar sukses, kami mengirimkan email konfirmasi";
             //$this->sendConfirmationEmail($id);
         }
         echo json_encode($data);
@@ -178,11 +178,11 @@ class Api extends CI_Controller
         $cekEmail = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "' and userPassword = '" . md5($password) . "'");
         if ($cekEmail->num_rows() > 0) {
             $data['err']      = 0;
-            $data['message']  = "Login successful";
+            $data['message']  = "Login berhasil";
             $data['userInfo'] = $cekEmail->row();
         } else {
             $data['err']     = 1;
-            $data['message'] = "Wrong email or password";
+            $data['message'] = "Email atau password salah";
         }
         echo json_encode($data);
     }
@@ -764,7 +764,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         $qty = 1;
         $maxId = $this->getMaxCartId($userId);
 
-        $cekData = $this->db->query("SELECT * FROM cart where userId = '" . $userId . "' and ( midtransStatusCode <> 200 or midtransStatusCode is null)");
+        $cekData = $this->db->query("SELECT * FROM cart where userId = '" . $userId . "' and ( midtransStatusCode <> 200 or midtransStatusCode is null) and cartFlag = 0");
 
         if ($cekData->num_rows() > 0) {
             $rslt = array("status" => "1");
@@ -780,6 +780,8 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             die();
         }
 
+        $dataProduct = $this->db->query("SELECT productPrice FROM products where productId = '".$productId."' ")->row();
+
         $data = array(
             "cartId" => $maxId,
             "userId" => $userId,
@@ -790,13 +792,11 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             "storeId" => "",
             "createdDate" => date("Y-m-d H:i:s"),
             "cartFlag" => 0,
-            "customerReceiveStatus" => 0
-        );
-        $kondisi = array(
-            "userId" => $userId,
-            "productId" => $productId,
-            "productColorId" => $productColorId,
-            "sizeId" => $sizeId,
+            "customerReceiveStatus" => 0,
+            "productPrice" => $dataProduct->productPrice,
+            "productPriceAfterPromo" => $dataProduct->productPrice,
+            "disc" => 0,
+
         );
 
         $this->db->insert("cart", $data);
@@ -837,7 +837,9 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                                 inner join combination_color cc on pc.combination_color = ccId
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
-                                            where a.userId = '" . $userId . "' and (cartFlag = null or cartFlag = 0)
+                                            where a.userId = '" . $userId . "' and (cartFlag IS NULL or cartFlag = 0) 
+                                            and 
+                                            (midtransStatusCode IS NULL or midtransStatusCode = '')
                                             group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice ")->result();
         foreach ($queryresult as $key) {
             $info = explode(";", $key->SizeDescription);
@@ -907,7 +909,13 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                  and ProductColorID = '".$dataCart->productColorId."'
                                  and SizeID = '".$dataCart->sizeId."' 
                                 ");
-        $this->db->query("DELETE FROM cart where cartId = '" . $cartId . "' ");
+        //$this->db->query("DELETE FROM cart where cartId = '" . $cartId . "' ");
+        if($dataCart->midtransOrderID != "" || $dataCart->midtransOrderID != null){
+            $this->cancelTransaction($dataCart->midtransOrderID);
+        }
+        
+        $this->db->query("UPDATE cart set cartFlag = 2, deletedDate = NOW(), deletedBy = '".$dataCart->userId."' where cartId = '".$cartId."'");
+
     }
 
     function getAddress($userId)
@@ -1006,7 +1014,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     {
         $cartData = $this->db->query("SELECT * FROM cart where cartId = '" . $cartId . "'")->row();
 
-        $data = $this->db->query("SELECT productId,productColorId,a.storeName,storeMall,storeLongitude,storeLatitude,StockQty FROM store a 
+        $data = $this->db->query("SELECT productId,productColorId,a.storeName,storeMall,storeLongitude,storeLatitude,StockQty,storeWhatsApp FROM store a 
         inner join TransactionItemSalesStock b on a.storeName = b.storeID 
                                     where productId = '" . $cartData->productId . "' 
                                     and productColorId = '" . $cartData->productColorId . "'
@@ -1312,10 +1320,88 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                         where midtransOrderID = '" . $result->order_id . "' 
                           ");
             }
+            if($result->payment_type == "bank_transfer" && $result->transaction_status != "cancel" && $result->transaction_status != "expire"){
+                $this->load->model('Message_model');
+                $this->db->query("UPDATE cart 
+                        set va_numbers = '".$result->va_numbers[0]->va_number."', va_bank = '".$result->va_numbers[0]->bank."'
+                        where midtransOrderID = '" . $result->order_id . "' 
+                          ");
+
+                    $userId             =  $datauser->userId;
+                    $messageContent     = "Harap lakukan transfer ke Virtual Account BCA, dengan nomor tujuan ".$result->va_numbers[0]->va_number. " , sebesar ".number_format($result->gross_amount)." . Pembayaran akan hangus dalam waktu 24 jam.";
+                    $messageTitle       = "Konfirmasi Checkout ".$datauser->cartId;
+                    $datasave = array(
+                        "userId"                => $userId,
+                        "deviceId"              => "",
+                        "messageContent"        => $messageContent,
+                        "messageTitle"          => $messageTitle,
+                        "messageId"             => $this->Message_model->getMaxId()
+                    );
+                    $this->Message_model->saveMessage($datasave, $messageContent);
+            }else if($result->payment_type == "bank_transfer" && $result->transaction_status == "cancel"){
+                    $userId             =  $datauser->userId;
+                    $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " berhasil di batalkan.";
+                    $messageTitle       = "Transaksi di batalkan ".$datauser->cartId;
+                    $datasave = array(
+                        "userId"                => $userId,
+                        "deviceId"              => "",
+                        "messageContent"        => $messageContent,
+                        "messageTitle"          => $messageTitle,
+                        "messageId"             => $this->Message_model->getMaxId()
+                    );
+    
+                    $this->Message_model->saveMessage($datasave, $messageContent);
+            }else if($result->transaction_status == "expire"){
+                $userId             =  $datauser->userId;
+                $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " sudah tidak berlaku atau kadaluwarsa. Jadi jangan melakukan pembayaran yah.";
+                $messageTitle       = "Transaksi di kadaluwarsa ".$datauser->cartId;
+                $datasave = array(
+                    "userId"                => $userId,
+                    "deviceId"              => "",
+                    "messageContent"        => $messageContent,
+                    "messageTitle"          => $messageTitle,
+                    "messageId"             => $this->Message_model->getMaxId()
+                );
+                $this->Message_model->saveMessage($datasave, $messageContent);
+            }
+
         } else {
             header("HTTP/1.1 400");
         }
     }
+
+
+    function notificationhandlertet($orderId){
+        $this->load->library('veritrans');
+        $is_production = false;
+        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $params = array('server_key' => $server_key, 'production' => $is_production);
+        $this->veritrans->config($params);
+        $result = $this->veritrans->status($orderId);
+        echo json_encode($result);
+    }
+
+
+    function cancelTransaction($orderId){
+        $this->load->library('veritrans');
+        $is_production = false;
+        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $params = array('server_key' => $server_key, 'production' => $is_production);
+        $this->veritrans->config($params);
+        $this->veritrans->cancel($orderId);
+        $this->db->query("UPDATE cart set cartFlag = 1, deletedDate = NOW() where midtransOrderID = '".$orderId."'");
+    }
+
+    function setExpiredTransaction($orderId){
+        $this->load->library('veritrans');
+        $is_production = false;
+        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $params = array('server_key' => $server_key, 'production' => $is_production);
+        $this->veritrans->config($params);
+        $this->veritrans->expire($orderId);
+        $this->db->query("UPDATE cart set cartFlag = 1, deletedDate = NOW() where midtransOrderID = '".$orderId."'");
+    }
+
 
     function finishPay()
     {
@@ -1334,21 +1420,36 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     {
         $cartId = $this->input->post("cartId");
         $data1 = $this->db->query("SELECT * FROM cart where cartId = '" . $cartId . "'")->row();
-        $this->no_notifcationhandler($data1->midtransOrderID);
-        $data = $this->db->query("SELECT * FROM cart where cartId = '" . $cartId . "'")->row();
-        if ($data) {
-            $data = array("status" => "ok", "payment_status" => $data->midtransStatusCode);
-        } else {
+        if($data1->midtransPaymentType != null || $data1->midtransPaymentType != ""){
+            $data = array("status" => "ok", "payment_status" => $data1->midtransStatusCode);
+        }else{
             $data = array("status" => "fail", "payment_status" => 'failed');
         }
+
+
         echo json_encode($data);
     }
 
-    function no_notifcationhandler($orderId){
+    function changePayment(){
+        $cartId = $this->input->post("cartId");
+        $this->db->query("UPDATE cart 
+        set midtransPaymentType = '', 
+        midtransGrossAmount = '',
+        midtransTransactionTime = '',
+        midtransStatusCode = '',
+        midtransTransactionStatus = ''
+        where cartId = '" . $cartId . "' 
+          ");
+    }
+
+    function no_notificationhandler($orderId){
         $this->load->library('veritrans');
-        $params = array('server_key' => 'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL', 'production' => false);
+        $is_production = false;
+        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $params = array('server_key' => $server_key, 'production' => $is_production);
         $this->veritrans->config($params);
         $result = $this->veritrans->status($orderId);
+
         if ($result->status_code == "200") {
             $this->db->query("UPDATE cart 
                     set midtransPaymentType = '" . $result->payment_type . "', 
@@ -1369,6 +1470,13 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     where midtransOrderID = '" . $result->order_id . "' 
                       ");
         }
+        if($result->payment_type == "bank_transfer"){
+            $this->db->query("UPDATE cart 
+                    set va_numbers = '".$result->va_numbers[0]->va_number."', va_bank = '".$result->va_numbers[0]->va_number."'
+                    where midtransOrderID = '" . $result->order_id . "' 
+                      ");
+        }
+
     }
 
     function getCartHist()
@@ -1383,14 +1491,13 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                                 inner join combination_color cc on pc.combination_color = ccId
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
-                                            where a.userId = '" . $userId . "'
+                                            where a.userId = '" . $userId . "' and midtransPaymentType is not null and cartFlag != '0'
                                             group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice,a.cartId ")->result();
         foreach ($queryresult as $key) {
             $info = explode(";", $key->SizeDescription);
             if ($key->TipeProduct == "C_00001") {
                 $data[] = array(
                     "SizeID"            => $key->SizeID,
-
                     "SizeDescription" => $info[0],
                     "productWeight"    => $info[1],
                     "TipeProduct" => $key->TipeProduct,
@@ -1598,7 +1705,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     function getLatestSoldProducts()
     {
         $data   = $this->db->query("SELECT sum(a.qty) quantity ,a.productId,a.productColorId,image1 as productImage,
-                                    productName,productPrice,isNew,isHot,categoryId,productDescription,0 as isLiked,image1,image2,image3 FROM cart a 
+                                    productName,a.productPrice,isNew,isHot,categoryId,productDescription,0 as isLiked,image1,image2,image3 FROM cart a 
                 inner join product_colors b on a.productId = b.productId and a.productColorId = b.productColorId 
                 inner join products c on a.productId = c.productId
                 where cartFlag = 1 and productFlag = 1
@@ -1670,7 +1777,7 @@ foreach ($obj['data'] as $post){
 
         $transactionId = $cartId."-".rand();
 
-        $data = $this->db->query("SELECT '".$transactionId."' as midtransId, a.*, productPrice, grandtotal,c.userFullname,c.userEmail,c.userMobilephone 
+        $data = $this->db->query("SELECT '".$transactionId."' as midtransId, a.*, b.productPrice, grandtotal,c.userFullname,c.userEmail,c.userMobilephone 
                                 FROM cart a inner join products b on a.productId = b.productId 
                                 inner join members c on a.userId = c.userId
                                 where cartId = '".$cartId."' ")->row();
@@ -1686,25 +1793,18 @@ function charge(){
     $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
 
     $api_url = $is_production ? 'https://app.midtrans.com/snap/v1/transactions' : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
-    // Check if request doesn't contains `/charge` in the url/path, display 404
     if( !strpos($_SERVER['REQUEST_URI'], '/charge') ) {
     http_response_code(404); 
     echo "wrong path, make sure it's `/charge`"; exit();
     }
-    // Check if method is not HTTP POST, display 404
     if( $_SERVER['REQUEST_METHOD'] !== 'POST'){
     http_response_code(404);
     echo "Page not found or wrong HTTP request method is used"; exit();
     }
-    // get the HTTP POST body of the request
     $request_body = file_get_contents('php://input');
-    // set response's content type as JSON
     header('Content-Type: application/json');
-    // call charge API using request body passed by mobile SDK
     $charge_result = $this->chargeAPI($api_url, $server_key, $request_body);
-    // set the response http status code
     http_response_code($charge_result['http_code']);
-    // then print out the response body
     echo $charge_result['body'];
 }
 function chargeAPI($api_url, $server_key, $request_body){
@@ -1714,7 +1814,6 @@ function chargeAPI($api_url, $server_key, $request_body){
       CURLOPT_RETURNTRANSFER => 1,
       CURLOPT_POST => 1,
       CURLOPT_HEADER => 0,
-      // Add header to the request, including Authorization generated from server key
       CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json',
         'Accept: application/json',
@@ -1782,7 +1881,7 @@ function chargeAPI($api_url, $server_key, $request_body){
   }
 
   function getUserpoint($userId){
-    $data = $this->db->query("SELECT * FROM TransactionMember where userId = 'M-02301' order by TransactionDate desc Limit 1 ");
+    $data = $this->db->query("SELECT IFNULL(TotalPoint,'0') as TotalPoint FROM TransactionMember where userId = '".$userId."' order by TransactionDate desc Limit 1 ");
     if($data->num_rows() > 0){
         echo json_encode(array("points" => $data->row()->TotalPoint));
     }else{
