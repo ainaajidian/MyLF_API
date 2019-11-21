@@ -1121,9 +1121,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
-
         // print_r($response);die();
-
         curl_close($curl);
         $hasil[]= array("CourId" => "PICK UP", "CourName" => "Pick Up", "services" => "Pick Up" , "cost" => "0", "etd" => "Pick Up");
         if ($err) {
@@ -1320,7 +1318,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                         where midtransOrderID = '" . $result->order_id . "' 
                           ");
             }
-            if($result->payment_type == "bank_transfer" && $result->transaction_status != "cancel" && $result->transaction_status != "expire"){
+            if($result->payment_type == "bank_transfer" && $result->transaction_status != "cancel" && $result->transaction_status != "expire" && $result->status_code != 200 ){
                 $this->load->model('Message_model');
                 $this->db->query("UPDATE cart 
                         set va_numbers = '".$result->va_numbers[0]->va_number."', va_bank = '".$result->va_numbers[0]->bank."'
@@ -1329,7 +1327,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
                     $userId             =  $datauser->userId;
                     $messageContent     = "Harap lakukan transfer ke Virtual Account BCA, dengan nomor tujuan ".$result->va_numbers[0]->va_number. " , sebesar ".number_format($result->gross_amount)." . Pembayaran akan hangus dalam waktu 24 jam.";
-                    $messageTitle       = "Konfirmasi Checkout ".$datauser->cartId;
+                    $messageTitle       = "Konfirmasi Checkout : ".$datauser->cartId;
                     $datasave = array(
                         "userId"                => $userId,
                         "deviceId"              => "",
@@ -1341,7 +1339,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             }else if($result->payment_type == "bank_transfer" && $result->transaction_status == "cancel"){
                     $userId             =  $datauser->userId;
                     $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " berhasil di batalkan.";
-                    $messageTitle       = "Transaksi di batalkan ".$datauser->cartId;
+                    $messageTitle       = "Transaksi di batalkan : ".$datauser->cartId;
                     $datasave = array(
                         "userId"                => $userId,
                         "deviceId"              => "",
@@ -1354,7 +1352,31 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             }else if($result->transaction_status == "expire"){
                 $userId             =  $datauser->userId;
                 $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " sudah tidak berlaku atau kadaluwarsa. Jadi jangan melakukan pembayaran yah.";
-                $messageTitle       = "Transaksi di kadaluwarsa ".$datauser->cartId;
+                $messageTitle       = "Transaksi di kadaluwarsa : ".$datauser->cartId;
+                $datasave = array(
+                    "userId"                => $userId,
+                    "deviceId"              => "",
+                    "messageContent"        => $messageContent,
+                    "messageTitle"          => $messageTitle,
+                    "messageId"             => $this->Message_model->getMaxId()
+                );
+                $this->Message_model->saveMessage($datasave, $messageContent);
+            }else if($result->payment_type == "bank_transfer" && $result->status_code == 200){
+                $userId             =  $datauser->userId;
+                $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " sudah berhasil ya, kita juga sudah menerima pembayaran. Jangan beli lupa rate pembelian ya.";
+                $messageTitle       = "Transaksi berhasil : ".$datauser->cartId;
+                $datasave = array(
+                    "userId"                => $userId,
+                    "deviceId"              => "",
+                    "messageContent"        => $messageContent,
+                    "messageTitle"          => $messageTitle,
+                    "messageId"             => $this->Message_model->getMaxId()
+                );
+                $this->Message_model->saveMessage($datasave, $messageContent);
+            }else if($result->payment_type == "credit_card" && $result->status_code == 200){
+                $userId             =  $datauser->userId;
+                $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " sudah berhasil ya, kita juga sudah menerima pembayaran. Jangan beli lupa rate pembelian ya.";
+                $messageTitle       = "Transaksi berhasil : ".$datauser->cartId;
                 $datasave = array(
                     "userId"                => $userId,
                     "deviceId"              => "",
@@ -1491,7 +1513,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                                 inner join combination_color cc on pc.combination_color = ccId
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
-                                            where a.userId = '" . $userId . "' and midtransPaymentType is not null and cartFlag != '0'
+                                            where a.userId = '" . $userId . "' and midtransPaymentType is not null
                                             group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice,a.cartId 
                                             order by a.createdDate desc
                                             ")->result();
