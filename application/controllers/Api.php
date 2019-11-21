@@ -1492,7 +1492,9 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
                                             where a.userId = '" . $userId . "' and midtransPaymentType is not null and cartFlag != '0'
-                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice,a.cartId ")->result();
+                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice,a.cartId 
+                                            order by a.createdDate desc
+                                            ")->result();
         foreach ($queryresult as $key) {
             $info = explode(";", $key->SizeDescription);
             if ($key->TipeProduct == "C_00001") {
