@@ -9,7 +9,10 @@ class Transaction_model extends CI_Model
 
     function generateAll()
     {
-    	return $this->db->query("SELECT * FROM TransactionMember ORDER BY TransactionDate DESC")->result();
+    	return $this->db->query("SELECT UserId, TransactionId, CONCAT('Rp ', FORMAT(Total, 0)) AS Total, TransactionDate, OutletLocation,
+                                CONCAT('Rp ', FORMAT(PointUsage, 0)) AS PointUsage,  CONCAT('Rp ', FORMAT(RewardPoint, 0)) AS RewardPoint,
+                                CONCAT('Rp ', FORMAT(TotalPayment, 0)) AS TotalPayment, CONCAT('Rp ', FORMAT(TotalPoint, 0)) AS TotalPoint
+                                FROM TransactionMember ORDER BY TransactionDate DESC")->result();
     }
 
     function generateStore()
