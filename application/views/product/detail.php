@@ -59,7 +59,7 @@
 				<div class="col-md-5">
 					<form action="<?=base_url();?>Product/saveQtyTest" method="POST">
 						<p class="text-small"> Jika kode outlet tidak muncul, harap refresh halaman </p>
-						<input style="margin-bottom:10px;" class="form-control" type="text" name="storeId" id="storeId" readonly>
+						<input style="margin-bottom:10px;" class="form-control" type="text" value="<?=$username;?>" name="storeId" readonly>
 						<table class="table table-bordered">
 							<thead>
 								<tr>

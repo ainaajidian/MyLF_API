@@ -48,22 +48,6 @@ $(".productImage").click(function(){
 });
 
 
-var selOpts = "";
-var niplogin = '<?=$username;?>';
-$.ajax({
-      url: "https://eproc.rpgroup.co.id/mylfapi/userOutlet/"+niplogin,
-       beforeSend: function() {
-         
-      },
-      success:function(result){
-          var result = jQuery.parseJSON(result);
-          $("#storeId").val(result.OutletCode);
-      },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
-       
-      }
-  });
-
 
 $("#submitBtn").attr("disabled", true);
 
