@@ -39,7 +39,7 @@ $(function ()
         });
 
 
-var datatable2 = $("#Delivery").DataTable({
+    var datatable2 = $("#Delivery").DataTable({
          "bProcessing": true,
          "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus",
          "aoColumns": 

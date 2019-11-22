@@ -73,7 +73,12 @@
 								<th>Image Product</th>
 								<th>Product Color</th>
 								<th>Product Size</th>
-								<th>Store Mall</th>
+								<th>Harga</th>
+								<th>Diskon</th>
+								<th>Harga Setelah Diskon</th>
+								<th>Total Belanja</th>
+								<th>Tipe Pembayaran</th>
+								<th>Nomor Virtual Account</th>
 								<th>Nomor Resi</th>
 								<th>Status Penerimaan</th>
 							</tr>
@@ -84,16 +89,31 @@
 								<td> <img data-value="<?=$cart->image1;?>" data-id="<?=$cart->image1;?>" style="height: 100px; width: 100px;" src="<?=base_url();?>assets/app_assets/product_image/<?=$cart->image1;?>"> </td> 
 								<td><?=$cart->ccName;?></td>
 								<td><?=$cart->sizeId?></td>
-								<td><?=$cart->storeMall;?></td>
+								<td><?=$cart->productPrice;?></td>
+								<td><?=$cart->disc;?></td>
+								<td><?=$cart->productPriceAfterPromo;?></td>
+								<td><?=$cart->grandTotal;?></td>
+								<td><?php
+										if ($cart->midtransPaymentType == 'bank_transfer')
+											{ echo "$cart->va_bank"; }
+										elseif ($cart->midtransPaymentType == 'credit_card')
+											{ echo "Kartu Kredit"; }
+										else
+											{ echo "$cart->midtransPaymentType"; }
+								?></td>
+								<td><?php
+										if ($cart->midtransPaymentType == 'bank_transfer')
+											{ echo "$cart->va_numbers"; }
+										else
+											{ echo "-"; }
+								?></td>
 								<td><?=$cart->deliveryResiNo;?></td>
 								<td><?php
 										if($cart->customerReceiveStatus == 1)
 										{ echo "Barang sudah di terima"; }
 										else
-										{ echo "Barang belum di terima"; }
+										{ ?>  <button class="btn btn-warning"><a href="<?=base_url();?>cart/sendReminder/<?=$cart->cartId?>"> Reminder</a> </button><?php }
 									?></td>
-
-									
 							</tr>
 						</tbody>
 					</table>

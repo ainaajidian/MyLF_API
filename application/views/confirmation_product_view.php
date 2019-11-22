@@ -136,29 +136,6 @@
                                             </td>
                                         </tr>
                                         <!-- End Button Active Account -->
-
-                                        <!-- -->
-                                        <tr>
-                                            <td style="word-wrap:break-word;font-size:0px;padding:5px 20px 5px 20px;" align="center">
-                                                <table role="presentation" style="width:600px; align-content: center;">
-                                                    <tbody>
-                                                        <tr>
-                                                            <th style="font-size:12px; text-align:center; padding-top: 5px; padding-bottom:5px;">FIND US ON:</th>
-                                                            <th style="font-size:12px; text-align:center; padding-top: 5px; padding-bottom:5px;">FOLLOW US ON:</th>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="width: 300px; padding-bottom:5px;">
-                                                                <center><a href="#"><img src="<?= base_url(); ?>assets/app_assets/ios.png" alt="" style="width:60px; height:35px; margin-right:2.5px;"></a>
-                                                                    <a href="https://play.google.com/store/apps/details?id=com.tukangaplikasi.member_lf"><img src="<?= base_url(); ?>assets/app_assets/android.png" alt="" style="width:65px; height:35px; margin-left:2.5px;"></a></center>
-                                                            </td>
-                                                            <td style="width: 300px; padding-bottom:5px;">
-                                                                <center><a href="https://www.instagram.com/lesfemmes.id/"><img src="<?= base_url(); ?>assets/app_assets/ig_logo.png" style="width:36px; height:36px;" alt=""></a> </center>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
