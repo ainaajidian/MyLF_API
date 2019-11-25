@@ -29,10 +29,27 @@ class Cart_model extends CI_Model
         return $data;
     }
 
-    function updateResi($dataupdate,$kondisi)
+    function getMaxId()
+    {
+        $data = $this->db->query("SELECT MAX(messageId) messageId FROM message ")->row();
+        return ++$data->messageId;
+    }
+
+    function updateResi($data,$kondisi)
     {
         $this->db->where($kondisi);
-        $this->db->update('cart', $dataupdate);
+        $this->db->update('cart', $data);
+    }
+
+    function sendMessage($data)
+    {
+        $this->db->insert('cart', $data);
+    }
+
+    function updateDelivery($data,$kondisi)
+    {
+        $this->db->where($kondisi);
+        $this->db->update('cart', $data);
     }
 
 }
