@@ -9,11 +9,13 @@ class Cart extends MY_Controller
     {
         parent::__construct();
         $this->load->model('Cart_model');
+        $this->load->model('Message_model');
         $this->load->model('Usersession');
         $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, no-transform,
 								   max-age=0, post-check=0, pre-check=0");
         $this->output->set_header("Pragma: no-cache");
         $this->load->library('upload');
+        $this->load->library("MyPHPMailer");
     }
 
     public function index()
@@ -59,15 +61,20 @@ class Cart extends MY_Controller
         $data['customjs']               = "cart/customjs";
 
         $data['cart'] = $this->db->query("SELECT a.cartId, a.userId, b.productName, c.image1, d.ccName, 
-                                        a.sizeId, f.storeMall, e.responseDescription, a.deliveryResiNo, 
-                                        a.customerReceiveStatus, a.salesOrderTransactionNo
-                                        FROM cart a 
-                                        LEFT JOIN products b ON a.productId = b.productId 
-                                        LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
-                                        LEFT JOIN combination_color d ON c.combination_color = d.ccId 
-                                        LEFT JOIN response e ON a.midtransStatusCode = e.responseCode 
-                                        LEFT JOIN store f ON a.storeId = f.storeName
-                                        WHERE cartId = '".$cartId."'")->row();
+                                         a.sizeId, CONCAT('Rp ', FORMAT(a.productPrice, 0)) AS productPrice,
+                                         CONCAT('Rp ', FORMAT(productPriceAfterPromo, 0)) AS productPriceAfterPromo,
+                                         CONCAT('Rp ', FORMAT(disc, 0)) AS disc,
+                                         CONCAT('Rp ', FORMAT(grandTotal, 0)) AS grandTotal,
+                                         a.midtransPaymentType, a.va_bank, a.va_numbers,
+                                         f.storeMall, e.responseDescription, a.deliveryResiNo,
+                                         a.customerReceiveStatus, a.salesOrderTransactionNo
+                                         FROM cart a 
+                                         LEFT JOIN products b ON a.productId = b.productId 
+                                          LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
+                                         LEFT JOIN combination_color d ON c.combination_color = d.ccId 
+                                         LEFT JOIN response e ON a.midtransStatusCode = e.responseCode 
+                                         LEFT JOIN store f ON a.storeId = f.storeName
+                                         WHERE cartId = '".$cartId."'")->row();
         $this->go_to($data);
     }
 
@@ -116,4 +123,97 @@ class Cart extends MY_Controller
         curl_close($curl);
 	}
 
+    function saveMessage($userId, $cartId)
+    {
+        $datasave = array(
+                "userId"                => $userId,
+                // "deviceId"              => $userId[0],
+                "messageContent"        => "",
+                "messageTitle"          => "Konfirmasi Barang Di Terima",
+                "messageType"           => "Delivery",
+                "cartId"                => $cartId,
+                "messageId"             => $this->Cart_model->getMaxId()
+            );
+
+            $this->Message_model->saveMessage($datasave);
+    }
+
+    function sendReminder($cartId)
+    {
+        $datauser = $this->db->query("SELECT a.userEmail, a.userId, a.userFullname, b.productId, c.image1, b.cartId
+                                      FROM members a
+                                      INNER JOIN cart b ON a.userId = b.userId
+                                      INNER JOIN product_colors c ON b.productId = c.productId
+                                      WHERE cartId = '" . $cartId . "' ")->row();
+        $mail = new PHPMailer();
+        $mail->IsHTML(true);
+        $mail->IsSMTP();
+        $mail->SMTPOptions = array(
+                            'ssl' => array(
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'allow_self_signed' => true
+                            )
+        );
+        $mail->Host     = 'mail.rpgroup.co.id';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'no-reply@rpgroup.co.id';
+        $mail->Password = 'N4ughty!';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port     = 587;
+        $mail->setFrom('no-reply@rpgroup.co.id');
+        $mail->addAddress($datauser->userEmail);
+        $mail->Subject = 'Konfirmasi Produk Telah Di Terima';
+        $data['url'] = base_url() . "Cart/confirmation/" . $cartId;
+        $data['cart']  = $datauser;
+        $body        = $this->load->view("confirmation_product", $data, TRUE);
+        $mail->Body = $body;
+        if (!$mail->send()) {
+            echo 'Message could not be sent.';
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
+        } else {
+            echo 'Message has been sent';
+            $this->saveMessage($datauser->userId, $cartId);
+            
+            die("<script>
+                alert('Send Reminder Success');
+                window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
+                </script>");
+        }
+        // $this->load->view("confirmation_product", $data);
+    }
+
+    function viewReminder($cartId)
+    {
+        $datauser = $this->db->query("SELECT a.userEmail, a.userId, a.userFullname, b.productId, c.image1
+                                      FROM members a
+                                      INNER JOIN cart b ON a.userId = b.userId
+                                      INNER JOIN product_colors c ON b.productId = c.productId
+                                      WHERE cartId = '" . $cartId . "' ")->row();
+        
+        $data['url'] = base_url() . "Cart/confirmation/" . $cartId;
+        $data['cart']  = $datauser;
+        $this->load->view("confirmation_product", $data);   
+    }
+
+    function confirmation($cartId)
+    {
+        $time = $this->db->query("SELECT NOW() AS time")->row();
+    
+        $getDate = date('Y-m-d', strtotime($time->time));
+
+        $data = array(
+                        "customerReceiveStatus"        => "1",
+                        "customerReceiveDate"          => $getDate
+                     );
+
+        $kondisi    = array("cartId"       => $cartId);
+
+        $this->Cart_model->updateDelivery($data, $kondisi);
+
+        die("<script>
+            alert('Update Cart Success');
+            window.location.href='" . base_url() . "Cart';
+            </script>");
+    }
 }

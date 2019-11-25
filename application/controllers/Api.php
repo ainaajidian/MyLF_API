@@ -772,7 +772,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             die();
         }
         $cekStockGlobal = $this->db->query("SELECT * FROM TransactionItemSalesStock 
-                    where productID = '" . $productId . "' and ProductColorID = '" . $productColorId . "' and StockQty > 0 ")->num_rows();
+                    where productID = '" . $productId . "' and sizeID = '".$sizeId."'  and ProductColorID = '" . $productColorId . "' and StockQty > 0 ")->num_rows();
 
         if ($cekStockGlobal < 1) {
             $rslt = array("status" => "2");
@@ -781,7 +781,6 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         }
 
         $dataProduct = $this->db->query("SELECT productPrice FROM products where productId = '".$productId."' ")->row();
-
         $data = array(
             "cartId" => $maxId,
             "userId" => $userId,
@@ -796,15 +795,14 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
             "productPrice" => $dataProduct->productPrice,
             "productPriceAfterPromo" => $dataProduct->productPrice,
             "disc" => 0,
-
         );
 
         $this->db->insert("cart", $data);
 
 
-        $rslt = array("status" => "0");
-        echo json_encode($rslt);
-        die();
+       $rslt = array("status" => "0");
+       echo json_encode($rslt);
+       die();
     }
 
     function getMaxCartId($userId)
@@ -830,7 +828,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     {
         $userId = $this->input->post("userId");
         $data = [];
-        $queryresult = $this->db->query("select cartId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price
+        $queryresult = $this->db->query("select a.cartId,a.deliveryAddressId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price
                                             from cart a 
                                                 inner join size b on a.SizeID = b.SizeID 
                                                 inner join product_colors pc on a.productId = pc.productId and a.productColorID = pc.productColorID
@@ -840,7 +838,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                             where a.userId = '" . $userId . "' and (cartFlag IS NULL or cartFlag = 0) 
                                             and 
                                             (midtransStatusCode IS NULL or midtransStatusCode = '')
-                                            group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice ")->result();
+                                            group by a.deliveryAddressId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice ")->result();
         foreach ($queryresult as $key) {
             $info = explode(";", $key->SizeDescription);
             if ($key->TipeProduct == "C_00001") {
@@ -858,6 +856,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "image" => $key->image1,
                     "cartId" => $key->cartId,
                     "price" => $key->price,
+                    "deliveryAddressId" => $key->deliveryAddressId
                 );
             } else if ($key->TipeProduct == "C_00007") {
                 $data[] = array(
@@ -874,6 +873,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "image" => $key->image1,
                     "cartId" => $key->cartId,
                     "price" => $key->price,
+                    "deliveryAddressId" => $key->deliveryAddressId
 
 
                 );
@@ -891,7 +891,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "quantity" => $key->quantity,
                     "image" => $key->image1,
                     "cartId" => $key->cartId,
-                    "price" => $key->price,
+                    "price" => $key->price
                 );
             }
         }
@@ -910,10 +910,9 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                  and SizeID = '".$dataCart->sizeId."' 
                                 ");
         //$this->db->query("DELETE FROM cart where cartId = '" . $cartId . "' ");
-        if($dataCart->midtransOrderID != "" || $dataCart->midtransOrderID != null){
+        if( ($dataCart->midtransOrderID != "" || $dataCart->midtransOrderID != null) && ($dataCart->midtransStatusCode != "202" || $dataCart->midtransStatusCode != 202)){
             $this->cancelTransaction($dataCart->midtransOrderID);
         }
-        
         $this->db->query("UPDATE cart set cartFlag = 2, deletedDate = NOW(), deletedBy = '".$dataCart->userId."' where cartId = '".$cartId."'");
 
     }
@@ -1406,8 +1405,14 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
     function cancelTransaction($orderId){
         $this->load->library('veritrans');
-        $is_production = false;
-        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $myFetch = $this->getMidtransServerKey();
+        if($myFetch['status'] == "sandbox"){
+            $is_production = false;
+        }else{
+            $is_production = true;
+        }
+        $server_key = $myFetch['ServerKey'];    
+
         $params = array('server_key' => $server_key, 'production' => $is_production);
         $this->veritrans->config($params);
         $this->veritrans->cancel($orderId);
@@ -1416,8 +1421,13 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
 
     function setExpiredTransaction($orderId){
         $this->load->library('veritrans');
-        $is_production = false;
-        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $myFetch = $this->getMidtransServerKey();
+        if($myFetch['status'] == "sandbox"){
+            $is_production = false;
+        }else{
+            $is_production = true;
+        }
+        $server_key = $myFetch['ServerKey']; 
         $params = array('server_key' => $server_key, 'production' => $is_production);
         $this->veritrans->config($params);
         $this->veritrans->expire($orderId);
@@ -1812,11 +1822,17 @@ foreach ($obj['data'] as $post){
 }
 
 function charge(){
-    $is_production = false;
+    $myFetch = $this->getMidtransServerKey();
+    if($myFetch['status'] == "sandbox"){
+        $is_production = false;
+    }else{
+        $is_production = true;
+    }
 
-    $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+    $server_key = $myFetch['ServerKey'];
 
     $api_url = $is_production ? 'https://app.midtrans.com/snap/v1/transactions' : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
+
     if( !strpos($_SERVER['REQUEST_URI'], '/charge') ) {
     http_response_code(404); 
     echo "wrong path, make sure it's `/charge`"; exit();
@@ -1912,5 +1928,64 @@ function chargeAPI($api_url, $server_key, $request_body){
         echo json_encode(array("points" => 0));
     }
   }
+  function viewReminder($cartId)
+  {
+      $datauser = $this->db->query("SELECT a.userEmail, a.userId, a.userFullname, b.productId, c.image1
+                                    FROM members a
+                                    INNER JOIN cart b ON a.userId = b.userId
+                                    INNER JOIN product_colors c ON b.productId = c.productId
+                                    WHERE cartId = '" . $cartId . "' ")->row();
+      
+      $data['url'] = base_url() . "Api/cartconfirmation/" . $cartId;
+      $data['cart']  = $datauser;
+      $this->load->view("confirmation_product_view", $data);   
+  }
 
+  function cartconfirmation($cartId){
+    $this->load->model('Cart_model');
+    $time = $this->db->query("SELECT NOW() AS time")->row();
+    $getDate = date('Y-m-d', strtotime($time->time));
+    $data = array(
+                    "customerReceiveStatus"        => "1",
+                    "customerReceiveDate"          => $getDate
+                 );
+    $kondisi    = array("cartId"       => $cartId);
+    $this->Cart_model->updateDelivery($data, $kondisi);
+    echo "Konfirmasi Berhasil, terima kasih sudah konfirmasi :)";
+  }
+
+  function getMidtransKey(){
+    $data = $this->db->query("SELECT * from appconfiguration where `key` = 'midtransClientKey' and isActive = 1")->row();
+    $data1 = $this->db->query("SELECT * from appconfiguration where `key` = 'midtransServerKey' and isActive = 1")->row();
+
+    if($data->currentVal == "sandbox"){
+        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+    }else{
+        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+    }
+
+    $myData = array("ClientKey" => $data-> maxVal, "ServerKey" => $data1->maxVal, "status" => $data->currentVal, "url" => $url);
+    echo json_encode($myData);
+  }
+
+  function getMidtransServerKey(){
+    $data = $this->db->query("SELECT * from appconfiguration where `key` = 'midtransClientKey' and isActive = 1")->row();
+    $data1 = $this->db->query("SELECT * from appconfiguration where `key` = 'midtransServerKey' and isActive = 1")->row();
+
+    if($data->currentVal == "sandbox"){
+        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+    }else{
+        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+    }
+
+    $myData = array("ClientKey" => $data-> maxVal, "ServerKey" => $data1->maxVal, "status" => $data->currentVal, "url" => $url);
+    return $myData;
+  }
+
+  function getSelectedAddress($deliveryAddressId=""){
+    $data = $this->db->query("SELECT a.*,b.cityName,c.provinceName FROM delivery_address a 
+    inner join city b on a.addressCityId = b.cityID  
+    inner join province c on a.addressProvinceId = c.provinceID where deliveryAddressId = '" . $deliveryAddressId . "' ")->row(); 
+    echo json_encode($data);
+}
 }
