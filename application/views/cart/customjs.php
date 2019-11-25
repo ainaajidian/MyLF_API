@@ -38,10 +38,10 @@ $(function ()
             ]    
         });
 
-
+  var cartId = $("#cartId").text();
     var datatable2 = $("#Delivery").DataTable({
          "bProcessing": true,
-         "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus",
+         "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus/"+cartId,
          "aoColumns": 
             [
               { mData: 'manifest_code' } ,

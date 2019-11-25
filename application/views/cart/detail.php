@@ -18,7 +18,7 @@
 									<thead>
 										<tr>
 											<th>Cart Id</th>
-											<td><?=$cart->cartId;?></td>
+											<td id="cartId"><?=$cart->cartId;?></td>
 										</tr>
 										<tr>
 											<th>User Id</th>
@@ -94,7 +94,9 @@
 								<td><?=$cart->productPriceAfterPromo;?></td>
 								<td><?=$cart->grandTotal;?></td>
 								<td><?php
-										if ($cart->midtransPaymentType == 'bank_transfer')
+										if ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode == 202) 
+											{ echo "$cart->va_bank " . "- Ditolak"; }
+										elseif ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode != 202)
 											{ echo "$cart->va_bank"; }
 										elseif ($cart->midtransPaymentType == 'credit_card')
 											{ echo "Kartu Kredit"; }
@@ -102,14 +104,25 @@
 											{ echo "$cart->midtransPaymentType"; }
 								?></td>
 								<td><?php
-										if ($cart->midtransPaymentType == 'bank_transfer')
+										if ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode == 202)
+											{ echo "$cart->va_numbers " . "- Ditolak"; }
+										elseif ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode != 202)
 											{ echo "$cart->va_numbers"; }
 										else
 											{ echo "-"; }
 								?></td>
-								<td><?=$cart->deliveryResiNo;?></td>
 								<td><?php
-										if($cart->customerReceiveStatus == 1)
+										if ($cart->midtransStatusCode == 202) 
+											{ echo "Pesanan Di tolak"; }
+										else
+											{ echo "$cart->deliveryResiNo"; }
+									?>
+									
+								</td>
+								<td><?php
+										if ($cart->midtransStatusCode == 202) 
+										{ echo "Pesanan Di tolak"; }
+										elseif ($cart->customerReceiveStatus == 1)
 										{ echo "Barang sudah di terima"; }
 										else
 										{ ?>  <button class="btn btn-warning"><a href="<?=base_url();?>cart/sendReminder/<?=$cart->cartId?>"> Reminder</a> </button><?php }

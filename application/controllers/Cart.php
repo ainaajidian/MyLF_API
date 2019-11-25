@@ -67,7 +67,7 @@ class Cart extends MY_Controller
                                          CONCAT('Rp ', FORMAT(grandTotal, 0)) AS grandTotal,
                                          a.midtransPaymentType, a.va_bank, a.va_numbers,
                                          f.storeMall, e.responseDescription, a.deliveryResiNo,
-                                         a.customerReceiveStatus, a.salesOrderTransactionNo
+                                         a.customerReceiveStatus, a.salesOrderTransactionNo, a.midtransStatusCode
                                          FROM cart a 
                                          LEFT JOIN products b ON a.productId = b.productId 
                                           LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
@@ -97,8 +97,11 @@ class Cart extends MY_Controller
                 </script>");
     }
 
-	function getDeliveryStatus()
+	function getDeliveryStatus($cartId)
     {
+            
+            $dataCart = $this->db->query("SELECT deliveryResiNo from cart where cartId = '".$cartId."' ")->row();
+            
 	    $curl = curl_init();
     	curl_setopt_array($curl, array(
     	CURLOPT_URL => "https://pro.rajaongkir.com/api/waybill",
@@ -108,7 +111,8 @@ class Cart extends MY_Controller
    	 	CURLOPT_TIMEOUT => 30,
     	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     	CURLOPT_CUSTOMREQUEST => "POST",
-    	CURLOPT_POSTFIELDS => "waybill=JP0943665840&courier=jnt",
+                                       
+                                       CURLOPT_POSTFIELDS => "waybill=".$dataCart->deliveryResiNo."&courier=jnt",
     	CURLOPT_HTTPHEADER => array(
                                 		"content-type: application/x-www-form-urlencoded",
                                 		"key:5882027194d829e46c2cdd55f8875dde"
