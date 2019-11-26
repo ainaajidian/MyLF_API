@@ -32,7 +32,7 @@
 											<th>Resi</th>
 											<td>
 												<input type="hidden" name="cartId" value="<?=$cart->cartId;?>">
-												<input type="text" name="deliveryResiNo" value="<?=$cart->deliveryResiNo;?>">
+												<input type="text" id="deliveryResiNo" name="deliveryResiNo" value="<?=$cart->deliveryResiNo;?>">
 												<button class="btn btn-warning"> Input Resi </button>
 											</td>
 										</tr>

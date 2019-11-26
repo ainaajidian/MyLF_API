@@ -39,6 +39,7 @@ $(function ()
         });
 
   var cartId = $("#cartId").text();
+  if($("#deliveryResiNo").val() > 0){
     var datatable2 = $("#Delivery").DataTable({
          "bProcessing": true,
          "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus/"+cartId,
@@ -51,6 +52,7 @@ $(function ()
               { mData: 'city_name' }
             ]    
         });
+  }
 
 
     // Add //
