@@ -71,10 +71,11 @@
 						<div class="col-md-4">
 							<form method="POST" action="<?=base_url().'Cart/saveResi';?>">
 								<table class="table table-bordered" style="width:100%; height:700px;">
+									<h3>Product</h3>
 									<thead>
 										<tr>
 											<th>Product Name</th>
-											<td><?=$cart->productName;?> ( <?=$cart->productId;?> )</td>
+											<td><?=$cart->productName;?> ( <?=$cart->productErpCode;?> )</td>
 										</tr>
 										<tr>
 											<th>Image Product</th>
@@ -95,6 +96,7 @@
 						
 						<div class="col-md-4 direct-chat-messages">
 							<table class="table table-bordered" style="padding-right:5px; width:100%; height:700px;" >
+								<h3>Price</h3>
 								<thead>
 									<tr>
 										<th>Harga</th>
@@ -122,6 +124,7 @@
 
 						<div class="col-md-4 direct-chat-messages">
 							<table class="table table-bordered" style="padding-right:5px; width:100%; height:400px;">
+								<h3>Payment and Delivery</h3>
 								<thead>
 									<tr>
 										<th>Tipe Pembayaran</th>
