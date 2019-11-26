@@ -57,6 +57,7 @@
 	            			<option value="/topics/AllMember">All Member</option>
 	            			<option value="/topics/iosMember">Ios Member</option>
 							<option value="/topics/TRIAL">Trial</option>
+							<option value="/topics/TrialBanget">Trial Banget</option>
 	                	</select>
 	                </div>
 
