@@ -471,8 +471,15 @@ class Api extends CI_Controller
         );
 
         $fields = array(
-            'to' => 'cLxg-77-13U:APA91bH92Y_OBRpKB8qyOBcCqDpmtY9O6U0LVoJXUTXUcLY0dWFwgKOr-gFDQhHnWDINzLQh0h5ctL3RKNxz6KvOWdckRmbDz9ElPCjIs9VQ51Bp2IkoRsAY4puKp76mUC_q2S-PT6Vi',
-            'notification' => $msg
+            'to' => '/topics/TrialBanget',
+            'notification' => $msg,
+            "data" => array( 
+                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                'show_in_foreground' => True,
+                'priority' => 'high',
+                'openScreen' => true,
+                'screenToOpen' => 'NotificationDetailPage(data:123456)',
+            )
         );
 
         $headers = array(
