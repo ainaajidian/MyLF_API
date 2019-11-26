@@ -65,70 +65,121 @@
 					</div>
 					
 					</br>
+
+					<div class="col-md-12" style="padding-top: 10px; padding-bottom: 50px;"> 
+        			<div class="row">
+						<div class="col-md-4">
+							<form method="POST" action="<?=base_url().'Cart/saveResi';?>">
+								<table class="table table-bordered" style="width:100%; height:700px;">
+									<thead>
+										<tr>
+											<th>Product Name</th>
+											<td><?=$cart->productName;?> ( <?=$cart->productId;?> )</td>
+										</tr>
+										<tr>
+											<th>Image Product</th>
+											<td> <img data-value="<?=$cart->image1;?>" data-id="<?=$cart->image1;?>" style="height: 100px; width: 100px;" src="<?=base_url();?>assets/app_assets/product_image/<?=$cart->image1;?>"> </td> 	
+										</tr>
+										<tr>
+											<th>Product Color</th>
+											<td><?=$cart->ccName;?></td>
+										</tr>
+										<tr>
+											<th>Product Size</th>
+											<td><?=$cart->SizeDescription?></td>
+										</tr>									
+									</thead>
+								</table>
+							</form>
+						</div>
+						
+						<div class="col-md-4 direct-chat-messages">
+							<table class="table table-bordered" style="padding-right:5px; width:100%; height:700px;" >
+								<thead>
+									<tr>
+										<th>Harga</th>
+										<td><?=$cart->productPrice;?></td>
+									</tr>
+									<tr>
+										<th>Diskon</th>
+										<td><?=$cart->disc;?></td>
+									</tr>
+									<tr>	
+										<th>Setelah Diskon</th>
+										<td><?=$cart->productPriceAfterPromo;?></td>
+									</tr>
+									<tr>
+										<th>Harga Ongkir</th>
+										<td><?=$cart->deliveryPrice?></td>
+									</tr>
+									<tr>
+										<th>Total Belanja</th>
+										<td><?=$cart->grandTotal;?></td>
+									</tr>
+								</thead>
+							</table>
+						</div>
+
+						<div class="col-md-4 direct-chat-messages">
+							<table class="table table-bordered" style="padding-right:5px; width:100%; height:400px;">
+								<thead>
+									<tr>
+										<th>Tipe Pembayaran</th>
+										<td><?php
+												if ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode == 202) 
+													{ echo "$cart->va_bank " . "- Ditolak"; }
+												elseif ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode != 202)
+													{ echo "$cart->va_bank"; }
+												elseif ($cart->midtransPaymentType == 'credit_card')
+													{ echo "Kartu Kredit"; }
+												else
+													{ echo "$cart->midtransPaymentType"; }
+										?></td>
+									</tr>
+									<tr>
+										<th>No VA</th>
+										<td><?php
+												if ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode == 202)
+													{ echo "$cart->va_numbers " . "- Ditolak"; }
+												elseif ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode != 202)
+													{ echo "$cart->va_numbers"; }
+												else
+													{ echo "-"; }
+										?></td>
+									</tr>	
+									<tr>
+										<th>Nomor Resi</th>
+										<td><?php
+												if ($cart->midtransStatusCode == 202) 
+													{ echo "Pesanan Di tolak"; }
+												else
+													{ echo "$cart->deliveryResiNo"; } ?>
+										</td>
+									</tr>
+									<tr>
+										<th>Status Penerimaan</th>
+										<td><?php
+												if ($cart->midtransStatusCode == 202) 
+												{ echo "Pesanan Di tolak"; }
+												elseif ($cart->customerReceiveStatus == 1)
+												{ echo "Barang sudah di terima"; }
+												else
+												{ ?>  <button class="btn btn-warning"><a href="<?=base_url();?>cart/sendReminder/<?=$cart->cartId?>"> Reminder</a> </button><?php }
+											?></td>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
 				
 					<table class="table table-bordered col-md-12" style="max-width: 100%">
 						<thead>
 							<tr>
-								<th>Product Name</th>
-								<th>Image Product</th>
-								<th>Product Color</th>
-								<th>Product Size</th>
-								<th>Harga</th>
-								<th>Diskon</th>
-								<th>Harga Setelah Diskon</th>
-								<th>Total Belanja</th>
-								<th>Tipe Pembayaran</th>
-								<th>Nomor Virtual Account</th>
-								<th>Nomor Resi</th>
-								<th>Status Penerimaan</th>
+								
+								
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td><?=$cart->productName;?></td>
-								<td> <img data-value="<?=$cart->image1;?>" data-id="<?=$cart->image1;?>" style="height: 100px; width: 100px;" src="<?=base_url();?>assets/app_assets/product_image/<?=$cart->image1;?>"> </td> 
-								<td><?=$cart->ccName;?></td>
-								<td><?=$cart->sizeId?></td>
-								<td><?=$cart->productPrice;?></td>
-								<td><?=$cart->disc;?></td>
-								<td><?=$cart->productPriceAfterPromo;?></td>
-								<td><?=$cart->grandTotal;?></td>
-								<td><?php
-										if ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode == 202) 
-											{ echo "$cart->va_bank " . "- Ditolak"; }
-										elseif ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode != 202)
-											{ echo "$cart->va_bank"; }
-										elseif ($cart->midtransPaymentType == 'credit_card')
-											{ echo "Kartu Kredit"; }
-										else
-											{ echo "$cart->midtransPaymentType"; }
-								?></td>
-								<td><?php
-										if ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode == 202)
-											{ echo "$cart->va_numbers " . "- Ditolak"; }
-										elseif ($cart->midtransPaymentType == 'bank_transfer' && $cart->midtransStatusCode != 202)
-											{ echo "$cart->va_numbers"; }
-										else
-											{ echo "-"; }
-								?></td>
-								<td><?php
-										if ($cart->midtransStatusCode == 202) 
-											{ echo "Pesanan Di tolak"; }
-										else
-											{ echo "$cart->deliveryResiNo"; }
-									?>
-									
-								</td>
-								<td><?php
-										if ($cart->midtransStatusCode == 202) 
-										{ echo "Pesanan Di tolak"; }
-										elseif ($cart->customerReceiveStatus == 1)
-										{ echo "Barang sudah di terima"; }
-										else
-										{ ?>  <button class="btn btn-warning"><a href="<?=base_url();?>cart/sendReminder/<?=$cart->cartId?>"> Reminder</a> </button><?php }
-									?></td>
-							</tr>
-						</tbody>
+						
 					</table>
 				</div> 
           	</div>

@@ -12,7 +12,7 @@ class Cart extends MY_Controller
         $this->load->model('Message_model');
         $this->load->model('Usersession');
         $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate, no-transform,
-								   max-age=0, post-check=0, pre-check=0");
+                                   max-age=0, post-check=0, pre-check=0");
         $this->output->set_header("Pragma: no-cache");
         $this->load->library('upload');
         $this->load->library("MyPHPMailer");
@@ -26,12 +26,12 @@ class Cart extends MY_Controller
         );
 
         $data['includecss'] = '<link rel="stylesheet"
-							   href="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.css">
-							   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">';
+                               href="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.css">
+                               <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">';
         $data['includejs']     = '<script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/jquery.dataTables.js"></script>
-							   <script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
-							    <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
-							  ';
+                               <script src="' . base_url() . 'node_modules/admin-lte/plugins/datatables/dataTables.bootstrap4.js"></script>
+                                <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+                              ';
 
         $data['customjs']             = "cart/customjs";
         $data['view']                 = "cart/index";
@@ -60,20 +60,22 @@ class Cart extends MY_Controller
         $data['view']                   = "cart/detail";
         $data['customjs']               = "cart/customjs";
 
-        $data['cart'] = $this->db->query("SELECT a.cartId, a.userId, b.productName, c.image1, d.ccName, 
-                                         a.sizeId, CONCAT('Rp ', FORMAT(a.productPrice, 0)) AS productPrice,
+        $data['cart'] = $this->db->query("SELECT a.cartId, a.userId, a.productId, b.productName, c.image1, d.ccName, 
+                                         g.SizeDescription, CONCAT('Rp ', FORMAT(a.productPrice, 0)) AS productPrice,
                                          CONCAT('Rp ', FORMAT(productPriceAfterPromo, 0)) AS productPriceAfterPromo,
                                          CONCAT('Rp ', FORMAT(disc, 0)) AS disc,
                                          CONCAT('Rp ', FORMAT(grandTotal, 0)) AS grandTotal,
                                          a.midtransPaymentType, a.va_bank, a.va_numbers,
-                                         f.storeMall, e.responseDescription, a.deliveryResiNo,
+                                         f.storeMall, e.responseDescription, a.deliveryResiNo, 
+                                         CONCAT('Rp ', FORMAT(deliveryPrice, 0)) AS deliveryPrice,
                                          a.customerReceiveStatus, a.salesOrderTransactionNo, a.midtransStatusCode
                                          FROM cart a 
                                          LEFT JOIN products b ON a.productId = b.productId 
-                                          LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
+                                         LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
                                          LEFT JOIN combination_color d ON c.combination_color = d.ccId 
                                          LEFT JOIN response e ON a.midtransStatusCode = e.responseCode 
                                          LEFT JOIN store f ON a.storeId = f.storeName
+                                         LEFT JOIN size g ON g.sizeId = a.SizeID
                                          WHERE cartId = '".$cartId."'")->row();
         $this->go_to($data);
     }
@@ -97,35 +99,35 @@ class Cart extends MY_Controller
                 </script>");
     }
 
-	function getDeliveryStatus($cartId)
+    function getDeliveryStatus($cartId)
     {
             
-            $dataCart = $this->db->query("SELECT deliveryResiNo from cart where cartId = '".$cartId."' ")->row();
+        $dataCart = $this->db->query("SELECT deliveryResiNo from cart where cartId = '".$cartId."' ")->row();
             
-	    $curl = curl_init();
-    	curl_setopt_array($curl, array(
-    	CURLOPT_URL => "https://pro.rajaongkir.com/api/waybill",
-    	CURLOPT_RETURNTRANSFER => true,
-    	CURLOPT_ENCODING => "",
-    	CURLOPT_MAXREDIRS => 10,
-   	 	CURLOPT_TIMEOUT => 30,
-    	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    	CURLOPT_CUSTOMREQUEST => "POST",
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://pro.rajaongkir.com/api/waybill",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
                                        
                                        CURLOPT_POSTFIELDS => "waybill=".$dataCart->deliveryResiNo."&courier=jnt",
-    	CURLOPT_HTTPHEADER => array(
-                                		"content-type: application/x-www-form-urlencoded",
-                                		"key:5882027194d829e46c2cdd55f8875dde"
-                            		),
-    	));
+        CURLOPT_HTTPHEADER => array(
+                                        "content-type: application/x-www-form-urlencoded",
+                                        "key:5882027194d829e46c2cdd55f8875dde"
+                                    ),
+        ));
 
         $response = curl_exec($curl);
-        $err 		= curl_error($curl);
-	    $response = json_decode($response,true);
+        $err        = curl_error($curl);
+        $response = json_decode($response,true);
         $data = $response['rajaongkir']['result']['manifest'];
-	    echo json_encode(array("data" => $data));
+        echo json_encode(array("data" => $data));
         curl_close($curl);
-	}
+    }
 
     function saveMessage($userId, $cartId)
     {
@@ -170,21 +172,21 @@ class Cart extends MY_Controller
         $mail->Subject = 'Konfirmasi Produk Telah Di Terima';
         $data['url'] = base_url() . "Cart/confirmation/" . $cartId;
         $data['cart']  = $datauser;
-        $body        = $this->load->view("confirmation_product", $data, TRUE);
-        $mail->Body = $body;
-        if (!$mail->send()) {
-            echo 'Message could not be sent.';
-            echo 'Mailer Error: ' . $mail->ErrorInfo;
-        } else {
-            echo 'Message has been sent';
-            $this->saveMessage($datauser->userId, $cartId);
+        // $body        = $this->load->view("confirmation_product", $data, TRUE);
+        // $mail->Body = $body;
+        // if (!$mail->send()) {
+        //     echo 'Message could not be sent.';
+        //     echo 'Mailer Error: ' . $mail->ErrorInfo;
+        // } else {
+        //     echo 'Message has been sent';
+        //     $this->saveMessage($datauser->userId, $cartId);
             
-            die("<script>
-                alert('Send Reminder Success');
-                window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
-                </script>");
-        }
-        // $this->load->view("confirmation_product", $data);
+        //     die("<script>
+        //         alert('Send Reminder Success');
+        //         window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
+        //         </script>");
+        // }
+        $this->load->view("confirmation_product", $data);
     }
 
     function viewReminder($cartId)
@@ -215,9 +217,6 @@ class Cart extends MY_Controller
 
         $this->Cart_model->updateDelivery($data, $kondisi);
 
-        die("<script>
-            alert('Update Cart Success');
-            window.location.href='" . base_url() . "Cart';
-            </script>");
+        $this->load->view("thanks_message", $data);   
     }
 }
