@@ -39,7 +39,7 @@ $(function ()
         });
 
   var cartId = $("#cartId").text();
-  if($("#deliveryResiNo").val() > 0){
+  if($("#deliveryResiNo").length > 0){
     var datatable2 = $("#Delivery").DataTable({
          "bProcessing": true,
          "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus/"+cartId,
