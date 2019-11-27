@@ -40,11 +40,12 @@ $(function ()
 
   var cartId = $("#cartId").text();
     var datatable2 = $("#Delivery").DataTable({
-       "initComplete": function(settings, json) {
+        "initComplete": function(settings, json) {
           var rowterakhir = $("#Delivery tbody tr:last td:nth-child(2)").text();
           $("#deliveryStatus").text(rowterakhir);
-  },
- "aaData": [],
+        },
+        "order": [[ 2, "asc" ],[ 3, "asc" ]],
+        "aaData": [],
          "bProcessing": true,
          "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus/"+cartId,
          "aoColumns": 
