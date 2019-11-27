@@ -39,8 +39,12 @@ $(function ()
         });
 
   var cartId = $("#cartId").text();
-  if($("#deliveryResiNo").length > 0){
     var datatable2 = $("#Delivery").DataTable({
+       "initComplete": function(settings, json) {
+          var rowterakhir = $("#Delivery tbody tr:last td:nth-child(2)").text();
+          $("#deliveryStatus").text(rowterakhir);
+  },
+ "aaData": [],
          "bProcessing": true,
          "sAjaxSource": "<?=base_url();?>Cart/getdeliveryStatus/"+cartId,
          "aoColumns": 
@@ -52,7 +56,9 @@ $(function ()
               { mData: 'city_name' }
             ]    
         });
-  }
+  
+
+
 
 
     // Add //

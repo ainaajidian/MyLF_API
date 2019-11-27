@@ -77,6 +77,9 @@ class Cart extends MY_Controller
                                          LEFT JOIN store f ON a.storeId = f.storeName
                                          LEFT JOIN size g ON g.sizeId = a.SizeID
                                          WHERE cartId = '".$cartId."'")->row();
+
+
+
         $this->go_to($data);
     }
 
@@ -123,9 +126,21 @@ class Cart extends MY_Controller
         $response = curl_exec($curl);
         $err        = curl_error($curl);
         $response = json_decode($response,true);
-        $data = $response['rajaongkir']['result']['manifest'];
+
+        if(isset($response['rajaongkir']['result'])){
+            $data = $response['rajaongkir']['result']['manifest'];
+        }else{
+              $data = array(
+                    "manifest_code" => "",
+                    "manifest_description" => "",
+                    "manifest_date" => "",
+                    "manifest_time" => "",
+                    "city_name" => ""
+            );
+        }
         echo json_encode(array("data" => $data));
         curl_close($curl);
+        print_r($err);
     }
 
     function saveMessage($userId, $cartId)

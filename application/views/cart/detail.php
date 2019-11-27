@@ -156,7 +156,7 @@
 												if ($cart->midtransStatusCode == 202) 
 													{ echo "Pesanan Di tolak"; }
 												else
-													{ echo "$cart->deliveryResiNo"; } ?>
+													{ echo $cart->deliveryResiNo . " - ". "<p id='deliveryStatus'> </p>" ; } ?>
 										</td>
 									</tr>
 									<tr>
