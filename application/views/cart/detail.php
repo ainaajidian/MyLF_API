@@ -71,22 +71,26 @@
 						<div class="col-md-4">
 							<form method="POST" action="<?=base_url().'Cart/saveResi';?>">
 								<table class="table table-bordered" style="width:100%; height:700px;">
-									<h3>Product</h3>
+									<h3><b>Product</b></h3>
 									<thead>
 										<tr>
-											<th>Product Name</th>
-											<td><?=$cart->productName;?> ( <?=$cart->productErpCode;?> )</td>
+											<th>Name</th>
+											<td><?=$cart->productName;?></td>
 										</tr>
 										<tr>
-											<th>Image Product</th>
+											<th>Code</th>
+											<td><?=$cart->productErpCode;?></td>
+										</tr>
+										<tr>
+											<th>Image</th>
 											<td> <img data-value="<?=$cart->image1;?>" data-id="<?=$cart->image1;?>" style="height: 100px; width: 100px;" src="<?=base_url();?>assets/app_assets/product_image/<?=$cart->image1;?>"> </td> 	
 										</tr>
 										<tr>
-											<th>Product Color</th>
+											<th>Color</th>
 											<td><?=$cart->ccName;?></td>
 										</tr>
 										<tr>
-											<th>Product Size</th>
+											<th>Size</th>
 											<td><?=$cart->SizeDescription?></td>
 										</tr>									
 									</thead>
@@ -94,9 +98,9 @@
 							</form>
 						</div>
 						
-						<div class="col-md-4 direct-chat-messages">
-							<table class="table table-bordered" style="padding-right:5px; width:100%; height:700px;" >
-								<h3>Price</h3>
+						<div class="col-md-4">
+							<table class="table table-bordered" style="width:100%; height:700px;">
+								<h3><b>Price</b></h3>
 								<thead>
 									<tr>
 										<th>Harga</th>
@@ -122,9 +126,9 @@
 							</table>
 						</div>
 
-						<div class="col-md-4 direct-chat-messages">
-							<table class="table table-bordered" style="padding-right:5px; width:100%; height:400px;">
-								<h3>Payment and Delivery</h3>
+						<div class="col-md-4">
+							<table class="table table-bordered" style="width:100%; height:700px;">
+								<h3><b>Payment and Delivery</b></h3>
 								<thead>
 									<tr>
 										<th>Tipe Pembayaran</th>
@@ -156,7 +160,7 @@
 												if ($cart->midtransStatusCode == 202) 
 													{ echo "Pesanan Di tolak"; }
 												else
-													{ echo $cart->deliveryResiNo . " - ". "<p id='deliveryStatus'> </p>" ; } ?>
+													{ echo "$cart->deliveryResiNo" . "</br>" . "<p id='deliveryStatus'> </p>" ; } ?>
 										</td>
 									</tr>
 									<tr>

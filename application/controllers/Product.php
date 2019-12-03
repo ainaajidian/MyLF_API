@@ -34,7 +34,7 @@ class Product extends MY_Controller
 
 	function getProduct()
 	{
-		$data['data']	= $this->db->query("SELECT a.productId, a.productName, b.categoryName, 
+		$data['data']	= $this->db->query("SELECT a.productId,a.productErpCode, a.productName, b.categoryName, 
 											CONCAT('Rp ', FORMAT(productPrice, 0)) AS productPrice,
 											a.isHot, a.isNew, a.productFlag
 											FROM products a 
@@ -158,7 +158,7 @@ class Product extends MY_Controller
 														left join TransactionItemSalesStock c on b.SizeID = c.SizeID 
 														and a.productID = c.productID 
 														and pc.productColorId = c.ProductColorID
-														and storeID ='".$this->getOutlet()."'
+														and storeID ='".$this->Usersession->getUsername()."'
 														WHERE a.productId = '" . $productId . "'
 														group by ccName,SizeDescription,ProductSizeId  ")->result();
 		$this->go_to($data);
@@ -441,7 +441,8 @@ class Product extends MY_Controller
 	{
 		$this->db->query("UPDATE products set productImage = '" . $image . "' where productId = '" . $productId . "'  ");
 	}
-	function saveQtyTest(){
+	function saveQtyTest()
+	{
 		$ProductSizeId = $this->input->post("productsizeid");
 		$qty = $this->input->post("qty");
 		$storeId = $this->input->post("storeId");
@@ -461,7 +462,9 @@ class Product extends MY_Controller
 								and ProductColorID = '".$dataProductSize->productColorId."'  
 								and storeID = '".$storeId."' 
 								");
-			} else {
+			} 
+			else 
+			{
 				if ($this->getStokId() == "1") {
 					$maxId = "STOK00000000000001";
 				} else {
@@ -478,8 +481,8 @@ class Product extends MY_Controller
 						"CreatedBy" =>$this->Usersession->getUsername()
 					);
 				$this->db->insert("TransactionItemSalesStock",$dataInsert);
+				
 			}
-
 		}
 	}
 }

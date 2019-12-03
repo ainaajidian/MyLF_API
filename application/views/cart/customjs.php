@@ -28,6 +28,7 @@ $(function ()
               { mData: 'ccName' } ,
               { mData: 'sizeId' } ,
               { mData: 'storeId' } ,
+              { mData: 'createdDate' },
               { mData: 'responseDescription' },
               {
                 "mData": null,

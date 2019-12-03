@@ -13,7 +13,7 @@
 	              		<table width='100%' class="table" id="myTable">
 	              			<thead>
 	              				<tr>
-		              				<th>ProductId</th>
+		              				<th>Product Code</th>
 		              				<th>Product Name</th>
 		              				<th>Product Category</th>
 		              				<th>Product Price</th>

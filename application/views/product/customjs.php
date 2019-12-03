@@ -121,7 +121,7 @@ buttons:
  "sAjaxSource": "<?=base_url();?>Product/getProduct/",
  "aoColumns": 
     [
-      { mData: 'productId' } ,
+      { mData: 'productErpCode' } ,
       { mData: 'productName' } ,
       { mData: 'categoryName' } ,
       { mData: 'productPrice'} ,
@@ -142,6 +142,7 @@ buttons:
         "bSortable": false,
         "mRender": function(data, type, full)
         {
+                                        console.log(full);
           if(full.productFlag === "1")
           {
             return  '<a href="<?=base_url();?>Product/detail/'+full.productId+'" class="btn btn-success btn-sm"> Detail </a> ' +

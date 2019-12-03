@@ -18,6 +18,7 @@
                           <th>Product Color</th>
                           <th>Size Id</th>
                           <th>Store Id</th>
+                          <th>Transaction Date</th>
                           <th>Status Pembayaran</th>
                           <th>Action</th>
                         </tr>

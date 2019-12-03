@@ -60,15 +60,16 @@ class Cart extends MY_Controller
         $data['view']                   = "cart/detail";
         $data['customjs']               = "cart/customjs";
 
-        $data['cart'] = $this->db->query("SELECT a.cartId, a.userId, a.productId, b.productName, c.image1, d.ccName, 
+        $data['cart'] = $this->db->query("SELECT addressRemark,a.cartId, a.userId, a.productId, b.productName, c.image1, d.ccName, 
                                          g.SizeDescription, CONCAT('Rp ', FORMAT(a.productPrice, 0)) AS productPrice,
                                          CONCAT('Rp ', FORMAT(productPriceAfterPromo, 0)) AS productPriceAfterPromo,
                                          CONCAT('Rp ', FORMAT(disc, 0)) AS disc,
                                          CONCAT('Rp ', FORMAT(grandTotal, 0)) AS grandTotal,
                                          a.midtransPaymentType, a.va_bank, a.va_numbers,
-                                         f.storeMall, e.responseDescription, a.deliveryResiNo, 
+                                         f.storeMall, e.responseDescription, a.deliveryResiNo, a.createdDate,
                                          CONCAT('Rp ', FORMAT(deliveryPrice, 0)) AS deliveryPrice, b.productErpCode,
-                                         a.customerReceiveStatus, a.salesOrderTransactionNo, a.midtransStatusCode
+                                         a.customerReceiveStatus, a.salesOrderTransactionNo, a.midtransStatusCode,
+                                         a.deliveryCourId,a.deliveryService,deliveryETD
                                          FROM cart a 
                                          LEFT JOIN products b ON a.productId = b.productId 
                                          LEFT JOIN product_colors c ON a.productColorId = c.productColorId 
@@ -76,6 +77,7 @@ class Cart extends MY_Controller
                                          LEFT JOIN response e ON a.midtransStatusCode = e.responseCode 
                                          LEFT JOIN store f ON a.storeId = f.storeName
                                          LEFT JOIN size g ON g.sizeId = a.SizeID
+                                         INNER JOIN delivery_address da on a.deliveryAddressId = da.deliveryAddressId
                                          WHERE cartId = '".$cartId."'")->row();
 
 
