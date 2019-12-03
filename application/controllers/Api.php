@@ -195,7 +195,6 @@ class Api extends CI_Controller
         $addres   = $this->input->post("addres");
         $gender   = $this->input->post("gender");
 
-
         $this->db->query("UPDATE members set userGender='" . $gender . "',userFullname = '" . $fullname . "',userBirthDate ='" . $dob . "',userMobilePhone = '" . $mobile . "',userAddress='" . $addres . "' where userEmail = '" . $email . "'");
         $data['err']      = 0;
         $cekEmail         = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "'");
@@ -916,10 +915,10 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                  and SizeID = '".$dataCart->sizeId."' 
                                 ");
         //$this->db->query("DELETE FROM cart where cartId = '" . $cartId . "' ");
-        if( ($dataCart->midtransOrderID != "" || $dataCart->midtransOrderID != null) && ($dataCart->midtransStatusCode != "202" || $dataCart->midtransStatusCode != 202)){
+        $this->db->query("UPDATE cart set cartFlag = 2, deletedDate = NOW(), deletedBy = '".$dataCart->userId."' where cartId = '".$cartId."'");
+        if( ($dataCart->midtransOrderID != "" || $dataCart->midtransOrderID != null) || ($dataCart->midtransStatusCode != "202" || $dataCart->midtransStatusCode != 202)){
             $this->cancelTransaction($dataCart->midtransOrderID);
         }
-        $this->db->query("UPDATE cart set cartFlag = 2, deletedDate = NOW(), deletedBy = '".$dataCart->userId."' where cartId = '".$cartId."'");
 
     }
 
@@ -2038,6 +2037,53 @@ function chargeAPI($api_url, $server_key, $request_body){
     function getMarketplace(){
         $data = $this->db->query("SELECT * FROM marketplace order by marketplaceName asc")->result();
         echo json_encode($data);
+    }
+
+    function getChatHeader($roomId){
+        $query = $this->db->query("SELECT * FROM chatHeader where roomId = '".$roomId."' ");
+        if($query->num_rows() < 1){
+            $data = array("status" => 0);
+        }else{
+            $data = array("status" => 1);
+        }
+        echo json_encode($data);
+    }
+
+    function saveChatHeader(){
+
+        $roomId = $this->input->post("roomId");
+        $userId = $this->input->post("userId");
+        $chatId = $this->input->post("chatId");
+
+        $this->db->query("INSERT INTO chatHeader (roomId,chatId,user1,createdDate,isClosed,lastMessageId,lastMessageReadStatus) 
+        values ('".$roomId."','".$chatId."','".$userId."', NOW(), 0,null,null) ");
+
+        
+
+        $this->getChatDetail($roomId);
+
+    }
+    
+    function getChatDetail($roomId){
+        $data = $this->db->query("SELECT * FROM chatDetail where roomId = '".$roomId."' order by createdDate desc limit 20 ");
+        echo json_encode($data->result());
+    }
+
+    function saveChatDetail(){
+
+        $roomId         = $this->input->post("roomId");
+        $from           = $this->input->post("from");
+        $chatDetailId   = $this->input->post("chatDetailId");
+        $messageContent = $this->input->post("messageContent");
+
+        $this->db->query(" INSERT INTO
+         chatDetail (chatDetailId, roomId, `from`, messageContent, createdDate,chatImage) 
+         values ('".$chatDetailId."', '".$roomId."', '".$from."','".$messageContent."',NOW(), null )
+          ");
+
+        $data = $this->db->query("SELECT * FROM chatDetail where roomId = '".$roomId."' order by createdDate desc limit 1 ");
+        echo json_encode($data->result());
+
     }
 
 }
