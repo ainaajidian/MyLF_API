@@ -1318,7 +1318,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         // CALCULATE POINT //
 
         $dataCart       = $this->db->query("SELECT * FROM cart where midtransOrderID = '".$result->order_id."' ")->row();
-        $dataTransactionMember = $this->db->query("SELECT * from TransactionMember where userId = '".$dataCart->userId."'");
+        $dataTransactionMember = $this->db->query("SELECT * from TransactionMember where userId = '".$dataCart->userId."' order by TransactionDate desc LIMIT 1");
 
         if($dataTransactionMember->num_rows() < 1){
             $pointSaatIni = 0;
@@ -1327,8 +1327,17 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         }
 
         $kalkulasiPoin  = $dataCart->productPriceAfterPromo * 0.05;
-        $totalPoint     = $pointSaatIni + $kalkulasiPoin;
-        $reward = $kalkulasiPoin;
+
+
+
+        if($dataCart->pointUsage == "0"){
+            $reward = $kalkulasiPoin;
+            $totalPoint = $reward + $pointSaatIni;
+        }else{
+            $reward = $kalkulasiPoin;
+            $totalPoint = $reward;
+        }
+
 
         $this->db->query("
         INSERT INTO TransactionMember (UserId,TransactionId,Total,TransactionDate,OutletLocation,PointUsage,RewardPoint,TotalPayment,TotalPoint) 
@@ -1794,41 +1803,6 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         echo json_encode($return);
     }
 
-function instagramPost(){
-
-$access_token = "2134473585.6806ed4.92ac91cef0874d398c71e0949badbbbe";
-$photo_count = 10;
-$json_link = "https://api.instagram.com/v1/users/self/media/recent/?";
-$json_link .="access_token={$access_token}&count={$photo_count}";
-$json = file_get_contents($json_link);
-$obj = json_decode(preg_replace('/("\w+"):(\d+)/', '\\1:"\\2"', $json), true);
-echo "<pre>";
-print_r($obj);
-echo "</pre>";
-foreach ($obj['data'] as $post){
-    $pic_text = $post['caption']['text'];
-    $pic_link = $post['link'];
-    $pic_like_count = $post['likes']['count'];
-    $pic_comment_count=$post['comments']['count'];
-    $pic_src=str_replace("http://", "https://", $post['images']['standard_resolution']['url']);
-    $pic_created_time=date("F j, Y", $post['caption']['created_time']);
-    $pic_created_time=date("F j, Y", strtotime($pic_created_time . " +1 days"));
-    echo "<div class='col-md-4 item_box'>";
-        echo "<a href='{$pic_link}' target='_blank'>";
-          echo "<img class='img-responsive photo-thumb' src='{$pic_src}' alt='{$pic_text}'>";
-        echo "</a>";
-    echo "<p>";
-    echo "<p>";
-        echo "<div style='color:#888;'>";
-            echo "<a href='{$pic_link}' target='_blank'>{$pic_created_time}</a>";
-        echo "</div>";
-    echo "</p>";
-    echo "<p>{$pic_text}</p>";
-    echo "</p>";
-    echo "</div>";
-}
-    }
-
     function getProductFeedback(){
         $productId = $this->input->post("productId");
         $rateFilter = $this->input->post("rateFilter");
@@ -2058,7 +2032,7 @@ function chargeAPI($api_url, $server_key, $request_body){
         $this->db->query("INSERT INTO chatHeader (roomId,chatId,user1,createdDate,isClosed,lastMessageId,lastMessageReadStatus) 
         values ('".$roomId."','".$chatId."','".$userId."', NOW(), 0,null,null) ");
 
-        
+
 
         $this->getChatDetail($roomId);
 
