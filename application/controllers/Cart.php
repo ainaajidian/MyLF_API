@@ -188,21 +188,21 @@ class Cart extends MY_Controller
         $mail->Subject = 'Konfirmasi Produk Telah Di Terima';
         $data['url'] = base_url() . "Cart/confirmation/" . $cartId;
         $data['cart']  = $datauser;
-        // $body        = $this->load->view("confirmation_product", $data, TRUE);
-        // $mail->Body = $body;
-        // if (!$mail->send()) {
-        //     echo 'Message could not be sent.';
-        //     echo 'Mailer Error: ' . $mail->ErrorInfo;
-        // } else {
-        //     echo 'Message has been sent';
-        //     $this->saveMessage($datauser->userId, $cartId);
+        $body        = $this->load->view("confirmation_product", $data, TRUE);
+        $mail->Body = $body;
+        if (!$mail->send()) {
+            echo 'Message could not be sent.';
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
+        } else {
+            echo 'Message has been sent';
+            $this->saveMessage($datauser->userId, $cartId);
             
-        //     die("<script>
-        //         alert('Send Reminder Success');
-        //         window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
-        //         </script>");
-        // }
-        $this->load->view("confirmation_product", $data);
+            die("<script>
+                alert('Send Reminder Success');
+                window.location.href='" . base_url() . "Cart/detail/" . $cartId . "';
+                </script>");
+        }
+        // $this->load->view("confirmation_product", $data);
     }
 
     function viewReminder($cartId)

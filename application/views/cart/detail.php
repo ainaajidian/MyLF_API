@@ -44,6 +44,16 @@
 												<button class="btn btn-warning"> Input Struk </button>
 											</td>
 										</tr>
+<tr>
+    <th>Jasa Pengiriman</th>
+    <td><?=$cart->deliveryCourId;?> - <?=$cart->deliveryService;?> </td>
+</tr>
+
+<tr>
+    <th>Alamat Pengiriman</th>
+    <td><?=$cart->addressRemark;?> </td>
+</tr>
+
 									</thead>
 								</table>
 							</form>

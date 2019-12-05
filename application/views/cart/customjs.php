@@ -3,15 +3,6 @@
 $(function () 
 {
     var datatable = $("#Cart").DataTable({
-     dom: 'Bfrtip',
-      buttons: 
-        [
-            {
-                text: 'Add Cart',
-                action: function ( e, dt, node, config ) 
-                  { openAddmodal(); }
-            }
-        ],
          "bProcessing": true,
          "sAjaxSource": "<?=base_url();?>Cart/getCart",
          "aoColumns": 
@@ -58,10 +49,6 @@ $(function ()
               { mData: 'city_name' }
             ]    
         });
-  
-
-
-
 
     // Add //
     function openAddmodal()

@@ -10,13 +10,13 @@ class Cart_model extends CI_Model
     function generateAll()
     {
         return $this->db->query("SELECT a.cartId, a.userId, b.productName, c.image1, d.ccName,
-                                 a.sizeId, a.storeId, IFNULL(e.responseDescription, 'Belum Bayar/Cancel') AS responseDescription, a.createdDate
+                                 a.sizeId, a.storeId, e.responseDescription, a.createdDate
                                  FROM cart a
                                  LEFT JOIN products b ON a.productId = b.productId
                                  LEFT JOIN product_colors c ON a.productColorId = c.productColorId
                                  LEFT JOIN combination_color d ON c.combination_color = d.ccId
                                  LEFT JOIN response e ON a.midtransStatusCode = e.responseCode
-                                 where a.storeId = '".$this->Usersession->getUsername()."'
+                                 where a.storeId = '".$this->Usersession->getUsername()."' AND cartFlag != '2'
                                  ORDER BY a.createdDate ASC")->result();
     }
 

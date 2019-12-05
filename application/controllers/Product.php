@@ -118,11 +118,29 @@ class Product extends MY_Controller
 
 	function active($productId)
 	{
-		$this->db->query("UPDATE products set productFlag = 1 where productId = '".$productId."' ");
+		$this->db->query("UPDATE products SET productFlag = 1 WHERE productId = '".$productId."' ");
 		die("<script>
-				alert('Aktifasi Berhasil');
-				window.location.href='" . base_url() . "Product/detail/" . $productId . "';
-				</script>");
+			alert('Active Product Success');
+			window.location.href='" . base_url() . "Product';
+			</script>");
+	}
+
+	function deactive($productId)
+	{
+		$this->db->query("UPDATE products SET productFlag = 0 WHERE productId = '".$productId."' ");
+		die("<script>
+			alert('Deactive Product Success');
+			window.location.href='" . base_url() . "Product';
+			</script>");
+	}
+
+	function deleteProduct($productId)
+	{
+		$this->db->query("DELETE products WHERE productId = '".$productId."' ");
+		die("<script>
+			alert('Deactive Product Success');
+			window.location.href='" . base_url() . "Product';
+			</script>");
 	}
 
 	function detail($productId)
@@ -484,5 +502,9 @@ class Product extends MY_Controller
 				
 			}
 		}
+		die("<script>
+		alert('Add Stock Success');
+		window.location.href='" . base_url() . "Product/detail/" . $dataProductSize->productId . "';
+		</script>");
 	}
 }
