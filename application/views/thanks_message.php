@@ -109,7 +109,11 @@
                                 <tr>
                                     <td style="word-wrap:break-word;font-size:0px;padding:15px 15px 15px 15px;" align="center">
                                         <div style="cursor:auto;color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:14px;line-height:1.5;text-align:center;">
-                                            <h2 style="line-height: 100%;">Terima kasih telah melakukan konfirmasi!</h2>
+                                            <h3 style="line-height: 100%; font-style: italic; font-family: 'Century Gothic';">
+                                                Terima kasih telah melakukan konfirmasi,
+                                                </br>
+                                                jangan lupa untuk rating produk kami ya.
+                                            </h3>
                                         </div>
                                     </td>
                                 </tr>

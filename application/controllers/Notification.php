@@ -59,7 +59,6 @@ class Notification extends MY_Controller
         $config['max_height']     = ''; //tinggi maksimu 1000 px
         $this->upload->initialize($config);
         $this->load->library('upload', $config);
-        $notificationMaxId = $this->Notification_model->getMaxId();
         if (!empty($_FILES['notificationImage']['name'])) {
             if ($this->upload->do_upload('notificationImage')) {
                 $pic = $this->upload->data();
@@ -70,7 +69,7 @@ class Notification extends MY_Controller
                     "notificationDate"      => $notificationDate,
                     "notificationImage"     => $picture,
                     "notificationFlag"      => 1,
-                    "notificationId"        => $notificationMaxId
+                    "notificationId"        => $this->Notification_model->getMaxId()
                 );
 
                 $this->Notification_model->saveNotification($datasave, $notificationId);
@@ -88,16 +87,7 @@ class Notification extends MY_Controller
 
                 $fields = array(
                     'to' => $toNotification,
-                    'notification' => $msg,
-                    "data" => array( 
-                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                        'show_in_foreground' => True,
-                        'priority' => 'high',
-                        'openScreen' => true,
-                        'screenToOpen' => 'NotificationDetailPage',
-                        'param' => $this->getNotificationDetail($notificationMaxId)
-                        )
-
+                    'notification' => $msg
                 );
 
                 $headers = array(
@@ -116,15 +106,15 @@ class Notification extends MY_Controller
                 print_r($result);
                 curl_close($ch);
 
-                // die("<script>
-                //         alert('Add Notification Success');
-                //         window.location.href='" . base_url() . "Notification';
-                //         </script>");
+                die("<script>
+                        alert('Add Notification Success');
+                        window.location.href='" . base_url() . "Notification';
+                        </script>");
             } else {
-                // die('<script>
-                //     alert("' . $this->upload->display_errors() . '");
-                //     window.location.href="' . base_url() . 'Notification";
-                //     </script>');
+                die('<script>
+                    alert("' . $this->upload->display_errors() . '");
+                    window.location.href="' . base_url() . 'Notification";
+                    </script>');
             }
         } else {
             $datasave = array(
@@ -132,7 +122,7 @@ class Notification extends MY_Controller
                 "notificationBody"      => $notificationBody,
                 "notificationDate"      => $notificationDate,
                 "notificationFlag"      => 1,
-                "notificationId"        => $notificationMaxId
+                "notificationId"        => $this->Notification_model->getMaxId()
             );
 
             $this->Notification_model->saveNotification($datasave, $notificationId);
@@ -150,15 +140,7 @@ class Notification extends MY_Controller
 
             $fields = array(
                 'to' => $toNotification,
-                'notification' => $msg,
-                "data" => array( 
-                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                    'show_in_foreground' => True,
-                    'priority' => 'high',
-                    'openScreen' => true,
-                    'screenToOpen' => 'NotificationDetailPage',
-                    'param' => $this->getNotificationDetail($notificationMaxId)
-                    )
+                'notification' => $msg
             );
 
             $headers =  array(
@@ -177,17 +159,11 @@ class Notification extends MY_Controller
             print_r($result);
             curl_close($ch);
 
-            // die("<script>
-            //     alert('Add Notification Success');
-            //     window.location.href='" . base_url() . "Notification';
-            //     </script>");
+            die("<script>
+                alert('Add Notification Success');
+                window.location.href='" . base_url() . "Notification';
+                </script>");
         }
-    }
-
-    function  getNotificationDetail($id){
-        $data = $this->db->query("SELECT * FROM notification where notificationId = '".$id."' ")->row();
-       // echo json_encode($data);
-     return ($data);
     }
 
     //Edit Data
