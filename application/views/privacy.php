@@ -246,6 +246,33 @@
             <div class="col">
                 <div class="row">
                     <div class="col">
+                        <h5><strong>12. KEBIJAKAN PENGEMBALIAN DANA</strong><br></h5>
+                        <p>1. Refund dilakukan ke rekening bank pihak pengirim dana, dilakukan selambat-lambatnya dalam 3 (tiga) hari kerja sejak permintaan refund dan data-data yang dibutuhkan sudah lengkap diberikan oleh pelanggan kepada CS Member LF dengan mengirim email ke - dengan subject -. </p>
+                        <p>2. Data-data yang dimaksud adalah sebagai berikut:
+                            <ul>
+                                <li>Order ID Transaksi</li>
+                                <li>Bukti transfer (dalam bentuk foto atau screenshot)</li>
+                                <li>Rincian rekening bank pihak pengirim dana untuk tujuan refund (berupa: nama pemilik rekening, nama bank, nomor rekening)</li>
+                                <li>Alasan melakukan refund</li>
+                            </ul>
+                        </p>
+                        <p>3. Kapan refund bisa dilakukan? </br>Ketika terjadi kesalahan pada prosedur transaksi.</p>
+                        <p>4. Bagaimana cara melakukan refund? </br>Hubungi Customer Services kami dengan mengirim email ke - dengan subject -. Adapun beberapa hal yang harus diperhatikan ketika pelaporan adalah sebagai berikut:
+                            <ul>
+                                <li>Order ID Transaksi</li>
+                                <li>Bukti transfer (dalam bentuk foto atau screenshot)</li>
+                                <li>Rincian rekening bank pihak pengirim dana untuk tujuan refund (berupa: nama pemilik rekening, nama bank, nomor rekening)</li>
+                                <li>Alasan melakukan refund</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
                         <h5><strong>1. DEFINITION</strong><br></h5>
                         <p>A. My LF Bags And Shoes "is an application service for the general public based on Android created to facilitate you in purchasing bags & shoes.
                             <br>
@@ -432,6 +459,34 @@
                         <h5><strong>11. HOW TO CONTACT US</strong><br></h5>
                         <p>If you have any further questions regarding the privacy and security of your information and would like to update or remove your details please contact Our Customer Care at -
                             <br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <h5><strong>12. REFUND POLICY</strong><br></h5>
+                        <p>1. Refunds are made to the sender's account bank account, carried out no later than 3 (three) working days from the request for refund and the required data has been completely provided by the customer to CS Payfazz by sending an email to - with the subject -. 
+                        </p>
+                        <p>2. The data referred to in point (1) above is as follows:
+                            <ul>
+                                <li>Order ID Transaction</li>
+                                <li>Proof of transfer (in the form of photos or screenshots)</li>
+                                <li>Details of the sender's bank account for refund purposes (in the form of: account holder's name, bank name, account number)</li>
+                                <li>Reasons for a refund</li>
+                            </ul>
+                        </p>
+                        <p>3. When can refund be done? </br>When an error occurs in the transaction procedure.</p>
+                        <p>4. How to refund? </br>Contact our Customer Services by sending an email to - with subject -. As for some things that must be considered when reporting are as follows:
+                            <ul>
+                                <li>Order ID Transaction</li>
+                                <li>Proof of transfer (in the form of photos or screenshots)</li>
+                                <li>Details of the sender's bank account for refund purposes (in the form of: account holder's name, bank name, account number)</li>
+                                <li>Reasons for a refund</li>
+                            </ul>
                         </p>
                     </div>
                 </div>
