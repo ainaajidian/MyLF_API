@@ -4,23 +4,22 @@
          <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Cart Table</h3>
+                  <h3 class="card-title">Refund Table</h3>
                 </div>
                 <div class="card-body">
                 <div class="table-responsive">
-                    <table width='100%' class="table" id="Cart">
+                    <table width='100%' class="table" id="Refund">
                       <thead>
                         <tr>
+                          <th>Refund Id</th>
                           <th>Cart Id</th>
-                          <th>User Id</th>
-                          <th>Product Name</th>
-                          <th>Product Image</th>
-                          <th>Product Color</th>
-                          <th>Size Id</th>
-                          <th>Store Id</th>
-                          <th>Transaction Date</th>
-                          <th>Status Pembayaran</th>
-                          <th>Action</th>
+                          <th>Tanggal Pengajuan</th>
+                          <th>Nominal Refund</th>
+                          <th>Approve By</th>
+                          <th>Approve Date</th>
+                          <th>Tanggal Refund</th>
+                          <th>Bank Name</th>
+                          <th>Rekening No</th>
                         </tr>
                       </thead>
                     </table>
