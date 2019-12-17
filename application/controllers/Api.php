@@ -145,7 +145,7 @@ class Api extends CI_Controller
 
         $registerDate = date("Y-m-d");
 
-        $cekEmail = $this->db->query("SELECT * FROM members where (userEmail = '" . $email . "' or userMobilephone='".$userMobilephone."')")->num_rows();
+        $cekEmail = $this->db->query("SELECT * FROM members where userEmail = '" . $email . "'")->num_rows();
         if ($cekEmail > 0) {
             $data['err']     = 1;
             $data['message'] = "Email atau No Handphone sudah terdaftar";
@@ -238,6 +238,56 @@ class Api extends CI_Controller
             UNION ALL SELECT categoryId,categoryName,categoryImage,categoryDescription from product_categories where parentCategoryId = '" . $parentCategoryId . "' order by categoryName asc")->result();
         echo json_encode($data);
     }
+
+    function getProductsTest($categoryId = "", $limit = 0, $offset = 0, $childCategory = ""){
+
+        if($childCategory != "All" || $childCategory != "" || $childCategory != "null"){
+            if($categoryId == "_"){
+                $data = $this->db->query("SELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
+                productDescription,0 isLiked,pc.*,childCategoryId from products a
+                INNER JOIN (
+                        select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                        group by productId
+                    ) pc on a.productId = pc.productId
+                where a.productFlag = '1'
+                ORDER BY a.productId asc LIMIT $limit , $offset ")->result();
+            }else{
+            $data = $this->db->query("SELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
+                                            productDescription,0 isLiked,pc.*,childCategoryId from products a
+                                            INNER JOIN (
+                                                    select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                    group by productId
+                                                ) pc on a.productId = pc.productId
+                                            where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'
+                                            ORDER BY a.productId asc LIMIT $limit , $offset ")->result();
+        }
+     }else{
+        if($categoryId == "_"){
+            $data = $this->db->query("SELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
+            productDescription,0 isLiked,pc.*,childCategoryId from products a
+            INNER JOIN (
+                    select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                    group by productId
+                ) pc on a.productId = pc.productId
+            where a.productFlag = '1' and childCategoryId = '".$childCategory."' 
+            ORDER BY a.productId asc LIMIT $limit , $offset ")->result();
+        }else{
+        $data = $this->db->query("SELECT a.productId,productName,isNew,isHot,productImage,a.categoryId,productPrice,
+                                        productDescription,0 isLiked,pc.*,childCategoryId from products a
+                                        INNER JOIN (
+                                                select min(productColorId) productColorId,combination_color,image1,image2,image3,productId from product_colors
+                                                group by productId
+                                            ) pc on a.productId = pc.productId
+                                        where a.categoryId = '" . $categoryId . "' and a.productFlag = '1'  and childCategoryId = '".$childCategory."' 
+                                        ORDER BY a.productId asc LIMIT $limit , $offset ")->result();
+    }
+     }
+
+
+        
+    echo json_encode($data);
+
+}
 
     function getProducts($categoryId = "", $limit = 0, $offset = 0, $type = "", $userId = "")
     {
@@ -833,16 +883,17 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     {
         $userId = $this->input->post("userId");
         $data = [];
-        $queryresult = $this->db->query("select a.cartId,a.deliveryAddressId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price
+        $queryresult = $this->db->query("select addressRemark,a.midtransStatusCode,a.cartId,a.deliveryAddressId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price
                                             from cart a 
                                                 inner join size b on a.SizeID = b.SizeID 
                                                 inner join product_colors pc on a.productId = pc.productId and a.productColorID = pc.productColorID
                                                 inner join combination_color cc on pc.combination_color = ccId
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
+                                                left join delivery_address da on a.deliveryAddressId = da.deliveryAddressId
                                             where a.userId = '" . $userId . "' and (cartFlag IS NULL or cartFlag = 0) 
                                             and 
-                                            (midtransStatusCode IS NULL or midtransStatusCode = '')
+                                            (midtransStatusCode IS NULL or midtransStatusCode != '202')
                                             group by a.deliveryAddressId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice ")->result();
         foreach ($queryresult as $key) {
             $info = explode(";", $key->SizeDescription);
@@ -861,7 +912,9 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "image" => $key->image1,
                     "cartId" => $key->cartId,
                     "price" => $key->price,
-                    "deliveryAddressId" => $key->deliveryAddressId
+                    "deliveryAddressId" => $key->deliveryAddressId,
+                    "midtransStatusCode" => $key->midtransStatusCode,
+                    "addressRemark"=> $key->addressRemark
                 );
             } else if ($key->TipeProduct == "C_00007") {
                 $data[] = array(
@@ -878,7 +931,10 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "image" => $key->image1,
                     "cartId" => $key->cartId,
                     "price" => $key->price,
-                    "deliveryAddressId" => $key->deliveryAddressId
+                    "deliveryAddressId" => $key->deliveryAddressId,
+                    "midtransStatusCode" => $key->midtransStatusCode,
+                    "addressRemark"=> $key->addressRemark
+
 
 
                 );
@@ -896,7 +952,11 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "quantity" => $key->quantity,
                     "image" => $key->image1,
                     "cartId" => $key->cartId,
-                    "price" => $key->price
+                    "price" => $key->price,
+                    "midtransStatusCode" => $key->midtransStatusCode,
+                    "addressRemark"=> $key->addressRemark
+
+
                 );
             }
         }
@@ -1024,6 +1084,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                     and productColorId = '" . $cartData->productColorId . "'
                                     and sizeId = '" . $cartData->sizeId . "'
                                     and StockQty > 0
+                                    and (storeCityId != '' or storeProvinceId != '' or storeSubdistrictId != '')
                                      ")->result();
         echo json_encode($data);
     }
@@ -1103,7 +1164,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         $dataCart = $this->db->query("SELECT * from cart a 
                                         inner join store b on a.storeId = b.storeName
                                         inner join delivery_address c on a.deliveryAddressId = c.deliveryAddressId
-                                         where cartId = '" . $cartId . "'")->row();
+                                         where cartId = '" . $cartId . "' and storeCityId != '' or storeProvinceId != '' or storeSubdistrictId != '' ")->row();
         $cityOrigin = $dataCart->storeSubdistrictId;
         $cityDestination = $dataCart->addressSubdistrictId;
 
@@ -1373,6 +1434,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                         where midtransOrderID = '" . $result->order_id . "' 
                           ");
             }
+
             if($result->payment_type == "bank_transfer" && $result->transaction_status != "cancel" && $result->transaction_status != "expire" && $result->status_code != 200 ){
                 $this->load->model('Message_model');
                 $this->db->query("UPDATE cart 
@@ -1389,8 +1451,22 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                         "messageTitle"          => $messageTitle,
                         "messageId"             => $this->Message_model->getMaxId()
                     );
-                    $this->Message_model->saveMessage($datasave, $messageContent);
-            }else if($result->payment_type == "bank_transfer" && $result->transaction_status == "cancel"){
+                $this->Message_model->saveMessage($datasave, $messageContent);
+            } else if($result->payment_type == "echannel" && $result->transaction_status != "expire" && $result->transaction_status != "cancel" && $result->status_code != "200"){
+                $userId             =  $datauser->userId;
+                $messageContent     = "Harap lakukan transfer, dengan kode perusahaan ".$result->biller_code." - ".$result->bill_key. " , sebesar ".number_format($result->gross_amount)." . Pembayaran akan hangus dalam waktu 24 jam.";
+                $messageTitle       = "Konfirmasi Checkout : ".$datauser->cartId;
+                $datasave = array(
+                    "userId"                => $userId,
+                    "deviceId"              => "",
+                    "messageContent"        => $messageContent,
+                    "messageTitle"          => $messageTitle,
+                    "messageId"             => $this->Message_model->getMaxId()
+                );
+                $this->Message_model->saveMessage($datasave, $messageContent);
+            } 
+            
+            else if($result->transaction_status == "cancel"){
                     $userId             =  $datauser->userId;
                     $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " berhasil di batalkan.";
                     $messageTitle       = "Transaksi di batalkan : ".$datauser->cartId;
@@ -1401,6 +1477,15 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                         "messageTitle"          => $messageTitle,
                         "messageId"             => $this->Message_model->getMaxId()
                     );
+                    $this->db->query("UPDATE cart 
+                    set midtransPaymentType = '" . $result->payment_type . "', 
+                    midtransGrossAmount = '" . $result->gross_amount . "',
+                    midtransTransactionTime = '" . $result->transaction_time . "',
+                    midtransStatusCode = '" . $result->status_code . "',
+                    midtransTransactionStatus = '" . $result->transaction_status . "',
+                    cartFlag = 2
+                    where midtransOrderID = '" . $result->order_id . "' 
+                      ");
                     $this->Message_model->saveMessage($datasave, $messageContent);
             }else if($result->transaction_status == "expire"){
                 $userId             =  $datauser->userId;
@@ -1413,29 +1498,55 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "messageTitle"          => $messageTitle,
                     "messageId"             => $this->Message_model->getMaxId()
                 );
+                $this->db->query("UPDATE cart 
+                set midtransPaymentType = '" . $result->payment_type . "', 
+                midtransGrossAmount = '" . $result->gross_amount . "',
+                midtransTransactionTime = '" . $result->transaction_time . "',
+                midtransStatusCode = '" . $result->status_code . "',
+                midtransTransactionStatus = '" . $result->transaction_status . "',
+                cartFlag = 2
+                where midtransOrderID = '" . $result->order_id . "' 
+                  ");
                 $this->Message_model->saveMessage($datasave, $messageContent);
             }else if($result->payment_type == "bank_transfer" && $result->status_code == 200){
                 $userId             =  $datauser->userId;
-                $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " sudah berhasil ya, kita juga sudah menerima pembayaran. Jangan beli lupa rate pembelian ya.";
+                $messageContent     = $datauser->cartId;
                 $messageTitle       = "Transaksi berhasil : ".$datauser->cartId;
                 $datasave = array(
                     "userId"                => $userId,
                     "deviceId"              => "",
                     "messageContent"        => $messageContent,
                     "messageTitle"          => $messageTitle,
-                    "messageId"             => $this->Message_model->getMaxId()
+                    "messageId"             => $this->Message_model->getMaxId(),
+                    "messageType"           => "INVOICE"
                 );
                 $this->Message_model->saveMessage($datasave, $messageContent);
             }else if($result->payment_type == "credit_card" && $result->status_code == 200){
                 $userId             =  $datauser->userId;
-                $messageContent     = "Hi ka. Mau info nih, transaksi dengan nomor ".$datauser->cartId. " sudah berhasil ya, kita juga sudah menerima pembayaran. Jangan beli lupa rate pembelian ya.";
+                $messageContent     = $datauser->cartId;
                 $messageTitle       = "Transaksi berhasil : ".$datauser->cartId;
                 $datasave = array(
                     "userId"                => $userId,
                     "deviceId"              => "",
                     "messageContent"        => $messageContent,
                     "messageTitle"          => $messageTitle,
-                    "messageId"             => $this->Message_model->getMaxId()
+                    "messageId"             => $this->Message_model->getMaxId(),
+                    "messageType"           => "INVOICE"
+
+                );
+                $this->Message_model->saveMessage($datasave, $messageContent);
+            }else if($result->payment_type == "echannel" && $result->status_code == 200){
+                $userId             =  $datauser->userId;
+                $messageContent     = $datauser->cartId;
+                $messageTitle       = "Transaksi berhasil : ".$datauser->cartId;
+                $datasave = array(
+                    "userId"                => $userId,
+                    "deviceId"              => "",
+                    "messageContent"        => $messageContent,
+                    "messageTitle"          => $messageTitle,
+                    "messageId"             => $this->Message_model->getMaxId(),
+                    "messageType"           => "INVOICE"
+
                 );
                 $this->Message_model->saveMessage($datasave, $messageContent);
             }
@@ -1445,10 +1556,19 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     }
 
 
+
     function notificationhandlertet($orderId){
         $this->load->library('veritrans');
-        $is_production = false;
-        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+       
+        $myFetch = $this->getMidtransServerKey();
+        if($myFetch['status'] == "sandbox"){
+            $is_production = false;
+        }else{
+            $is_production = true;
+        }
+    
+        $server_key = $myFetch['ServerKey'];
+
         $params = array('server_key' => $server_key, 'production' => $is_production);
         $this->veritrans->config($params);
         $result = $this->veritrans->status($orderId);
@@ -1469,7 +1589,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
         $params = array('server_key' => $server_key, 'production' => $is_production);
         $this->veritrans->config($params);
         $this->veritrans->cancel($orderId);
-        $this->db->query("UPDATE cart set cartFlag = 1, deletedDate = NOW() where midtransOrderID = '".$orderId."'");
+        $this->db->query("UPDATE cart set cartFlag = 2, deletedDate = NOW() where midtransOrderID = '".$orderId."'");
     }
 
     function setExpiredTransaction($orderId){
@@ -1528,47 +1648,26 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
     }
 
     function no_notificationhandler($orderId){
+
         $this->load->library('veritrans');
-        $is_production = false;
-        $server_key = $is_production ? 'Mid-server-Hlf-KOi-Lg8-OmqCgp1AIhLM':'SB-Mid-server-w54MzrNLatCTHYGVxOvCBDRL';
+        $myFetch = $this->getMidtransServerKey();
+        if($myFetch['status'] == "sandbox"){
+            $is_production = false;
+        }else{
+            $is_production = true;
+        }
+        $server_key = $myFetch['ServerKey'];
         $params = array('server_key' => $server_key, 'production' => $is_production);
         $this->veritrans->config($params);
         $result = $this->veritrans->status($orderId);
-
-        if ($result->status_code == "200") {
-            $this->db->query("UPDATE cart 
-                    set midtransPaymentType = '" . $result->payment_type . "', 
-                    midtransGrossAmount = '" . $result->gross_amount . "',
-                    midtransTransactionTime = '" . $result->transaction_time . "',
-                    midtransStatusCode = '" . $result->status_code . "',
-                    cartFlag = 1,
-                    midtransTransactionStatus = '" . $result->transaction_status . "'
-                    where midtransOrderID = '" . $result->order_id . "' 
-                      ");
-        } else {
-            $this->db->query("UPDATE cart 
-                    set midtransPaymentType = '" . $result->payment_type . "', 
-                    midtransGrossAmount = '" . $result->gross_amount . "',
-                    midtransTransactionTime = '" . $result->transaction_time . "',
-                    midtransStatusCode = '" . $result->status_code . "',
-                    midtransTransactionStatus = '" . $result->transaction_status . "'
-                    where midtransOrderID = '" . $result->order_id . "' 
-                      ");
-        }
-        if($result->payment_type == "bank_transfer"){
-            $this->db->query("UPDATE cart 
-                    set va_numbers = '".$result->va_numbers[0]->va_number."', va_bank = '".$result->va_numbers[0]->va_number."'
-                    where midtransOrderID = '" . $result->order_id . "' 
-                      ");
-        }
-
+            return $result;
     }
 
     function getCartHist()
     {
         $userId = $this->input->post("userId");
         $data = [];
-        $queryresult = $this->db->query("select storeMall,deliveryResiNo,customerReceiveStatus,midtransStatusCode,midtransTransactionStatus,midtransPaymentType,cartId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price,
+        $queryresult = $this->db->query("select da.addressRemark, storeMall,deliveryResiNo,customerReceiveStatus,midtransStatusCode,midtransTransactionStatus,midtransPaymentType,cartId,a.productColorId,a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,sum(a.qty) as quantity,image1,p.productPrice as price,
                                             ifnull(deliveryCourName,'-') deliveryCourName,ifnull(deliveryService,'-') deliveryService,ifnull(deliveryPrice,'0') deliveryPrice,ifnull(midtransGrossAmount,'0') midtransGrossAmount, midtransStatusCode
                                             from cart a 
                                                 inner join size b on a.SizeID = b.SizeID 
@@ -1577,6 +1676,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                                                 inner join products p on p.productId = a.productId
                                                 inner join product_categories cat on p.categoryId = cat.categoryId
                                                 inner join store st on a.storeId = st.storeName
+                                                inner join delivery_address da on a. deliveryAddressId = da.deliveryAddressId
                                             where a.userId = '" . $userId . "' and midtransPaymentType is not null
                                             group by a.productID,a.SizeID,SizeDescription,TipeProduct,ccName,productName,categoryName,image1,p.productPrice,a.cartId 
                                             order by a.createdDate desc
@@ -1607,6 +1707,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "customerReceiveStatus" => $key->customerReceiveStatus,
                     "deliveryResiNo" => $key->deliveryResiNo,
                     "storeMall" => $key->storeMall,
+                    "addressRemark" => $key->addressRemark
 
                 );
             } else if ($key->TipeProduct == "C_00007") {
@@ -1633,9 +1734,7 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "customerReceiveStatus" => $key->customerReceiveStatus,
                     "deliveryResiNo" => $key->deliveryResiNo,
                     "storeMall" => $key->storeMall,
-
-
-
+                    "addressRemark" => $key->addressRemark
 
                 );
             } else if ($key->TipeProduct == "C_00003") {
@@ -1663,6 +1762,8 @@ where UserId = '" . $userId . "' order by TransactionDate desc limit 5
                     "customerReceiveStatus" => $key->customerReceiveStatus,
                     "deliveryResiNo" => $key->deliveryResiNo,
                     "storeMall" => $key->storeMall,
+                    "addressRemark" => $key->addressRemark
+
                 );
             }
         }
@@ -1978,9 +2079,9 @@ function chargeAPI($api_url, $server_key, $request_body){
     $data1 = $this->db->query("SELECT * from appconfiguration where `key` = 'midtransServerKey' and isActive = 1")->row();
 
     if($data->currentVal == "sandbox"){
-        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+        $url = base_url()."api/";
     }else{
-        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+        $url = base_url()."api/";
     }
 
     $myData = array("ClientKey" => $data-> maxVal, "ServerKey" => $data1->maxVal, "status" => $data->currentVal, "url" => $url);
@@ -1992,9 +2093,9 @@ function chargeAPI($api_url, $server_key, $request_body){
     $data1 = $this->db->query("SELECT * from appconfiguration where `key` = 'midtransServerKey' and isActive = 1")->row();
 
     if($data->currentVal == "sandbox"){
-        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+        $url = base_url()."api/";
     }else{
-        $url = "http://memberlf-dev.rpgroup.co.id/api/";
+        $url = base_url()."api/";
     }
 
     $myData = array("ClientKey" => $data-> maxVal, "ServerKey" => $data1->maxVal, "status" => $data->currentVal, "url" => $url);
@@ -2057,7 +2158,97 @@ function chargeAPI($api_url, $server_key, $request_body){
 
         $data = $this->db->query("SELECT * FROM chatDetail where roomId = '".$roomId."' order by createdDate desc limit 1 ");
         echo json_encode($data->result());
+    }
 
+    function snycProvince(){
+        $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/province",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "key: 5882027194d829e46c2cdd55f8875dde"
+            ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+            echo "cURL Error #:" . $err;
+            } else {
+            $data = json_decode($response,TRUE);
+                for($x=0; $x<count($data['rajaongkir']['results']); $x++){
+                    $this->db->query("INSERT INTO province (provinceID, provinceName) values ('".$data['rajaongkir']['results'][$x]['province_id']."', '".$data['rajaongkir']['results'][$x]['province']."' ) ");
+                   // echo "INSERT INTO province (provinceID, provinceName) values ('".$data['rajaongkir']['results'][$x]['province_id']."', '".$data['rajaongkir']['results'][$x]['province']."' ) ";
+                }
+
+        }   
+    }
+
+    function snycCity(){
+        $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/city",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "key: 5882027194d829e46c2cdd55f8875dde"
+            ),
+            ));
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if ($err) {
+            echo "cURL Error #:" . $err;
+            } else {
+            $data = json_decode($response,TRUE);
+            $this->db->query("DELETE FROM city");
+
+                for($x=0; $x<count($data['rajaongkir']['results']); $x++){
+                    $this->db->query("INSERT INTO city (cityID,ProvinceID,cityName,cityLongitude,cityLatitude,cityDescription) 
+                    values ('".$data['rajaongkir']['results'][$x]['city_id']."',
+                    '".$data['rajaongkir']['results'][$x]['province_id']."',
+                    '".$data['rajaongkir']['results'][$x]['city_name']. " - "  .$data['rajaongkir']['results'][$x]['type']."',
+                    '',
+                    '',''
+                     )");  
+                }
+
+        }   
+    }
+    function viewInvoice($cartId){
+        $dataCart = $this->db->query("SELECT midtransOrderID from cart where cartId='".$cartId."'")->row();
+        $result = $this->no_notificationhandler($dataCart->midtransOrderID);
+        $data["midtrans"] = $result;
+        $data['infoCart'] = $this->db->query("SELECT addressRemark, a.*,e.productName, d.ccName,b.* FROM cart a 
+                            inner join members b on a.userId = b.userId 
+                            inner join product_colors c on a.productId = c.productId and a.productColorId = c.productColorId
+                            inner join combination_color d on c.combination_color = d.ccId
+                            inner join products e on e.productId = a.productId 
+                            inner join delivery_address da on a.deliveryAddressId = da.deliveryAddressId
+                            where cartId = '".$cartId."' ")->row();
+        $this->load->view("Invoice", $data);
+    }
+
+    function getSelectedCartAddress($cartId){
+        $data = $this->db->query("SELECT b.* from cart a inner join delivery_address b on a.deliveryAddressId = b.deliveryAddressId where cartId = '".$cartId."' ")->row();
+        echo json_encode($data);
     }
 
 }
